@@ -6,6 +6,7 @@ import java.time.LocalDate;
 public class RefuelingDTO {
     private Long id;
     private Long vehicleId;
+    private Long userId;
     private LocalDate refuelingDate;
     private String litre;
     private String cost;
@@ -28,6 +29,14 @@ public class RefuelingDTO {
 
     public void setVehicleId(Long vehicleId) {
         this.vehicleId = vehicleId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public LocalDate getRefuelingDate() {

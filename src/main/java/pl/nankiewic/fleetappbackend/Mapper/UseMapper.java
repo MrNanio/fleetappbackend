@@ -5,6 +5,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import pl.nankiewic.fleetappbackend.DTO.UseDTO;
+import pl.nankiewic.fleetappbackend.Entity.User;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleUse;
 
@@ -15,7 +16,8 @@ public interface UseMapper {
             @Mapping(target = "trip", source = "trip"),
             @Mapping(target = "tripDate", source = "tripDate"),
             @Mapping(target = "description", source = "description"),
-            @Mapping(target = "vehicleId", source = "vehicle")
+            @Mapping(target = "vehicleId", source = "vehicle"),
+            @Mapping(target = "userId", source = "user")
     })
     UseDTO vehicleUseToUseDTO(final VehicleUse vehicleUse);
     default Long vehicleToId(Vehicle vehicle) {
@@ -23,6 +25,12 @@ public interface UseMapper {
             return null;
         }
         return vehicle.getId();
+    }
+    default Long userToId(User user) {
+        if (user == null) {
+            return null;
+        }
+        return user.getId();
     }
     @Mappings({
             @Mapping(target = "id", source = "id"),

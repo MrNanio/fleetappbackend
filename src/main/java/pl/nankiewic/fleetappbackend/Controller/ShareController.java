@@ -2,8 +2,11 @@ package pl.nankiewic.fleetappbackend.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
+import pl.nankiewic.fleetappbackend.DTO.ShareDTO;
+
 import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.ShareService;
 
@@ -20,20 +23,9 @@ public class ShareController {
         this.shareService = shareService;
         this.checkService = checkService;
     }
-/*
-    @GetMapping("/share/{id}")
-    public ShareVehicleRespond shareMyVehicle(@PathVariable Long id, Authentication authentication){
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return shareService.shareOption(id, userDetails.getUsername());
-    }
-
     @PostMapping("/share")
-    public ResponseEntity<MessageResponse> userSet(@RequestBody ShareDTO shareDTO, Authentication authentication){
+    public void addShare(Authentication authentication, @RequestBody ShareDTO shareDTO){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToVehicle(userDetails.getUsername(), shareDTO.getVehicleId())){
-            shareService.setCurrentVehicleUserToVehicle(shareDTO);
-        }//exception permission denied
-        return ResponseEntity.ok(new MessageResponse("OK", LocalDateTime.now()));
-    }*/
-
+        shareService.setCurrentVehicleUserToVehicle(shareDTO, userDetails.getUsername());
+    }
 }

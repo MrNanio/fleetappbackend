@@ -1,8 +1,10 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
+import java.util.List;
+
 public class ShareDTO {
     private Long userId;
-    private Long vehicleId;
+    private List<String> vehicleId;
 
     public Long getUserId() {
         return userId;
@@ -12,11 +14,11 @@ public class ShareDTO {
         this.userId = userId;
     }
 
-    public Long getVehicleId() {
+    public List<String> getVehicleId() {
         return vehicleId;
     }
 
-    public void setVehicleId(Long vehicleId) {
+    public void setVehicleId(List<String> vehicleId) {
         this.vehicleId = vehicleId;
     }
 }

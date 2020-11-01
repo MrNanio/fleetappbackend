@@ -1,7 +1,4 @@
 package pl.nankiewic.fleetappbackend.Entity;
-
-
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -11,7 +8,6 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
     private String email;
     private String password;

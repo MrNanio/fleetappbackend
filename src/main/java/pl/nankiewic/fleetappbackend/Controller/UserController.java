@@ -14,7 +14,12 @@ import pl.nankiewic.fleetappbackend.Repository.VerificationTokenRepository;
 import pl.nankiewic.fleetappbackend.Service.AccountService;
 import pl.nankiewic.fleetappbackend.Service.CustomUserDetailsService;
 import pl.nankiewic.fleetappbackend.Service.MailService;
+/*
+id user dostaje maila
+share
 
+
+ */
 import java.time.LocalDateTime;
 
 @RestController
@@ -135,6 +140,16 @@ public class UserController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return userMapper.userToUserDTOs(accountService.getUserByManager(userDetails.getUsername()));
     }
+    @PreAuthorize("hasRole('SUPERUSER')")
+    @GetMapping("/get-user-by-id/{id}")
+    EmailDTO getUserEmail(@PathVariable Long id, Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        EmailDTO emailDTO= new EmailDTO();
+        emailDTO.setEmail(userRepository.findUserById(id).getEmail());
+        return emailDTO;
+
+    }
+
 
 }
 

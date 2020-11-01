@@ -12,7 +12,6 @@ import java.util.Set;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     @JsonIgnore
     private Long id;
     @Column(name = "roleName")

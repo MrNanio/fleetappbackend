@@ -5,9 +5,13 @@ import java.time.LocalDate;
 public class UseDTO {
     private Long id;
     private Long vehicleId;
+    private Long userId;
     private String trip;
     private LocalDate tripDate;
     private String description;
+
+    public UseDTO() {
+    }
 
     public Long getId() {
         return id;
@@ -23,6 +27,14 @@ public class UseDTO {
 
     public void setVehicleId(Long vehicleId) {
         this.vehicleId = vehicleId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getTrip() {

@@ -6,7 +6,9 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
     <changeSet author="pnank (generated)" id="1604187969497-2">
+
         <createTable tableName="address">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints primaryKey="true"/>
