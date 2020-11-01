@@ -1,0 +1,274 @@
+<databaseChangeLog
+
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.7"
+
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.7
+
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.7.xsd">
+
+    <changeSet author="pnank" id="1">
+         <insert tableName="vehicle_make">
+             <column name="id" value="1" />
+        <column name="name" value="Abarth" type="varchar(255)"/>
+         </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="2" />
+            <column name="name" value="Alfa Romeo" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="3" />
+            <column name="name" value="Aston Martin" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="4" />
+            <column name="name" value="Audi" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="5" />
+            <column name="name" value="Bentley" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="6" />
+            <column name="name" value="BMW" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="7" />
+            <column name="name" value="Bugatti" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="8" />
+            <column name="name" value="Cadillac" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="9" />
+        <column name="name" value="Chevrolet" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="10" />
+            <column name="name" value="Chrysler" type="varchar(255)"/>
+        </insert>
+
+        <insert tableName="vehicle_make">
+            <column name="id" value="11" />
+            <column name="name" value="Citroen" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="12" />
+            <column name="name" value="Daewoo" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="13" />
+            <column name="name" value="Daihatsu" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="14" />
+            <column name="name" value="Dodge" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="15" />
+            <column name="name" value="Dacia" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="16" />
+            <column name="name" value="Ferrari" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="17" />
+            <column name="name" value="Fiat" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="18" />
+            <column name="name" value="Ford" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="19" />
+            <column name="name" value="FSO" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="20" />
+            <column name="name" value="Honda" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="21" />
+            <column name="name" value="Hummer" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="22" />
+            <column name="name" value="Hyundai" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="23" />
+            <column name="name" value="Infiniti" type="varchar(255)"/>
+        </insert>
+
+        <insert tableName="vehicle_make">
+            <column name="id" value="24" />
+            <column name="name" value="Jaguar" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="25" />
+            <column name="name" value="Jeep" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="26" />
+            <column name="name" value="Kia" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="27" />
+            <column name="name" value="Koenigsegg" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="28" />
+            <column name="name" value="Lamborghini" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="29" />
+            <column name="name" value="Lancia" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="30" />
+            <column name="name" value="Land Rover" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="31" />
+            <column name="name" value="Lexus" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="32" />
+            <column name="name" value="Łada" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="33" />
+            <column name="name" value="Lotus" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="34" />
+            <column name="name" value="Lincoln" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="35" />
+            <column name="name" value="Maserati" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="36" />
+            <column name="name" value="Maybach" type="varchar(255)"/>
+        </insert>
+
+        <insert tableName="vehicle_make">
+            <column name="id" value="37" />
+            <column name="name" value="Mazda" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="38" />
+            <column name="name" value="McLaren" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="39" />
+            <column name="name" value="Mercedes-Benz" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="40" />
+            <column name="name" value="MG" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="41" />
+            <column name="name" value="Mini" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="42" />
+            <column name="name" value="Mitsubishi" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="43" />
+            <column name="name" value="Nissan" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="44" />
+            <column name="name" value="Opel" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="45" />
+            <column name="name" value="Peugeot" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="46" />
+            <column name="name" value="Porsche" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="47" />
+            <column name="name" value="Renault" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="48" />
+            <column name="name" value="Rolls-Royce" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="49" />
+            <column name="name" value="Saab" type="varchar(255)"/>
+        </insert>
+
+        <insert tableName="vehicle_make">
+            <column name="id" value="50" />
+            <column name="name" value="Rover" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="51" />
+            <column name="name" value="Seat" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="52" />
+            <column name="name" value="Skoda" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="53" />
+            <column name="name" value="Smart" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="54" />
+            <column name="name" value="SsangYong" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="55" />
+            <column name="name" value="Subaru" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="56" />
+            <column name="name" value="Suzuki" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="57" />
+            <column name="name" value="Syrena" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="58" />
+            <column name="name" value="TATA" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="59" />
+            <column name="name" value="UAZ" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="60" />
+            <column name="name" value="Toyota" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="61" />
+            <column name="name" value="Trabant" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="62" />
+            <column name="name" value="Volkswagen" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="63" />
+            <column name="name" value="Volvo" type="varchar(255)"/>
+        </insert>
+        <insert tableName="vehicle_make">
+            <column name="id" value="64" />
+            <column name="name" value="Wartburg" type="varchar(255)"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
+

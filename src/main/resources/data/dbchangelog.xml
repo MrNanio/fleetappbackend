@@ -435,4 +435,11 @@
             <column name="vehicle_fk"/>
         </createIndex>
     </changeSet>
+    <include file="addMake.xml" relativeToChangelogFile="true"/>
+    <include file="addFuelType.xml" relativeToChangelogFile="true"/>
+    <include file="addRoles.xml" relativeToChangelogFile="true"/>
+    <include file="addPrivilege.xml" relativeToChangelogFile="true"/>
+    <include file="addInsuranceType.xml" relativeToChangelogFile="true"/>
+    <include file="addVehicleStatus.xml" relativeToChangelogFile="true"/>
+    <include file="addUserAccountStatus.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
