@@ -1,0 +1,196 @@
+package pl.nankiewic.fleetappbackend.Entity;
+
+
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+    private String email;
+    private String password;
+    private String resetCode;
+    private LocalDateTime resetAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime lastLoginAt;
+    private boolean isEnabled;
+    @ManyToOne
+    @JoinColumn(name = "UserAccountStatusFk", nullable = false)
+    private UserAccountStatus userAccountStatus;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="IdManagerFk")
+    private User user;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval=true)
+    private Set<User> users = new HashSet<>();
+    @OneToOne(mappedBy = "user")
+    private UserData userData;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Vehicle> vehicles = new HashSet<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<VehicleUse> vehicleUses = new HashSet<>();
+   /* @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "role_id", referencedColumnName = "id"))
+    private Collection<Role> roles;*/
+
+    @OneToOne(mappedBy = "user")
+    private VerificationToken verificationToken;
+
+    @ManyToOne
+    @JoinColumn(name = "RoleFk", nullable = false)
+    private Role role;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Refueling> refuelings  = new HashSet<>();
+    public User() {
+    }
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getResetCode() {
+        return resetCode;
+    }
+
+    public void setResetCode(String resetCode) {
+        this.resetCode = resetCode;
+    }
+
+    public LocalDateTime getResetAt() {
+        return resetAt;
+    }
+
+    public void setResetAt(LocalDateTime resetAt) {
+        this.resetAt = resetAt;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getLastLoginAt() {
+        return lastLoginAt;
+    }
+
+    public void setLastLoginAt(LocalDateTime lastLoginAt) {
+        this.lastLoginAt = lastLoginAt;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
+
+    public UserAccountStatus getUserAccountStatus() {
+        return userAccountStatus;
+    }
+
+    public void setUserAccountStatus(UserAccountStatus userAccountStatus) {
+        this.userAccountStatus = userAccountStatus;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
+    public UserData getUserData() {
+        return userData;
+    }
+
+    public void setUserData(UserData userData) {
+        this.userData = userData;
+    }
+
+    public Set<Vehicle> getVehicles() {
+        return vehicles;
+    }
+
+    public void setVehicles(Set<Vehicle> vehicles) {
+        this.vehicles = vehicles;
+    }
+
+    public Set<VehicleUse> getVehicleUses() {
+        return vehicleUses;
+    }
+
+    public void setVehicleUses(Set<VehicleUse> vehicleUses) {
+        this.vehicleUses = vehicleUses;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public VerificationToken getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(VerificationToken verificationToken) {
+        this.verificationToken = verificationToken;
+    }
+
+    public Set<Refueling> getRefuelings() {
+        return refuelings;
+    }
+
+    public void setRefuelings(Set<Refueling> refuelings) {
+        this.refuelings = refuelings;
+    }
+}
