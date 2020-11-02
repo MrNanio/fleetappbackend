@@ -11,4 +11,5 @@ public interface RefuelingRepository extends JpaRepository<Refueling, Long> {
     Iterable <Refueling> findRefuelingsByVehicle(Vehicle vehicle);
     Iterable <Refueling> findRefuelingsByVehicleIn(Iterable<Vehicle> vehicles);
     Iterable <Refueling> findRefuelingsByUser(User user);
+    Iterable <Refueling> findAllByVehicleAndUser(Vehicle vehicle, User user);
 }

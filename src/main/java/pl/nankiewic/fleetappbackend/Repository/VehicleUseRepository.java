@@ -12,4 +12,5 @@ public interface VehicleUseRepository extends JpaRepository<VehicleUse, Long> {
     Iterable <VehicleUse> findAllByVehicle(Vehicle vehicle);
     Iterable <VehicleUse> findAllByVehicleIn(Iterable<Vehicle> vehicle);
     Iterable <VehicleUse> findAllByUser(User user);
+    Iterable <VehicleUse> findAllByVehicleAndUser(Vehicle vehicle, User user);
 }

@@ -75,6 +75,8 @@ public class Vehicle {
 
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<VehicleUse> vehicleUses = new HashSet<>();
+    @OneToOne(mappedBy = "vehicle")
+    private CurrentVehicleUser currentVehicleUser;
 
     public Vehicle() {
     }

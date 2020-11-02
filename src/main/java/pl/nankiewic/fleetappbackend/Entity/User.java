@@ -30,15 +30,8 @@ public class User {
     private Set<Vehicle> vehicles = new HashSet<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<VehicleUse> vehicleUses = new HashSet<>();
-   /* @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "users_roles",
-            joinColumns = @JoinColumn(
-                    name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(
-                    name = "role_id", referencedColumnName = "id"))
-    private Collection<Role> roles;*/
-
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<CurrentVehicleUser> currentVehicleUsers = new HashSet<>();
     @OneToOne(mappedBy = "user")
     private VerificationToken verificationToken;
 
@@ -166,12 +159,12 @@ public class User {
         this.vehicleUses = vehicleUses;
     }
 
-    public Role getRole() {
-        return role;
+    public Set<CurrentVehicleUser> getCurrentVehicleUsers() {
+        return currentVehicleUsers;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setCurrentVehicleUsers(Set<CurrentVehicleUser> currentVehicleUsers) {
+        this.currentVehicleUsers = currentVehicleUsers;
     }
 
     public VerificationToken getVerificationToken() {
@@ -180,6 +173,14 @@ public class User {
 
     public void setVerificationToken(VerificationToken verificationToken) {
         this.verificationToken = verificationToken;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public Set<Refueling> getRefuelings() {

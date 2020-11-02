@@ -3,6 +3,8 @@ package pl.nankiewic.fleetappbackend.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.DTO.UseDTO;
+import pl.nankiewic.fleetappbackend.Entity.User;
+import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleUse;
 import pl.nankiewic.fleetappbackend.Mapper.UseMapper;
 import pl.nankiewic.fleetappbackend.Repository.UserRepository;
@@ -62,5 +64,13 @@ public class UseService {
     }
     public void deleteUseById(Long id){
         vehicleUseRepository.deleteById(id);
+    }
+    public Iterable<UseDTO> getUseByUserAndVehicle(Long userId, Long vehicleId) {
+        if (userRepository.existsById(userId) && vehicleRepository.existsById(vehicleId)) {
+            Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(
+                    () -> new RuntimeException("Bład przetwarzania"));
+            User user = userRepository.findUserById(userId);
+            return mapper.vehicleUseToUseDTO(vehicleUseRepository.findAllByVehicleAndUser(vehicle, user));
+        } else throw new EntityNotFoundException("Nie znaleziono zasobu pojazd lub użytkownik");
     }
 }

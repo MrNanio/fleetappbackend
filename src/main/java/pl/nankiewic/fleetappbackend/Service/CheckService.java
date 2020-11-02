@@ -105,4 +105,11 @@ public class CheckService {
             } else throw new EntityNotFoundException("Zasób nie istnieje: użycie");
         } else throw new EntityNotFoundException("Zasób nie istnieje: użycie");
     }
+    public boolean accessToUser(String email, Long userId){
+        User user=userRepository.findUserByEmail(email);
+        if(userRepository.existsById(userId)){
+            User user1=userRepository.findUserById(userId);
+            return user1.getUser() == user;
+        } else throw new EntityNotFoundException("Zasób nie istnieje: user");
+    }
 }

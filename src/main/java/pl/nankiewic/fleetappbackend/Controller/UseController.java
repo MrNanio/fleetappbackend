@@ -80,4 +80,16 @@ public class UseController {
         } else throw new PermissionDeniedException();
     }
 
+    @GetMapping("/list")//new
+    public Iterable<UseDTO> getUseByUserIdAndVehicleId(@RequestParam(name = "u") Long userId,
+                                                       @RequestParam(name = "v") Long vehicleId,
+                                                       Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        if (checkService.accessToUser(userDetails.getUsername(), userId)
+                && checkService.accessToVehicle(userDetails.getUsername(),vehicleId)) {
+            return useService.getUseByUserAndVehicle(userId, vehicleId);
+        } else throw new PermissionDeniedException();
+
+    }
+
 }

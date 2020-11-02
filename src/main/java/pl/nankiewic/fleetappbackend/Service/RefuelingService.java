@@ -3,6 +3,7 @@ package pl.nankiewic.fleetappbackend.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.DTO.RefuelingDTO;
+import pl.nankiewic.fleetappbackend.DTO.UseDTO;
 import pl.nankiewic.fleetappbackend.Entity.Refueling;
 import pl.nankiewic.fleetappbackend.Entity.User;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
@@ -11,6 +12,7 @@ import pl.nankiewic.fleetappbackend.Repository.RefuelingRepository;
 import pl.nankiewic.fleetappbackend.Repository.UserRepository;
 import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 
@@ -74,8 +76,15 @@ public class RefuelingService {
         User user=userRepository.findUserByEmail(email);
         return mapper.refuelingToRefuelingDTO(refuelingRepository.findRefuelingsByUser(user));
     }
-
     public void deleteRefuelingById(Long id) {
         refuelingRepository.deleteById(id);
+    }
+    public Iterable<RefuelingDTO> getRefuelingByUserAndVehicle(Long userId, Long vehicleId) {
+        if (userRepository.existsById(userId) && vehicleRepository.existsById(vehicleId)) {
+            Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(
+                    () -> new RuntimeException("Bład przetwarzania"));
+            User user = userRepository.findUserById(userId);
+            return mapper.refuelingToRefuelingDTO(refuelingRepository.findAllByVehicleAndUser(vehicle, user));
+        } else throw new EntityNotFoundException("Nie znaleziono zasobu pojazd lub użytkownik");
     }
 }

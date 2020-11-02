@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import pl.nankiewic.fleetappbackend.DTO.ShareDTO;
 
+import pl.nankiewic.fleetappbackend.DTO.VehicleDTO;
 import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.ShareService;
 
@@ -27,5 +28,15 @@ public class ShareController {
     public void addShare(Authentication authentication, @RequestBody ShareDTO shareDTO){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         shareService.setCurrentVehicleUserToVehicle(shareDTO, userDetails.getUsername());
+    }
+    @GetMapping("/share/user/{id}")//new
+    public Iterable<VehicleDTO> getShareVehicleByIdUser(@PathVariable Long id, Authentication authentication){
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        return shareService.getShareVehicleListByUserId(id, userDetails.getUsername());
+    }
+    @GetMapping("/share/vehicles")//new
+    public Iterable<VehicleDTO> getPossibleVehicleListToShare(Authentication authentication){
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        return shareService.getPossibleVehiclesList(userDetails.getUsername());
     }
 }
