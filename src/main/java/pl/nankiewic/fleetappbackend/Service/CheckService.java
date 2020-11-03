@@ -109,7 +109,7 @@ public class CheckService {
         User user=userRepository.findUserByEmail(email);
         if(userRepository.existsById(userId)){
             User user1=userRepository.findUserById(userId);
-            return user1.getUser() == user;
+            return (user1.getUser() == null && user == user1) || user1.getUser() == user;
         } else throw new EntityNotFoundException("Zasób nie istnieje: user");
     }
 }
