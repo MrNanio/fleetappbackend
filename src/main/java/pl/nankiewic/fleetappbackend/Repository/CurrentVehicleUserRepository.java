@@ -11,4 +11,5 @@ public interface CurrentVehicleUserRepository extends JpaRepository<CurrentVehic
     Iterable <CurrentVehicleUser> findCurrentVehicleUsersByVehicleIs(Vehicle vehicle);
     Iterable <CurrentVehicleUser> findCurrentVehicleUsersByUserIs(User user);
     boolean existsByVehicle(Vehicle vehicle);
+    CurrentVehicleUser findByVehicle(Vehicle vehicle);
 }

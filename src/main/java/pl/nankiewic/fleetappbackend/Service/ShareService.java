@@ -71,4 +71,15 @@ public class ShareService {
             return vehicleMapper.map(myAll);
         } else throw new EntityNotFoundException("błąd zasobu: użytkownik");
     }
+
+    public void deleteShareVehicleListByVehicleId(Long id, String username) {
+        if(vehicleRepository.existsById(id)){
+            Vehicle vehicle=vehicleRepository.findById(id).orElseThrow(
+                    () -> new RuntimeException("Bład przetwarzania"));
+            if(currentVehicleUserRepository.existsByVehicle(vehicle)){
+                CurrentVehicleUser currentVehicleUser=currentVehicleUserRepository.findByVehicle(vehicle);
+                currentVehicleUserRepository.deleteById(currentVehicleUser.getId());
+            }else throw new EntityNotFoundException("błąd zasobu: share");
+        }else throw new EntityNotFoundException("błąd zasobu: pojazd");
+    }
 }

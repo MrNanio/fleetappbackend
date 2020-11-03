@@ -85,11 +85,8 @@ public class UseController {
                                                        @RequestParam(name = "v") Long vehicleId,
                                                        Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToUser(userDetails.getUsername(), userId)
-                && checkService.accessToVehicle(userDetails.getUsername(),vehicleId)) {
+        if (checkService.accessToVehicle(userDetails.getUsername(),vehicleId)) {
             return useService.getUseByUserAndVehicle(userId, vehicleId);
         } else throw new PermissionDeniedException();
-
     }
-
 }

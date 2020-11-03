@@ -5,7 +5,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import pl.nankiewic.fleetappbackend.DTO.RefuelingDTO;
-import pl.nankiewic.fleetappbackend.DTO.UseDTO;
 import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.RefuelingService;
@@ -72,8 +71,7 @@ public class RefuelingController {
                                                        @RequestParam(name = "v") Long vehicleId,
                                                        Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToUser(userDetails.getUsername(), userId)
-                && checkService.accessToVehicle(userDetails.getUsername(),vehicleId)) {
+        if (checkService.accessToVehicle(userDetails.getUsername(),vehicleId)) {
             return refuelingService.getRefuelingByUserAndVehicle(userId, vehicleId);
         } else throw new PermissionDeniedException();
 
