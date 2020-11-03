@@ -47,9 +47,9 @@ public class ShareService {
 
     public Iterable<VehicleDTO> getShareVehicleListByUserId(Long id, String username) {
         if(userRepository.existsByEmail(username) && userRepository.existsById(id)){
-            User manager =userRepository.findUserByEmail(username);
+            //User manager =userRepository.findUserByEmail(username);
             User user = userRepository.findUserById(id);
-            List<Vehicle> myShare = new ArrayList<Vehicle>();
+            List<Vehicle> myShare = new ArrayList<>();
             Iterable<CurrentVehicleUser> myByShare = currentVehicleUserRepository.findCurrentVehicleUsersByUserIs(user);
             for (CurrentVehicleUser currentVehicleUser : myByShare) {
                 myShare.add(currentVehicleUser.getVehicle());
@@ -61,7 +61,7 @@ public class ShareService {
     public Iterable<VehicleDTO> getPossibleVehiclesList(String username) {
         if(userRepository.existsByEmail(username)){
             User user =userRepository.findUserByEmail(username);
-            List<Vehicle> myAll = new ArrayList<Vehicle>();
+            List<Vehicle> myAll = new ArrayList<>();
             Iterable<Vehicle> myByOwn =vehicleRepository.findVehiclesByUser(user);
             for (Vehicle vehicle : myByOwn) {
                 if(!currentVehicleUserRepository.existsByVehicle(vehicle)){
@@ -72,7 +72,7 @@ public class ShareService {
         } else throw new EntityNotFoundException("błąd zasobu: użytkownik");
     }
 
-    public void deleteShareVehicleListByVehicleId(Long id, String username) {
+    public void deleteShareVehicleListByVehicleId(Long id) {
         if(vehicleRepository.existsById(id)){
             Vehicle vehicle=vehicleRepository.findById(id).orElseThrow(
                     () -> new RuntimeException("Bład przetwarzania"));

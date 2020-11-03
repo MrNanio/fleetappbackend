@@ -1,7 +1,6 @@
 package pl.nankiewic.fleetappbackend.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -42,11 +41,11 @@ public class ShareController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return shareService.getPossibleVehiclesList(userDetails.getUsername());
     }
-    @GetMapping("/share/vehicle/{id}")//new
+    @DeleteMapping("/share/vehicle/{id}")//new
     public void deleteShareVehicleByIdVehicle(@PathVariable Long id, Authentication authentication){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if(checkService.accessToVehicle(userDetails.getUsername(), id)){
-            shareService.deleteShareVehicleListByVehicleId(id, userDetails.getUsername());
+            shareService.deleteShareVehicleListByVehicleId(id);
         } else throw new PermissionDeniedException();
     }
 }
