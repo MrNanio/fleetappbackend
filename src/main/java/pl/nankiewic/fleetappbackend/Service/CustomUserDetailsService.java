@@ -80,7 +80,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public void superuserRegister(User user) {
         user.setCreatedAt(LocalDateTime.now());
         user.setRole(roleRepository.findRoleByRoleName("ROLE_SUPERUSER"));
-        user.setUserAccountStatus(userAccountStatusRepository.findByUserAccountStatusName("DEACTIVATE"));
+        user.setUserAccountStatus(userAccountStatusRepository.findByUserAccountStatusName("INACTIVE"));
         user.setEnabled(true);
         userRepository.save(user);
         activationToken(userRepository.findUserByEmail(user.getEmail()));
@@ -88,7 +88,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public void userRegister(User user){
         user.setCreatedAt(LocalDateTime.now());
         user.setRole(roleRepository.findRoleByRoleName("ROLE_USER"));
-        user.setUserAccountStatus(userAccountStatusRepository.findByUserAccountStatusName("DEACTIVATE"));
+        user.setUserAccountStatus(userAccountStatusRepository.findByUserAccountStatusName("INACTIVE"));
         user.setEnabled(false);
         userRepository.save(user);
     }

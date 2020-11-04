@@ -4,7 +4,7 @@ REPLACE INTO `roles` VALUES (3,'ROLE_ADMIN');
 REPLACE INTO `privilege` VALUES (1,'READ_PRIVILEGE');
 REPLACE INTO `privilege` VALUES (2,'WRITE_PRIVILEGE');
 REPLACE INTO `user_account_status` VALUES (1,'ACTIVE');
-REPLACE INTO `user_account_status` VALUES (2,'DEACTIVATE');
+REPLACE INTO `user_account_status` VALUES (2,'INACTIVE');
 REPLACE INTO `user_account_status` VALUES (3,'BLOCKED');
 REPLACE INTO `insurance_type` VALUES (1,'OC');
 REPLACE INTO `insurance_type` VALUES (2,'AC');
@@ -81,6 +81,8 @@ REPLACE INTO `fuel_type` VALUES (1,'LPG');
 REPLACE INTO `fuel_type` VALUES (2,'PB98');
 REPLACE INTO `fuel_type` VALUES (3,'PB95');
 REPLACE INTO `fuel_type` VALUES (4,'ON');
+
+INSERT INTO `user` VALUES (NULL, NULL, 'admin@admin.xd', b'1', NULL, '$2a$10$f8xGjebqsOXMPbyBYFqXPuSV8AoqKGtvIB0EmBMCX2zJPY0ZaTKC6', NULL, NULL, '3', NULL, '1');
 
 
 

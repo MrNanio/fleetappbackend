@@ -241,7 +241,7 @@ public class AccountService {
             UserAccountStatus userAccountStatus= userAccountStatusRepository.findByUserAccountStatusName(blockOrUnblock.getUserStatus());
             switch (userAccountStatus.getUserAccountStatusName()) {
                 case "ACTIVE":
-                case "DEACTIVATE":
+                case "INACTIVE":
                     user.setEnabled(true);
                     user.setUserAccountStatus(userAccountStatus);
                     break;
