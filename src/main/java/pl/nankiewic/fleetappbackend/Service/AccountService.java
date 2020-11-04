@@ -253,4 +253,8 @@ public class AccountService {
             userRepository.save(user);
         }
     }
+
+    public UserDTO getUserById(Long id) {
+        return userMapper.userToUserDTO(userRepository.findUserById(id));
+    }
 }

@@ -17,6 +17,10 @@ public class AdminController {
     public Iterable<UserDTO> getAllUser() {
         return accountService.getAllUser();
     }
+    @GetMapping("user/{id}")
+    public UserDTO getUserById(@PathVariable Long id) {
+        return accountService.getUserById(id);
+    }
     @PostMapping("/status")
     public void blockOrUnblockUserById(@RequestBody BlockOrUnblock blockOrUnblock) {
        accountService.blockOrUnblockUser(blockOrUnblock);
