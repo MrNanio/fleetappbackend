@@ -45,7 +45,7 @@ public class VehicleController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return vehicleService.findVehiclesByUser(userDetails.getUsername());
     }
-    @PreAuthorize("hasRole('SUPERUSER')")
+    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER','ROLE_USER')")
     @GetMapping("/{id}")
     public VehicleDTO getVehicleById(@PathVariable Long id, Authentication authentication){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();

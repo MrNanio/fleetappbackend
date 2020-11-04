@@ -147,7 +147,6 @@ public class UserController {
         EmailDTO emailDTO= new EmailDTO();
         emailDTO.setEmail(userRepository.findUserById(id).getEmail());
         return emailDTO;
-
     }
 
 

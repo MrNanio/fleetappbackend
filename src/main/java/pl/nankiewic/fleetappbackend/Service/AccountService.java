@@ -8,16 +8,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.DTO.*;
 import pl.nankiewic.fleetappbackend.Entity.User;
+import pl.nankiewic.fleetappbackend.Entity.UserAccountStatus;
 import pl.nankiewic.fleetappbackend.Entity.UserData;
 import pl.nankiewic.fleetappbackend.Entity.VerificationToken;
 import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.Exception.TokenException;
 import pl.nankiewic.fleetappbackend.Exception.WrongOldPasswordException;
 import pl.nankiewic.fleetappbackend.Mapper.UserDataMapper;
-import pl.nankiewic.fleetappbackend.Repository.UserAccountStatusRepository;
-import pl.nankiewic.fleetappbackend.Repository.UserDataRepository;
-import pl.nankiewic.fleetappbackend.Repository.UserRepository;
-import pl.nankiewic.fleetappbackend.Repository.VerificationTokenRepository;
+import pl.nankiewic.fleetappbackend.Mapper.UserMapper;
+import pl.nankiewic.fleetappbackend.Repository.*;
 import pl.nankiewic.fleetappbackend.Security.AuthenticationResponse;
 import pl.nankiewic.fleetappbackend.Security.JWTokenUtility;
 
@@ -29,28 +28,31 @@ import java.util.Random;
 public class AccountService {
     JWTokenUtility tokenUtility;
     UserRepository userRepository;
+    RoleRepository roleRepository;
     UserAccountStatusRepository userAccountStatusRepository;
     VerificationTokenRepository verificationTokenRepository;
     UserDataRepository userDataRepository;
     UserDataMapper mapper;
+    UserMapper userMapper;
     PasswordEncoder passwordEncoder;
     MailService mailService;
     @Autowired
-    public AccountService(JWTokenUtility tokenUtility, UserRepository userRepository,
+    public AccountService(JWTokenUtility tokenUtility, UserRepository userRepository, RoleRepository roleRepository,
                           UserAccountStatusRepository userAccountStatusRepository,
                           VerificationTokenRepository verificationTokenRepository,
                           UserDataRepository userDataRepository, UserDataMapper mapper,
-                          PasswordEncoder passwordEncoder, MailService mailService) {
+                          UserMapper userMapper, PasswordEncoder passwordEncoder, MailService mailService) {
         this.tokenUtility = tokenUtility;
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.userAccountStatusRepository = userAccountStatusRepository;
         this.verificationTokenRepository = verificationTokenRepository;
         this.userDataRepository = userDataRepository;
         this.mapper = mapper;
+        this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
         this.mailService = mailService;
     }
-    
 
     public AuthenticationResponse login(Authentication authentication){
         String jwt=tokenUtility.generateJwtToken(authentication);
@@ -229,5 +231,26 @@ public class AccountService {
     public Iterable<User> getUserByManager(String email) {
         User manager= userRepository.findUserByEmail(email);
         return userRepository.findByUser(manager);
+    }
+    public Iterable<UserDTO> getAllUser(){
+        return userMapper.userToUserDTOs(userRepository.findAllByRoleIsNot(roleRepository.findRoleByRoleName("ROLE_ADMIN")));
+    }
+    public void blockOrUnblockUser(BlockOrUnblock blockOrUnblock){
+        if(userRepository.existsById(blockOrUnblock.getId())){
+            User user=userRepository.findUserById(blockOrUnblock.getId());
+            UserAccountStatus userAccountStatus= userAccountStatusRepository.findByUserAccountStatusName(blockOrUnblock.getUserStatus());
+            switch (userAccountStatus.getUserAccountStatusName()) {
+                case "ACTIVE":
+                case "DEACTIVATE":
+                    user.setEnabled(true);
+                    user.setUserAccountStatus(userAccountStatus);
+                    break;
+                case "BLOCKED":
+                    user.setEnabled(false);
+                    user.setUserAccountStatus(userAccountStatus);
+                    break;
+            }
+            userRepository.save(user);
+        }
     }
 }

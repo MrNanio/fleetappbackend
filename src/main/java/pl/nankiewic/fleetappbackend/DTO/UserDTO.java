@@ -4,8 +4,12 @@ import java.time.LocalDateTime;
 
 public class UserDTO {
     private String email;
+    private String roles;
     private Long id;
     private LocalDateTime createdAt;
+    private LocalDateTime lastLoginAt;
+    private String userStatus;
+    private boolean isEnabled;
 
     public String getEmail() {
         return email;
@@ -13,6 +17,14 @@ public class UserDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
     }
 
     public Long getId() {
@@ -29,5 +41,29 @@ public class UserDTO {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getLastLoginAt() {
+        return lastLoginAt;
+    }
+
+    public void setLastLoginAt(LocalDateTime lastLoginAt) {
+        this.lastLoginAt = lastLoginAt;
+    }
+
+    public String getUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(String userStatus) {
+        this.userStatus = userStatus;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
     }
 }
