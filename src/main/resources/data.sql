@@ -82,7 +82,7 @@ REPLACE INTO `fuel_type` VALUES (2,'PB98');
 REPLACE INTO `fuel_type` VALUES (3,'PB95');
 REPLACE INTO `fuel_type` VALUES (4,'ON');
 
-INSERT INTO `user` VALUES (NULL, NULL, 'admin@admin.xd', b'1', NULL, '$2a$10$f8xGjebqsOXMPbyBYFqXPuSV8AoqKGtvIB0EmBMCX2zJPY0ZaTKC6', NULL, NULL, '3', NULL, '1');
+REPLACE INTO `user` VALUES (1, NULL, 'admin@admin.xd', b'1', NULL, '$2a$10$f8xGjebqsOXMPbyBYFqXPuSV8AoqKGtvIB0EmBMCX2zJPY0ZaTKC6', NULL, NULL, '3', NULL, '1');
 
 
 

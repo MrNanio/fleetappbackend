@@ -8,6 +8,7 @@ import pl.nankiewic.fleetappbackend.DTO.UserDTO;
 import pl.nankiewic.fleetappbackend.Service.AccountService;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/admin")
 public class AdminController {
