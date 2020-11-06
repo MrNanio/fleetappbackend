@@ -25,7 +25,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private PasswordEncoder passwordEncoder;
     @Autowired
-    public WebSecurityConfiguration(CustomUserDetailsService userDetailsService, JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint, PasswordEncoder passwordEncoder) {
+    public WebSecurityConfiguration(CustomUserDetailsService userDetailsService,
+                                    JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+                                    PasswordEncoder passwordEncoder) {
         this.userDetailsService = userDetailsService;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.passwordEncoder = passwordEncoder;
@@ -63,6 +65,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/reset-password").permitAll()
                 .antMatchers("/user/reset-password/new").permitAll()
                 .antMatchers("/user/new-account/**").permitAll()
+                //.antMatchers("/reports/**").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

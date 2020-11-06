@@ -17,8 +17,9 @@ public class InspectionPDFExporter {
     private List<VehicleInspection> vehicleInspectionList;
     private Vehicle vehicle;
 
-    public InspectionPDFExporter(List<VehicleInspection> vehicleInspectionList) {
+    public InspectionPDFExporter(List<VehicleInspection> vehicleInspectionList, Vehicle vehicle) {
         this.vehicleInspectionList = vehicleInspectionList;
+        this.vehicle = vehicle;
     }
 
     private void writeTableHeader(PdfPTable table) {

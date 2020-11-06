@@ -51,7 +51,4 @@ public class InspectionService {
         vehicleInspectionRepository.deleteById(id);
     }
 }
-/*
-    public Iterable<VehicleInspection> findAllByVehicleIn(Iterable<Vehicle>vehicles) {
-        return vehicleInspectionRepository.findAllByVehicleIn(vehicles);
-    }*/
+

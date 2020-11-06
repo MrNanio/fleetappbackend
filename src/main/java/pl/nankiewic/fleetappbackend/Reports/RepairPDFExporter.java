@@ -61,7 +61,7 @@ public class RepairPDFExporter {
         font.setSize(18);
         font.setColor(Color.BLUE);
 
-        Paragraph p = new Paragraph("Lista napraw " + vehicle.getVehicleRegistrationNumber(), font);
+        Paragraph p = new Paragraph("Lista napraw: " + vehicle.getVehicleRegistrationNumber(), font);
         p.setAlignment(Paragraph.ALIGN_CENTER);
 
         document.add(p);

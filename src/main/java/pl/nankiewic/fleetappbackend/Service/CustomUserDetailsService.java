@@ -52,7 +52,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (user == null) {
             return new org.springframework.security.core.userdetails.User(" ",
                     " ", true, true, true, true,
-                   // getAuthorities(Arrays.asList(roleRepository.findRoleByRoleName("ROLE_USER"))));
             getAuthorities(roleRepository.findRoleByRoleName("ROLE_USER")));
         }
         return new org.springframework.security.core.userdetails.User(
@@ -98,13 +97,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         mailService.sendActivationEmail(user.getEmail(),verificationTokenRepository.findByUser(user).getToken());
     }
     public String createPasswordCode() {
-        int leftLimit = 97; // letter 'a'
+        int lLimit = 97; // letter 'a'
         int rightLimit = 122; // letter 'z'
         int targetStringLength = 10;
         Random random = new Random();
         StringBuilder buffer = new StringBuilder(targetStringLength);
         for (int i = 0; i < targetStringLength; i++) {
-            int randomLimitedInt = leftLimit + (int) (random.nextFloat() * (rightLimit - leftLimit + 1));
+            int randomLimitedInt = lLimit + (int) (random.nextFloat() * (rightLimit - lLimit + 1));
             buffer.append((char) randomLimitedInt);
         }
         return buffer.toString();

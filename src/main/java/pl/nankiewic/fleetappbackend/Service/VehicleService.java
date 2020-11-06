@@ -1,18 +1,12 @@
 package pl.nankiewic.fleetappbackend.Service;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.DTO.VehicleDTO;
-import pl.nankiewic.fleetappbackend.Entity.CurrentVehicleUser;
-import pl.nankiewic.fleetappbackend.Entity.User;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Mapper.VehicleMapper;
 import pl.nankiewic.fleetappbackend.Repository.*;
-
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Service
@@ -20,7 +14,6 @@ public class VehicleService {
 
     private VehicleRepository vehicleRepository;
     private VehicleStatusRepository vehicleStatusRepository;
-    private CurrentVehicleUserRepository currentVehicleUserRepository;
     private VehicleMakeRepository vehicleMakeRepository;
     private FuelTypeRepository fuelTypeRepository;
     private UserRepository userRepository;
@@ -65,21 +58,4 @@ public class VehicleService {
     public void deleteVehicleById(Long id) {
         vehicleRepository.deleteById(id);
     }
-
-
-    public Iterable<Vehicle> findAllVehicles(String email) {
-        User user =userRepository.findUserByEmail(email);
-        List<Vehicle> myAll = new ArrayList<Vehicle>();
-        Iterable<Vehicle> myByOwn =vehicleRepository.findVehiclesByUser(user);
-        for (Vehicle vehicle : myByOwn) {
-            myAll.add(vehicle);
-        }
-        Iterable<CurrentVehicleUser> myByShare = currentVehicleUserRepository.findCurrentVehicleUsersByUserIs(user);
-        for (CurrentVehicleUser currentVehicleUser : myByShare) {
-            myAll.add(currentVehicleUser.getVehicle());
-        }
-        return myAll;
-    }
-
-
 }

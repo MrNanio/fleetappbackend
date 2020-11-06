@@ -3,7 +3,6 @@ package pl.nankiewic.fleetappbackend.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.DTO.RefuelingDTO;
-import pl.nankiewic.fleetappbackend.DTO.UseDTO;
 import pl.nankiewic.fleetappbackend.Entity.Refueling;
 import pl.nankiewic.fleetappbackend.Entity.User;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
@@ -37,8 +36,8 @@ public class RefuelingService {
          */
     public void save(RefuelingDTO refuelingDTO, String email) {
         Refueling refueling = mapper.refuelingDTOToRefueling(refuelingDTO);
-        refueling.setVehicle(vehicleRepository.findById(refuelingDTO.getVehicleId()).orElseThrow(
-                () -> new RuntimeException("Bład przetwarzania")));
+        Vehicle vehicle=vehicleRepository.findById(refuelingDTO.getVehicleId()).orElseThrow(  () -> new RuntimeException("Bład przetwarzania"));
+        refueling.setVehicle(vehicle);
         refueling.setUser(userRepository.findUserByEmail(email));
         refuelingRepository.save(refueling);
     }
