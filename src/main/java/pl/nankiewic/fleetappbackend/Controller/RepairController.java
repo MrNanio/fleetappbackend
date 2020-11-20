@@ -45,7 +45,7 @@ public class RepairController {
     get by vehicle id
      */
     @GetMapping("/v/{id}")
-    public Iterable<RepairDTO> getRepairsByVehicle(@PathVariable Long id, Authentication authentication){ //id vehicle
+    public Iterable<RepairDTO> getRepairsByVehicle(@PathVariable Long id, Authentication authentication){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), id)) {
             return repairService.getRepairsByVehicle(id);

@@ -8,6 +8,7 @@ public class UseDTO {
     private Long userId;
     private String trip;
     private LocalDate tripDate;
+    private String tripType;
     private String description;
 
     public UseDTO() {
@@ -51,6 +52,14 @@ public class UseDTO {
 
     public void setTripDate(LocalDate tripDate) {
         this.tripDate = tripDate;
+    }
+
+    public String getTripType() {
+        return tripType;
+    }
+
+    public void setTripType(String tripType) {
+        this.tripType = tripType;
     }
 
     public String getDescription() {

@@ -13,20 +13,20 @@ import java.time.LocalDate;
 public class ReportsService {
     UserRepository userRepository;
     VehicleRepository vehicleRepository;
-    RefuelingRepository refuelingRepository;
+    VehicleRefuelingRepository vehicleRefuelingRepository;
     VehicleUseRepository vehicleUseRepository;
     VehicleRepairRepository vehicleRepairRepository;
     VehicleInsuranceRepository vehicleInsuranceRepository;
     VehicleInspectionRepository vehicleInspectionRepository;
     @Autowired
     public ReportsService(UserRepository userRepository, VehicleRepository vehicleRepository,
-                          RefuelingRepository refuelingRepository, VehicleUseRepository vehicleUseRepository,
+                          VehicleRefuelingRepository vehicleRefuelingRepository, VehicleUseRepository vehicleUseRepository,
                           VehicleRepairRepository vehicleRepairRepository,
                           VehicleInsuranceRepository vehicleInsuranceRepository,
                           VehicleInspectionRepository vehicleInspectionRepository) {
         this.userRepository = userRepository;
         this.vehicleRepository = vehicleRepository;
-        this.refuelingRepository = refuelingRepository;
+        this.vehicleRefuelingRepository = vehicleRefuelingRepository;
         this.vehicleUseRepository = vehicleUseRepository;
         this.vehicleRepairRepository = vehicleRepairRepository;
         this.vehicleInsuranceRepository = vehicleInsuranceRepository;
@@ -34,10 +34,10 @@ public class ReportsService {
     }
 
     //get report by id vehicle and refueling date
-    public Iterable<Refueling> refuelingByVehicle(Long id, LocalDate begin, LocalDate end){
+    public Iterable<VehicleRefueling> refuelingByVehicle(Long id, LocalDate begin, LocalDate end){
        if(vehicleRepository.existsById(id)){
            Vehicle vehicle=vehicleRepository.findById(id).orElseThrow(() -> new RuntimeException("Bład przetwarzania"));
-           return refuelingRepository.findAllByVehicleIsAndRefuelingDateIsBetween(vehicle, begin, end);
+           return vehicleRefuelingRepository.findAllByVehicleIsAndRefuelingDateIsBetween(vehicle, begin, end);
        } else throw new EntityNotFoundException("xd");
     }
     //get report by id vehicle and insurance date

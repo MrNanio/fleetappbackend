@@ -7,5 +7,4 @@ import pl.nankiewic.fleetappbackend.Entity.UserData;
 
 @CrossOrigin(origins = "http://localhost:4200")
 public interface AddressRepository extends JpaRepository<Address, Long> {
-    Address findByUserDataIs(UserData userData);
 }

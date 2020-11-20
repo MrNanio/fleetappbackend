@@ -22,7 +22,7 @@ import java.util.List;
 @RestController@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/reports")
 public class ReportsController {
-    private ReportsService reportsService;
+    ReportsService reportsService;
     @Autowired
     public ReportsController(ReportsService reportsService) {
         this.reportsService = reportsService;
@@ -59,7 +59,7 @@ public class ReportsController {
         LocalDate end= LocalDate.parse(endS);
         switch (report) {
             case "refueling": {
-                List<Refueling> list = (List<Refueling>) reportsService.refuelingByVehicle(id, begin, end);
+                List<VehicleRefueling> list = (List<VehicleRefueling>) reportsService.refuelingByVehicle(id, begin, end);
                 RefuelingPDFExporter exporter = new RefuelingPDFExporter(list, reportsService.getVehicleInfo(id));
                 exporter.export(response);
                 break;

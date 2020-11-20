@@ -21,9 +21,9 @@ import pl.nankiewic.fleetappbackend.Service.CustomUserDetailsService;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private CustomUserDetailsService userDetailsService;
-    private JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private PasswordEncoder passwordEncoder;
+    CustomUserDetailsService userDetailsService;
+    JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    PasswordEncoder passwordEncoder;
     @Autowired
     public WebSecurityConfiguration(CustomUserDetailsService userDetailsService,
                                     JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint,
@@ -46,12 +46,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
-    /*
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().mvcMatchers(String.valueOf(HttpMethod.OPTIONS), "/**");
-        web.ignoring().mvcMatchers("/swagger-ui.html/**", "/configuration/**", "/swagger-resources/**", "/v2/api-docs","/webjars/**");
-    }*/
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.headers().httpStrictTransportSecurity().disable().and().cors().and()
@@ -65,7 +59,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/reset-password").permitAll()
                 .antMatchers("/user/reset-password/new").permitAll()
                 .antMatchers("/user/new-account/**").permitAll()
-                //.antMatchers("/reports/**").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

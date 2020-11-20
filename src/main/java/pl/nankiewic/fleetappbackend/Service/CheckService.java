@@ -12,7 +12,7 @@ public class CheckService {
 
     UserRepository userRepository;
     VehicleRepository vehicleRepository;
-    RefuelingRepository refuelingRepository;
+    VehicleRefuelingRepository vehicleRefuelingRepository;
     VehicleUseRepository vehicleUseRepository;
     VehicleRepairRepository vehicleRepairRepository;
     VehicleInsuranceRepository vehicleInsuranceRepository;
@@ -20,14 +20,14 @@ public class CheckService {
     CurrentVehicleUserRepository currentVehicleUserRepository;
     @Autowired
     public CheckService(UserRepository userRepository, VehicleRepository vehicleRepository,
-                        RefuelingRepository refuelingRepository, VehicleUseRepository vehicleUseRepository,
+                        VehicleRefuelingRepository vehicleRefuelingRepository, VehicleUseRepository vehicleUseRepository,
                         VehicleRepairRepository vehicleRepairRepository,
                         VehicleInsuranceRepository vehicleInsuranceRepository,
                         VehicleInspectionRepository vehicleInspectionRepository,
                         CurrentVehicleUserRepository currentVehicleUserRepository) {
         this.userRepository = userRepository;
         this.vehicleRepository = vehicleRepository;
-        this.refuelingRepository = refuelingRepository;
+        this.vehicleRefuelingRepository = vehicleRefuelingRepository;
         this.vehicleUseRepository = vehicleUseRepository;
         this.vehicleRepairRepository = vehicleRepairRepository;
         this.vehicleInsuranceRepository = vehicleInsuranceRepository;
@@ -87,8 +87,8 @@ public class CheckService {
     }
     public boolean accessToRefueling(String email, Long refuelingId){
         User user=userRepository.findUserByEmail(email);
-        if(refuelingRepository.existsById(refuelingId)) {
-            Optional<Refueling> refueling = refuelingRepository.findById(refuelingId);
+        if(vehicleRefuelingRepository.existsById(refuelingId)) {
+            Optional<VehicleRefueling> refueling = vehicleRefuelingRepository.findById(refuelingId);
             if (refueling.isPresent()) {
                 Vehicle vehicle = refueling.get().getVehicle();
                 return isMyVehicle(user, vehicle) || isMyVehicleNow(user, vehicle);

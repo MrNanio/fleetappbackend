@@ -11,12 +11,10 @@ import java.util.Date;
 
 @Component
 public class JWTokenUtility {
-    private String jwtSecret="secret";
+    private final String jwtSecret="secret";
     private static final Logger logger = LoggerFactory.getLogger(JWTokenUtility.class);
     public String generateJwtToken(Authentication authentication) {
-        //UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-       // User user= userService.findByEmail(userDetails.getUsername());
         int jwtExpirationMs = 86400000;
         return Jwts.builder()
                 .setSubject((userDetails.getUsername()))
@@ -28,10 +26,6 @@ public class JWTokenUtility {
     }
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
-    }
-
-    public String getUserIdFromJwtToken(String token){
-        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getId();
     }
     public boolean validateJwtToken(String authToken) {
         try {

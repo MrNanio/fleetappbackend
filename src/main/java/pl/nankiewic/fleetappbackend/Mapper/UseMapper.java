@@ -17,7 +17,8 @@ public interface UseMapper {
             @Mapping(target = "tripDate", source = "tripDate"),
             @Mapping(target = "description", source = "description"),
             @Mapping(target = "vehicleId", source = "vehicle"),
-            @Mapping(target = "userId", source = "user")
+            @Mapping(target = "userId", source = "user"),
+            @Mapping(target = "tripType", source = "tripType")
     })
     UseDTO vehicleUseToUseDTO(final VehicleUse vehicleUse);
     default Long vehicleToId(Vehicle vehicle) {
@@ -38,7 +39,8 @@ public interface UseMapper {
             @Mapping(target = "tripDate", source = "tripDate"),
             @Mapping(target = "description", source = "description"),
             @Mapping(target = "vehicle", ignore = true),
-            @Mapping(target = "user", ignore = true)
+            @Mapping(target = "user", ignore = true),
+            @Mapping(target = "tripType", source = "tripType")
     })
     VehicleUse useDTOtoVehicleUse(final UseDTO useDTO);
     Iterable <UseDTO> vehicleUseToUseDTO(Iterable<VehicleUse> vehicleUses);

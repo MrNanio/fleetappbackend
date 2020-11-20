@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "vehicle_use")
 public class VehicleUse {
 
     @Id
@@ -21,6 +22,9 @@ public class VehicleUse {
 
     @Column(length = 255)
     private String description;
+
+    @Column(length = 7)
+    private String tripType;
 
     @ManyToOne
     @JoinColumn(name = "VehicleFk", nullable = false)
@@ -60,6 +64,14 @@ public class VehicleUse {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getTripType() {
+        return tripType;
+    }
+
+    public void setTripType(String tripType) {
+        this.tripType = tripType;
     }
 
     public Vehicle getVehicle() {

@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "fuel_types")
 public class FuelType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

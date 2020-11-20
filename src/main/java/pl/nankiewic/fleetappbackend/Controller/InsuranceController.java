@@ -80,7 +80,6 @@ public class InsuranceController {
             insuranceService.deleteInsuranceById(id);
         } else throw new PermissionDeniedException();
     }
-
     /*
     get all types
      */

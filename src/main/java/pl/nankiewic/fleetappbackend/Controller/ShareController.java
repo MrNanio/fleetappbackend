@@ -29,19 +29,19 @@ public class ShareController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         shareService.setCurrentVehicleUserToVehicle(shareDTO, userDetails.getUsername());
     }
-    @GetMapping("/share/user/{id}")//new
+    @GetMapping("/share/user/{id}")
     public Iterable<VehicleDTO> getShareVehicleByIdUser(@PathVariable Long id, Authentication authentication){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if(checkService.accessToUser(userDetails.getUsername(), id)){
+       // if(checkService.accessToUser(userDetails.getUsername(), id)){
             return shareService.getShareVehicleListByUserId(id, userDetails.getUsername());
-        } else throw new PermissionDeniedException();
+       // } else throw new PermissionDeniedException();
     }
-    @GetMapping("/share/vehicles")//new
+    @GetMapping("/share/vehicles")
     public Iterable<VehicleDTO> getPossibleVehicleListToShare(Authentication authentication){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return shareService.getPossibleVehiclesList(userDetails.getUsername());
     }
-    @DeleteMapping("/share/vehicle/{id}")//new
+    @DeleteMapping("/share/vehicle/{id}")
     public void deleteShareVehicleByIdVehicle(@PathVariable Long id, Authentication authentication){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if(checkService.accessToVehicle(userDetails.getUsername(), id)){

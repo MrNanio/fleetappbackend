@@ -21,10 +21,10 @@ import pl.nankiewic.fleetappbackend.Service.VehicleService;
 @RequestMapping("/vehicle")
 public class VehicleController {
 
-    private VehicleService vehicleService;
-    private CheckService checkService;
-    private VehicleMakeRepository vehicleMakeRepository;
-    private FuelTypeRepository fuelTypeRepository;
+    VehicleService vehicleService;
+    CheckService checkService;
+    VehicleMakeRepository vehicleMakeRepository;
+    FuelTypeRepository fuelTypeRepository;
     @Autowired
     public VehicleController(VehicleService vehicleService, CheckService checkService,
                              VehicleMakeRepository vehicleMakeRepository, FuelTypeRepository fuelTypeRepository) {
@@ -45,7 +45,7 @@ public class VehicleController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return vehicleService.findVehiclesByUser(userDetails.getUsername());
     }
-    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER','ROLE_USER')")
+   // @PreAuthorize("hasAnyRole('ROLE_SUPERUSER','ROLE_USER')")
     @GetMapping("/{id}")
     public VehicleDTO getVehicleById(@PathVariable Long id, Authentication authentication){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();

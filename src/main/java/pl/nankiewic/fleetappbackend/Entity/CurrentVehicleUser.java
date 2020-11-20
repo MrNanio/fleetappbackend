@@ -3,6 +3,7 @@ package pl.nankiewic.fleetappbackend.Entity;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "current_vehicle_users")
 public class CurrentVehicleUser {
 
     @Id

@@ -7,7 +7,8 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-public class Refueling {
+@Table(name = "vehicle_refueling")
+public class VehicleRefueling {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,8 +25,9 @@ public class Refueling {
     @JoinColumn(name = "UserFk", nullable = false)
     private User user;
 
-    public Refueling() {
+    public VehicleRefueling() {
     }
+
     @JsonIgnore
     public Long getId() {
         return id;

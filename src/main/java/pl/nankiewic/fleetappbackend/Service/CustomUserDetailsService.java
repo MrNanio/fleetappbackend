@@ -63,10 +63,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         List<GrantedAuthority> authorities
                 = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(roles.getRoleName()));
-        roles.getPrivileges().stream()
-                .map(p -> new SimpleGrantedAuthority(p.getName()))
-                .forEach(authorities::add);
-
         return authorities;
     }
 

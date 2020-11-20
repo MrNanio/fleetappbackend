@@ -5,8 +5,8 @@ import com.lowagie.text.Font;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import pl.nankiewic.fleetappbackend.Entity.Refueling;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
+import pl.nankiewic.fleetappbackend.Entity.VehicleRefueling;
 
 
 import javax.servlet.http.HttpServletResponse;
@@ -15,10 +15,10 @@ import java.io.IOException;
 import java.util.List;
 
 public class RefuelingPDFExporter {
-    private List<Refueling> refuelingList;
+    private List<VehicleRefueling> refuelingList;
     private Vehicle vehicle;
 
-    public RefuelingPDFExporter(List<Refueling> refuelingList, Vehicle vehicle) {
+    public RefuelingPDFExporter(List<VehicleRefueling> refuelingList, Vehicle vehicle) {
         this.refuelingList = refuelingList;
         this.vehicle = vehicle;
     }
@@ -48,7 +48,7 @@ public class RefuelingPDFExporter {
     }
 
     private void writeTableData(PdfPTable table) {
-        for (Refueling refueling : refuelingList) {
+        for (VehicleRefueling refueling : refuelingList) {
             table.addCell(refueling.getRefuelingDate().toString());
             table.addCell(refueling.getLitre());
             table.addCell(refueling.getCost());

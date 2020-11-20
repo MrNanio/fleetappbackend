@@ -12,9 +12,12 @@ import pl.nankiewic.fleetappbackend.Service.AccountService;
 @PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/admin")
 public class AdminController {
-    @Autowired
     AccountService accountService;
-    @GetMapping()
+    @Autowired
+    public AdminController(AccountService accountService) {
+        this.accountService = accountService;
+    }
+    @GetMapping
     public Iterable<UserDTO> getAllUser() {
         return accountService.getAllUser();
     }

@@ -66,7 +66,7 @@ public class UseController {
     use update
     */
     @PutMapping
-    public void updateUse(Authentication authentication, @RequestBody UseDTO useDTO){//id use
+    public void updateUse(Authentication authentication, @RequestBody UseDTO useDTO){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToUse(userDetails.getUsername(), useDTO.getId())) {
             useService.save(useDTO, userDetails.getUsername());
@@ -80,7 +80,7 @@ public class UseController {
         } else throw new PermissionDeniedException();
     }
 
-    @GetMapping("/list")//new
+    @GetMapping("/list")
     public Iterable<UseDTO> getUseByUserIdAndVehicleId(@RequestParam(name = "u") Long userId,
                                                        @RequestParam(name = "v") Long vehicleId,
                                                        Authentication authentication) {

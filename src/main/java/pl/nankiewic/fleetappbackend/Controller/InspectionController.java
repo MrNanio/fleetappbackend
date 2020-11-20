@@ -32,12 +32,11 @@ public class InspectionController {
      only owner
      */
     @PostMapping
-    public ResponseEntity<MessageResponse> addInspection(@RequestBody InspectionDTO inspectionDTO, Authentication authentication){
+    public void addInspection(@RequestBody InspectionDTO inspectionDTO, Authentication authentication){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), inspectionDTO.getVehicleId())) {
             inspectionService.saveInspection(inspectionDTO);
         } else throw new PermissionDeniedException();
-        return ResponseEntity.ok(new MessageResponse("OK", LocalDateTime.now()));
     }
     /*
     get inspections by vehicle

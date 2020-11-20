@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "vehicles")
 public class Vehicle {
 
     @Id
@@ -65,7 +66,7 @@ public class Vehicle {
     private Set<VehicleInspection> vehicleInspections = new HashSet<>();
 
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Refueling> refuelings = new HashSet<>();
+    private Set<VehicleRefueling> refuelings = new HashSet<>();
 
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<VehicleInsurance> vehicleInsurances = new HashSet<>();
@@ -80,39 +81,39 @@ public class Vehicle {
 
     public Vehicle() {
     }
-    @JsonIgnore
+
     public Long getId() {
         return id;
     }
-    @JsonProperty
+
     public void setId(Long id) {
         this.id = id;
     }
-    @JsonIgnore
+
     public VehicleMake getVehicleMake() {
         return vehicleMake;
     }
-    @JsonProperty
+
     public void setVehicleMake(VehicleMake vehicleMake) {
         this.vehicleMake = vehicleMake;
     }
-    @JsonIgnore
+
     public String getModel() {
         return model;
     }
-    @JsonProperty
+
     public void setModel(String model) {
         this.model = model;
     }
-    @JsonIgnore
+
     public String getYear() {
         return year;
     }
-    @JsonProperty
+
     public void setYear(String year) {
         this.year = year;
     }
-    @JsonIgnore
+
     public String getColor() {
         return color;
     }
@@ -120,7 +121,7 @@ public class Vehicle {
     public void setColor(String color) {
         this.color = color;
     }
-    @JsonIgnore
+
     public String getMileage() {
         return mileage;
     }
@@ -128,7 +129,7 @@ public class Vehicle {
     public void setMileage(String mileage) {
         this.mileage = mileage;
     }
-    @JsonIgnore
+
     public String getVinNumber() {
         return vinNumber;
     }
@@ -136,7 +137,7 @@ public class Vehicle {
     public void setVinNumber(String vinNumber) {
         this.vinNumber = vinNumber;
     }
-    @JsonIgnore
+
     public String getVehicleRegistrationNumber() {
         return vehicleRegistrationNumber;
     }
@@ -144,7 +145,7 @@ public class Vehicle {
     public void setVehicleRegistrationNumber(String vehicleRegistrationNumber) {
         this.vehicleRegistrationNumber = vehicleRegistrationNumber;
     }
-    @JsonIgnore
+
     public FuelType getFuelType() {
         return fuelType;
     }
@@ -152,7 +153,7 @@ public class Vehicle {
     public void setFuelType(FuelType fuelType) {
         this.fuelType = fuelType;
     }
-    @JsonIgnore
+
     public BigDecimal getCityFuelConsumption() {
         return cityFuelConsumption;
     }
@@ -160,7 +161,7 @@ public class Vehicle {
     public void setCityFuelConsumption(BigDecimal cityFuelConsumption) {
         this.cityFuelConsumption = cityFuelConsumption;
     }
-    @JsonIgnore
+
     public BigDecimal getCountryFuelConsumption() {
         return countryFuelConsumption;
     }
@@ -168,7 +169,7 @@ public class Vehicle {
     public void setCountryFuelConsumption(BigDecimal countryFuelConsumption) {
         this.countryFuelConsumption = countryFuelConsumption;
     }
-    @JsonIgnore
+
     public BigDecimal getAverageFuelConsumption() {
         return averageFuelConsumption;
     }
@@ -176,7 +177,7 @@ public class Vehicle {
     public void setAverageFuelConsumption(BigDecimal averageFuelConsumption) {
         this.averageFuelConsumption = averageFuelConsumption;
     }
-    @JsonIgnore
+
     public VehicleStatus getVehicleStatus() {
         return vehicleStatus;
     }
@@ -184,7 +185,7 @@ public class Vehicle {
     public void setVehicleStatus(VehicleStatus vehicleStatus) {
         this.vehicleStatus = vehicleStatus;
     }
-    @JsonIgnore
+
     public User getUser() {
         return user;
     }
@@ -192,7 +193,7 @@ public class Vehicle {
     public void setUser(User user) {
         this.user = user;
     }
-    @JsonIgnore
+
     public Set<VehicleInspection> getVehicleInspections() {
         return vehicleInspections;
     }
@@ -200,15 +201,15 @@ public class Vehicle {
     public void setVehicleInspections(Set<VehicleInspection> vehicleInspections) {
         this.vehicleInspections = vehicleInspections;
     }
-    @JsonIgnore
-    public Set<Refueling> getRefuelings() {
+
+    public Set<VehicleRefueling> getRefuelings() {
         return refuelings;
     }
 
-    public void setRefuelings(Set<Refueling> refuelings) {
+    public void setRefuelings(Set<VehicleRefueling> refuelings) {
         this.refuelings = refuelings;
     }
-    @JsonIgnore
+
     public Set<VehicleInsurance> getVehicleInsurances() {
         return vehicleInsurances;
     }
@@ -216,7 +217,7 @@ public class Vehicle {
     public void setVehicleInsurances(Set<VehicleInsurance> vehicleInsurances) {
         this.vehicleInsurances = vehicleInsurances;
     }
-    @JsonIgnore
+
     public Set<VehicleRepair> getVehicleRepairs() {
         return vehicleRepairs;
     }
@@ -224,12 +225,20 @@ public class Vehicle {
     public void setVehicleRepairs(Set<VehicleRepair> vehicleRepairs) {
         this.vehicleRepairs = vehicleRepairs;
     }
-    @JsonIgnore
+
     public Set<VehicleUse> getVehicleUses() {
         return vehicleUses;
     }
 
     public void setVehicleUses(Set<VehicleUse> vehicleUses) {
         this.vehicleUses = vehicleUses;
+    }
+
+    public CurrentVehicleUser getCurrentVehicleUser() {
+        return currentVehicleUser;
+    }
+
+    public void setCurrentVehicleUser(CurrentVehicleUser currentVehicleUser) {
+        this.currentVehicleUser = currentVehicleUser;
     }
 }

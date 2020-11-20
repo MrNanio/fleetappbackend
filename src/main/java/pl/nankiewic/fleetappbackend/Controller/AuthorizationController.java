@@ -24,10 +24,6 @@ import pl.nankiewic.fleetappbackend.Service.CustomUserDetailsService;
 
 import java.time.LocalDateTime;
 
-/*
-przeniesienie logiki
-drobne poprawki
- */
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 public class AuthorizationController {

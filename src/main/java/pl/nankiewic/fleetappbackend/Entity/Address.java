@@ -1,10 +1,10 @@
 package pl.nankiewic.fleetappbackend.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 
 @Entity
+@Table(name = "addresses")
 public class Address {
 
     @Id

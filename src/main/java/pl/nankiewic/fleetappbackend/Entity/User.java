@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +40,7 @@ public class User {
     @JoinColumn(name = "RoleFk", nullable = false)
     private Role role;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Refueling> refuelings  = new HashSet<>();
+    private Set<VehicleRefueling> refuelings  = new HashSet<>();
     public User() {
     }
     public User(String email, String password) {
@@ -183,11 +184,11 @@ public class User {
         this.role = role;
     }
 
-    public Set<Refueling> getRefuelings() {
+    public Set<VehicleRefueling> getRefuelings() {
         return refuelings;
     }
 
-    public void setRefuelings(Set<Refueling> refuelings) {
+    public void setRefuelings(Set<VehicleRefueling> refuelings) {
         this.refuelings = refuelings;
     }
 }

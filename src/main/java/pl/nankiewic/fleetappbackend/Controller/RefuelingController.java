@@ -66,7 +66,7 @@ public class RefuelingController {
             refuelingService.deleteRefuelingById(id);
         } else throw new PermissionDeniedException();
     }
-    @GetMapping("/list")//new
+    @GetMapping("/list")
     public Iterable<RefuelingDTO> getRefuelingByUserIdAndVehicleId(@RequestParam(name = "u") Long userId,
                                                        @RequestParam(name = "v") Long vehicleId,
                                                        Authentication authentication) {
@@ -74,7 +74,5 @@ public class RefuelingController {
         if (checkService.accessToVehicle(userDetails.getUsername(),vehicleId)) {
             return refuelingService.getRefuelingByUserAndVehicle(userId, vehicleId);
         } else throw new PermissionDeniedException();
-
     }
-
 }

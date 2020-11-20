@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "insurance_types")
 public class InsuranceType {
 
     @Id

@@ -3,11 +3,11 @@ package pl.nankiewic.fleetappbackend.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.DTO.RefuelingDTO;
-import pl.nankiewic.fleetappbackend.Entity.Refueling;
 import pl.nankiewic.fleetappbackend.Entity.User;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
+import pl.nankiewic.fleetappbackend.Entity.VehicleRefueling;
 import pl.nankiewic.fleetappbackend.Mapper.RefuelingMapper;
-import pl.nankiewic.fleetappbackend.Repository.RefuelingRepository;
+import pl.nankiewic.fleetappbackend.Repository.VehicleRefuelingRepository;
 import pl.nankiewic.fleetappbackend.Repository.UserRepository;
 import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
 
@@ -19,14 +19,14 @@ import java.util.Optional;
 public class RefuelingService {
 
     VehicleRepository vehicleRepository;
-    RefuelingRepository refuelingRepository;
+    VehicleRefuelingRepository refuelingRepository;
     UserRepository userRepository;
     RefuelingMapper mapper;
     @Autowired
-    public RefuelingService(VehicleRepository vehicleRepository, RefuelingRepository refuelingRepository,
+    public RefuelingService(VehicleRepository vehicleRepository, VehicleRefuelingRepository vehicleRefuelingRepository,
                             UserRepository userRepository, RefuelingMapper mapper) {
         this.vehicleRepository = vehicleRepository;
-        this.refuelingRepository = refuelingRepository;
+        this.refuelingRepository = vehicleRefuelingRepository;
         this.userRepository = userRepository;
         this.mapper = mapper;
     }
@@ -35,7 +35,7 @@ public class RefuelingService {
         add refueling
          */
     public void save(RefuelingDTO refuelingDTO, String email) {
-        Refueling refueling = mapper.refuelingDTOToRefueling(refuelingDTO);
+        VehicleRefueling refueling = mapper.refuelingDTOToRefueling(refuelingDTO);
         Vehicle vehicle=vehicleRepository.findById(refuelingDTO.getVehicleId()).orElseThrow(  () -> new RuntimeException("Bład przetwarzania"));
         refueling.setVehicle(vehicle);
         refueling.setUser(userRepository.findUserByEmail(email));

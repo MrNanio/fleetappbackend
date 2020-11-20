@@ -69,7 +69,8 @@ public class UserController {
     }
 
     @GetMapping("/reset-password")
-    public ResetChangePasswordDTO getResetPasswordAuth(@RequestParam(name = "u") String userToken, @RequestParam(name = "c") String userCode) {
+    public ResetChangePasswordDTO getResetPasswordAuth(@RequestParam(name = "u") String userToken,
+                                                       @RequestParam(name = "c") String userCode) {
         return accountService.getResetPassword(userToken, userCode);
     }
 
@@ -96,13 +97,15 @@ public class UserController {
     }
 
     @PostMapping("/userdata")
-    public ResponseEntity<MessageResponse> addUserData(@RequestBody UserDataDTO userDataDTO, Authentication authentication) {
+    public ResponseEntity<MessageResponse> addUserData(@RequestBody UserDataDTO userDataDTO,
+                                                       Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         accountService.saveUserData(userDataDTO, userDetails.getUsername());
         return ResponseEntity.ok().body(new MessageResponse("ok", LocalDateTime.now()));
     }
     @PutMapping("/userdata")
-    public ResponseEntity<MessageResponse> updateUserData(@RequestBody UserDataDTO userDataDTO, Authentication authentication) {
+    public ResponseEntity<MessageResponse> updateUserData(@RequestBody UserDataDTO userDataDTO,
+                                                          Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         accountService.updateUserData(userDataDTO,userDetails.getUsername());
         return ResponseEntity.ok().body(new MessageResponse("ok",LocalDateTime.now()));
@@ -143,12 +146,10 @@ public class UserController {
     @PreAuthorize("hasRole('SUPERUSER')")
     @GetMapping("/get-user-by-id/{id}")
     EmailDTO getUserEmail(@PathVariable Long id, Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        //UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         EmailDTO emailDTO= new EmailDTO();
         emailDTO.setEmail(userRepository.findUserById(id).getEmail());
         return emailDTO;
     }
-
-
 }
 

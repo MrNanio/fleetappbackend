@@ -5,9 +5,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import pl.nankiewic.fleetappbackend.DTO.RefuelingDTO;
-import pl.nankiewic.fleetappbackend.Entity.Refueling;
 import pl.nankiewic.fleetappbackend.Entity.User;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
+import pl.nankiewic.fleetappbackend.Entity.VehicleRefueling;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring", uses = {VehicleMapper.class})
 public interface RefuelingMapper {
@@ -20,7 +20,7 @@ public interface RefuelingMapper {
             @Mapping(target = "vehicleId", source = "vehicle"),
             @Mapping(target = "userId", source = "user")
     })
-    RefuelingDTO refuelingToRefuelingDTO(final Refueling refueling);
+    RefuelingDTO refuelingToRefuelingDTO(final VehicleRefueling refueling);
     default Long vehicleToId(Vehicle vehicle) {
         if (vehicle == null) {
             return null;
@@ -42,6 +42,6 @@ public interface RefuelingMapper {
             @Mapping(target = "vehicle", ignore = true),
             @Mapping(target = "user", ignore = true),
     })
-    Refueling refuelingDTOToRefueling(final RefuelingDTO refuelingDTO);
-    Iterable<RefuelingDTO> refuelingToRefuelingDTO(Iterable<Refueling> refueling);
+    VehicleRefueling refuelingDTOToRefueling(final RefuelingDTO refuelingDTO);
+    Iterable<RefuelingDTO> refuelingToRefuelingDTO(Iterable<VehicleRefueling> refueling);
 }
