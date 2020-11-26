@@ -51,7 +51,7 @@ public class RefuelingPDFExporter {
         for (VehicleRefueling refueling : refuelingList) {
             table.addCell(refueling.getRefuelingDate().toString());
             table.addCell(refueling.getLitre());
-            table.addCell(refueling.getCost());
+            table.addCell(refueling.getCost().toString());
             table.addCell(refueling.getUser().getEmail());
             table.addCell(refueling.getDescription());
         }

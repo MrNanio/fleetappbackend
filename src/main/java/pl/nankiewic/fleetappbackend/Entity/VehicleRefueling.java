@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.sql.Date;
 
 @Entity
 @Table(name = "vehicle_refueling")
@@ -14,9 +16,10 @@ public class VehicleRefueling {
     private Long id;
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate refuelingDate;
+    private Date refuelingDate;
     private String litre;
-    private String cost;
+    @Column(precision=8, scale=2, nullable = false)
+    private BigDecimal cost;
     private String description;
     @ManyToOne
     @JoinColumn(name = "VehicleFk", nullable = false)
@@ -37,13 +40,14 @@ public class VehicleRefueling {
         this.id = id;
     }
     @JsonIgnore
-    public LocalDate getRefuelingDate() {
+    public Date getRefuelingDate() {
         return refuelingDate;
     }
 
-    public void setRefuelingDate(LocalDate refuelingDate) {
+    public void setRefuelingDate(Date refuelingDate) {
         this.refuelingDate = refuelingDate;
     }
+
     @JsonIgnore
     public String getLitre() {
         return litre;
@@ -53,11 +57,10 @@ public class VehicleRefueling {
         this.litre = litre;
     }
     @JsonIgnore
-    public String getCost() {
+    public BigDecimal getCost() {
         return cost;
     }
-
-    public void setCost(String cost) {
+    public void setCost(BigDecimal cost) {
         this.cost = cost;
     }
     @JsonIgnore

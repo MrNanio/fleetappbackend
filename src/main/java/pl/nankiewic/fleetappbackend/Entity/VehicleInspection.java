@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.sql.Date;
 
 @Entity
 @Table(name = "vehicle_inspections")
@@ -16,11 +17,11 @@ public class VehicleInspection {
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate inspectionDate;
+    private Date inspectionDate;
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate expirationDate;
+    private Date expirationDate;
 
     @Column(precision=5, scale=2, nullable = false)
     private BigDecimal cost;
@@ -40,19 +41,19 @@ public class VehicleInspection {
         this.id = id;
     }
 
-    public LocalDate getInspectionDate() {
+    public Date getInspectionDate() {
         return inspectionDate;
     }
 
-    public void setInspectionDate(LocalDate inspectionDate) {
+    public void setInspectionDate(Date inspectionDate) {
         this.inspectionDate = inspectionDate;
     }
 
-    public LocalDate getExpirationDate() {
+    public Date getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(LocalDate expirationDate) {
+    public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
     }
 

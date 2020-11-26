@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.sql.Date;
 
 @Entity
 @Table(name = "vehicle_insurances")
@@ -18,11 +19,11 @@ public class VehicleInsurance {
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate effectiveDate;
+    private Date effectiveDate;
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate expirationDate;
+    private Date expirationDate;
 
     @Column(precision=8, scale=2, nullable = false)
     private BigDecimal cost;
@@ -49,19 +50,19 @@ public class VehicleInsurance {
         this.id = id;
     }
 
-    public LocalDate getEffectiveDate() {
+    public Date getEffectiveDate() {
         return effectiveDate;
     }
 
-    public void setEffectiveDate(LocalDate effectiveDate) {
+    public void setEffectiveDate(Date effectiveDate) {
         this.effectiveDate = effectiveDate;
     }
 
-    public LocalDate getExpirationDate() {
+    public Date getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(LocalDate expirationDate) {
+    public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
     }
 

@@ -113,8 +113,16 @@ REPLACE INTO `vehicles` VALUES (27, '6', '9', 'NIEBIESKI', '7', '65421', 'A8', '
 REPLACE INTO `vehicles` VALUES (28, '5', '11', 'ZIELONY', '6', '5078', 'MONDEO', 'LU00028', '2FMDK38C28BB54940', '2005', '3', '2', 17, '1');
 REPLACE INTO `vehicles` VALUES (29, '4', '5', 'BIAŁY', '5', '1500', 'SUPERB', 'LU00029', '1GNDT13W82K112493', '2010', '4', '2', 50, '1');
 REPLACE INTO `vehicles` VALUES (30, '8', '9', 'BIAŁY', '6', '14225', 'A1', 'LU00030', 'KMHGN4JE7FU051641', '2015', '1', '2', 4, '1');
-
-
+REPLACE INTO `vehicle_inspections` VALUES (1,'450.67', 'nowy opis', '2021-11-08', '2020-11-08', '1');
+REPLACE INTO `vehicle_inspections` VALUES (2,'250.00', 'nowy opis1', '2021-11-08', '2020-11-08', '2');
+REPLACE INTO `vehicle_inspections` VALUES (3,'150.23', 'nowy opis2', '2021-11-08', '2020-11-08', '3');
+REPLACE INTO `vehicle_inspections` VALUES (4,'50.60', 'nowy opis3', '2021-11-08', '2020-11-08', '4');
+REPLACE INTO `vehicle_inspections` VALUES (5,'99.67', 'nowy opis4', '2021-11-08', '2020-11-08', '5');
+REPLACE INTO `vehicle_inspections` VALUES (6,'450.67', 'nowy opis', '2020-11-08', '2019-11-08', '1');
+REPLACE INTO `vehicle_inspections` VALUES (7,'250.00', 'nowy opis1', '2020-11-08', '2019-11-08', '2');
+REPLACE INTO `vehicle_inspections` VALUES (8,'150.23', 'nowy opis2', '2020-11-08', '2019-11-08', '3');
+REPLACE INTO `vehicle_inspections` VALUES (9,'50.60', 'nowy opis3', '2020-11-08', '2019-11-08', '4');
+REPLACE INTO `vehicle_inspections` VALUES (10,'99.67', 'nowy opis4', '2020-11-08', '2019-11-08', '5');
 
 
 

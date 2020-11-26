@@ -2,13 +2,15 @@ package pl.nankiewic.fleetappbackend.DTO;
 
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.sql.Date;
+
+
 
 public class RepairDTO {
     private Long id;
     private Long vehicleId;
     private String title;
-    private LocalDate repairDate;
+    private Date repairDate;
     private BigDecimal cost;
     private String description;
 
@@ -39,11 +41,11 @@ public class RepairDTO {
         this.title = title;
     }
 
-    public LocalDate getRepairDate() {
+    public Date getRepairDate() {
         return repairDate;
     }
 
-    public void setRepairDate(LocalDate repairDate) {
+    public void setRepairDate(Date repairDate) {
         this.repairDate = repairDate;
     }
 

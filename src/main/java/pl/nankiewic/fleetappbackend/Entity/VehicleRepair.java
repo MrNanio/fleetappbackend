@@ -5,7 +5,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDate;
+
 
 @Entity
 @Table(name = "vehicle_repairs")
@@ -17,7 +19,7 @@ public class VehicleRepair {
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate repairDate;
+    private Date repairDate;
 
     @Column(length = 555, nullable = false)
     private String description;
@@ -48,11 +50,11 @@ public class VehicleRepair {
         this.id = id;
     }
 
-    public LocalDate getRepairDate() {
+    public Date getRepairDate() {
         return repairDate;
     }
 
-    public void setRepairDate(LocalDate repairDate) {
+    public void setRepairDate(Date repairDate) {
         this.repairDate = repairDate;
     }
 

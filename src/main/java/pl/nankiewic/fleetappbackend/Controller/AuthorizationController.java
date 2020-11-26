@@ -43,7 +43,7 @@ public class AuthorizationController {
     }
 
     @PostMapping("/api/auth/signin")
-    public ResponseEntity<AuthenticationResponse> authenticateUser(@RequestBody AuthenticationRequest authenticationRequest) {
+    public AuthenticationResponse authenticateUser(@RequestBody AuthenticationRequest authenticationRequest) {
         if (!userRepository.existsByEmail(authenticationRequest.getEmail())) {
             throw new UsernameNotFoundException("Użytkownik nie istnieje:");
         }
@@ -52,18 +52,19 @@ public class AuthorizationController {
             throw new UserAccountEnabledException("Konto: "+ authenticationRequest.getEmail()+" jest nieaktywne");
         }
         Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
+                .authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(),
+                        authenticationRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return ResponseEntity.status(HttpStatus.OK).body(accountService.login(authentication));
+        return accountService.login(authentication);
     }
 
     @PostMapping("/api/auth/signup")
-    public ResponseEntity<MessageResponse> registerUser(@RequestBody AuthenticationRequest authenticationRequest) {
+    public MessageResponse registerUser(@RequestBody AuthenticationRequest authenticationRequest) {
         if (userRepository.existsByEmail(authenticationRequest.getEmail())) {
             throw new UsernameAlreadyTakenException("Użytkownik istnieje "+ authenticationRequest.getEmail());
         }
         customUserDetailsService.save(authenticationRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("ok", LocalDateTime.now()));
+        return new MessageResponse("ok", LocalDateTime.now());
     }
 
 }
