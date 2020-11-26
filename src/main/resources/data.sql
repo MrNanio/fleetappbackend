@@ -113,16 +113,62 @@ REPLACE INTO `vehicles` VALUES (27, '6', '9', 'NIEBIESKI', '7', '65421', 'A8', '
 REPLACE INTO `vehicles` VALUES (28, '5', '11', 'ZIELONY', '6', '5078', 'MONDEO', 'LU00028', '2FMDK38C28BB54940', '2005', '3', '2', 17, '1');
 REPLACE INTO `vehicles` VALUES (29, '4', '5', 'BIAŁY', '5', '1500', 'SUPERB', 'LU00029', '1GNDT13W82K112493', '2010', '4', '2', 50, '1');
 REPLACE INTO `vehicles` VALUES (30, '8', '9', 'BIAŁY', '6', '14225', 'A1', 'LU00030', 'KMHGN4JE7FU051641', '2015', '1', '2', 4, '1');
-REPLACE INTO `vehicle_inspections` VALUES (1,'450.67', 'nowy opis', '2021-11-08', '2020-11-08', '1');
-REPLACE INTO `vehicle_inspections` VALUES (2,'250.00', 'nowy opis1', '2021-11-08', '2020-11-08', '2');
-REPLACE INTO `vehicle_inspections` VALUES (3,'150.23', 'nowy opis2', '2021-11-08', '2020-11-08', '3');
-REPLACE INTO `vehicle_inspections` VALUES (4,'50.60', 'nowy opis3', '2021-11-08', '2020-11-08', '4');
-REPLACE INTO `vehicle_inspections` VALUES (5,'99.67', 'nowy opis4', '2021-11-08', '2020-11-08', '5');
-REPLACE INTO `vehicle_inspections` VALUES (6,'450.67', 'nowy opis', '2020-11-08', '2019-11-08', '1');
-REPLACE INTO `vehicle_inspections` VALUES (7,'250.00', 'nowy opis1', '2020-11-08', '2019-11-08', '2');
-REPLACE INTO `vehicle_inspections` VALUES (8,'150.23', 'nowy opis2', '2020-11-08', '2019-11-08', '3');
-REPLACE INTO `vehicle_inspections` VALUES (9,'50.60', 'nowy opis3', '2020-11-08', '2019-11-08', '4');
-REPLACE INTO `vehicle_inspections` VALUES (10,'99.67', 'nowy opis4', '2020-11-08', '2019-11-08', '5');
+-- VEHICLE INSPECTION
+REPLACE INTO `vehicle_inspections` VALUES (1,'450.67', 'brak uwag', '2021-11-08', '2020-11-08', '1');
+REPLACE INTO `vehicle_inspections` VALUES (2,'250.00', 'brak uwag', '2021-11-08', '2020-11-08', '2');
+REPLACE INTO `vehicle_inspections` VALUES (3,'150.23', 'brak uwag', '2021-11-08', '2020-11-08', '3');
+REPLACE INTO `vehicle_inspections` VALUES (4,'50.60', 'brak uwag', '2021-11-08', '2020-11-08', '4');
+REPLACE INTO `vehicle_inspections` VALUES (5,'99.67', 'brak uwag', '2021-11-08', '2020-11-08', '5');
+REPLACE INTO `vehicle_inspections` VALUES (6,'450.67', 'brak uwag', '2020-11-08', '2019-11-08', '1');
+REPLACE INTO `vehicle_inspections` VALUES (7,'250.00', 'brak uwag', '2020-11-08', '2019-11-08', '2');
+REPLACE INTO `vehicle_inspections` VALUES (8,'150.23', 'brak uwag', '2020-11-08', '2019-11-08', '3');
+REPLACE INTO `vehicle_inspections` VALUES (9,'50.60', 'brak uwag', '2020-11-08', '2019-11-08', '4');
+REPLACE INTO `vehicle_inspections` VALUES (10,'99.67', 'brak uwag', '2020-11-08', '2019-11-08', '5');
+-- VEHICLE REFUELING
+REPLACE INTO `vehicle_refueling` VALUES (1, '450', 'NOWY', '80', '2020-11-18', 2, 6);
+REPLACE INTO `vehicle_refueling` VALUES (2, '150', 'NOWY', '30', '2020-09-18', 2, 5);
+REPLACE INTO `vehicle_refueling` VALUES (3, '50.22', 'NOWY', '10', '2020-11-18', 2, 6);
+REPLACE INTO `vehicle_refueling` VALUES (4, '40.88', 'NOWY', '5', '2019-11-18', 2, 5);
+REPLACE INTO `vehicle_refueling` VALUES (5, '45.98', 'NOWY', '6', '2020-10-18', 2, 3);
+REPLACE INTO `vehicle_refueling` VALUES (6, '89.90', 'NOWY', '20', '2019-11-18', 2, 8);
+REPLACE INTO `vehicle_refueling` VALUES (7, '120.99', 'NOWY', '25', '2020-11-18', 2, 8);
+REPLACE INTO `vehicle_refueling` VALUES (8, '130.67', 'NOWY', '30', '2020-11-18', 2, 8);
+REPLACE INTO `vehicle_refueling` VALUES (9, '450.99', 'NOWY', '60', '2019-11-18', 2, 5);
+REPLACE INTO `vehicle_refueling` VALUES (10, '45.00', 'NOWY', '10', '2020-09-18', 2, 9);
+-- VEHICLE USE
+REPLACE INTO `vehicle_use` VALUES (1, 'Lublin-Warszawa', '156', '2020-11-05', 2, 2, 1);
+REPLACE INTO `vehicle_use` VALUES (2, 'Lublin-Łuków', '56', '2020-11-05', 2, 2, 2);
+REPLACE INTO `vehicle_use` VALUES (3, 'Lublin-Rzeszów', '256', '2020-11-04', 2, 2, 2);
+REPLACE INTO `vehicle_use` VALUES (4, 'Lublin-Rzeszów', '220', '2020-11-12', 2, 2, 2);
+REPLACE INTO `vehicle_use` VALUES (5, 'Lublin-Kraków-Lublin', '870', '2020-11-15', 2, 2, 7);
+REPLACE INTO `vehicle_use` VALUES (6, 'Lublin-Wrocław-Karpacz-Łódz-Lublin', '1506', '2020-11-11', 2, 2, 6);
+REPLACE INTO `vehicle_use` VALUES (7, 'Lublin-Warszawa', '159', '2020-11-10', 2, 2, 6);
+REPLACE INTO `vehicle_use` VALUES (8, 'Warszawa-Lublin', '160', '2020-11-18', 2, 2, 4);
+REPLACE INTO `vehicle_use` VALUES (9, 'Lublin-Kraków-Lublin', '780', '2020-11-12', 2, 2, 4);
+REPLACE INTO `vehicle_use` VALUES (10, 'Lublin-Gdańsk', '430', '2020-11-05', 2, 2, 12);
+-- VEHICLE INSURANCE
+REPLACE  INTO `vehicle_insurances` VALUES (1, '1500','ubezpieczenie ac+oc WARTA ', '2019-11-05', '2020-11-05', '6710902457960012126533076', 2, 2);
+REPLACE  INTO `vehicle_insurances` VALUES (2, '2500','ubezpieczenie ac+oc PZU', '2020-11-05', '2021-11-05', '9881400009096721648841155', 2, 2);
+REPLACE  INTO `vehicle_insurances` VALUES (3, '500','ubezpieczenie ac+oc AXA', '2020-11-05', '2021-11-05', '5810205659974710846196921', 2, 3);
+REPLACE  INTO `vehicle_insurances` VALUES (4, '1220','ubezpieczenie ac+oc WARTA', '2020-11-05', '2021-11-05', '0782100001070318944317636', 2, 4);
+REPLACE  INTO `vehicle_insurances` VALUES (5, '980','ubezpieczenie ac+oc PZU', '2019-11-05', '2020-11-05', '6115001878091093477211182', 2, 5);
+REPLACE  INTO `vehicle_insurances` VALUES (6, '3400','ubezpieczenie oc AXA', '2019-11-05', '2021-11-05', '5488110006797668242955097', 2, 12);
+REPLACE  INTO `vehicle_insurances` VALUES (7, '1500','ubezpieczenie ac+oc HESTIA', '2020-11-05', '2021-11-05', '6912404214376027415238526', 2, 22);
+REPLACE  INTO `vehicle_insurances` VALUES (8, '1348','ubezpieczenie ac+oc PZU', '2020-11-05', '2021-11-05', '3112402988516329744734649', 2, 21);
+REPLACE  INTO `vehicle_insurances` VALUES (9, '1100','ubezpieczenie oc WARTA', '2020-11-05', '2021-11-05', '6981701018308927672279411', 2, 4);
+REPLACE  INTO `vehicle_insurances` VALUES (10, '1234','ubezpieczenie oc XD', '2020-11-05', '2021-11-05', '8110203958893241318910172', 2, 14);
+-- VEHICLE REPAIR
+REPLACE INTO `vehicle_repairs` VALUES (1, '1200.00', 'naprawa katalizatora', '2020-11-02', 'katalizator', 2);
+REPLACE INTO `vehicle_repairs` VALUES (2, '200.00', 'naprawa oświetlenia', '2020-11-02', 'oświetlenie', 3);
+REPLACE INTO `vehicle_repairs` VALUES (3, '1100.90', 'wymiana rozrządu', '2020-11-02', 'rozrząd', 4);
+REPLACE INTO `vehicle_repairs` VALUES (4, '1450.00', 'wymiana rozrządu', '2020-11-02', 'rozrząd', 5);
+REPLACE INTO `vehicle_repairs` VALUES (5, '999.99', 'wymiana chłodnicy', '2020-11-02', 'chłodnica', 6);
+REPLACE INTO `vehicle_repairs` VALUES (6, '890.90', 'naprawa alternatora', '2020-11-02', 'alternator', 7);
+REPLACE INTO `vehicle_repairs` VALUES (7, '120.99', 'naprawa fotela', '2020-11-02', 'fotel', 6);
+REPLACE INTO `vehicle_repairs` VALUES (8, '4500.99', 'naprawa skrzyni biegów', '2020-11-02', 'biegi', 3);
+REPLACE INTO `vehicle_repairs` VALUES (9, '1890.00', 'wymiana wahaczy', '2020-11-02', 'zawieszenie', 9);
+REPLACE INTO `vehicle_repairs` VALUES (10, '1211.90', 'wymiana akumulatora, żarówek, koła', '2020-11-02', 'różne', 12);
+
 
 
 

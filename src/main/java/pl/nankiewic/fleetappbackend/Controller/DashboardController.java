@@ -14,7 +14,6 @@ import java.sql.Date;
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/dashboard")
 public class DashboardController {
-
         DashboardService dashboardService;
         @Autowired
         public DashboardController(DashboardService dashboardService) {
@@ -22,28 +21,23 @@ public class DashboardController {
         }
 
         /*
-                koszty z podzaialem na wszystkie elementy
-
-                odpowiedz:
-
-                 */
+        koszty z podzaialem na wszystkie elementy
+         */
         @GetMapping("/cost_by_category")
         public Iterable<ChartDataRespondDTO> costByCategories(@RequestParam (name = "b") String beginS,
                                                               @RequestParam (name = "e") String endS,
                                                               Authentication authentication){
                 Date begin=Date.valueOf(beginS);
                 Date end=Date.valueOf(endS);
-                //LocalDate begin= LocalDate.parse(beginS);
-               // LocalDate end= LocalDate.parse(endS);
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 return dashboardService.sumCategory(userDetails.getUsername(), begin, end);
         }
         /*
         koszty całościowe co miesiać między datami
          */
-        public void allCostByMonth(){
+       /* public void allCostByMonth(){
 
-        }
+        }*/
 
         /*
         koszt paliwa ze względu na pojazd
@@ -54,8 +48,6 @@ public class DashboardController {
                                       Authentication authentication){
                 Date begin=Date.valueOf(beginS);
                 Date end=Date.valueOf(endS);
-                //LocalDate begin= LocalDate.parse(beginS);
-                // LocalDate end= LocalDate.parse(endS);
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 return dashboardService.sumRefuelingByVehicle(userDetails.getUsername(), begin, end);
 
@@ -69,8 +61,6 @@ public class DashboardController {
                                                               Authentication authentication){
                 Date begin=Date.valueOf(beginS);
                 Date end=Date.valueOf(endS);
-                //LocalDate begin= LocalDate.parse(beginS);
-                // LocalDate end= LocalDate.parse(endS);
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 return dashboardService.sumUseByVehicle(userDetails.getUsername(), begin, end);
         }

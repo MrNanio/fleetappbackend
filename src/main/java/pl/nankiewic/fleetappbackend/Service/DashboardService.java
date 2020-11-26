@@ -6,8 +6,6 @@ import pl.nankiewic.fleetappbackend.DTO.ChartDataRespondDTO;
 import pl.nankiewic.fleetappbackend.DTO.DataDTO;
 import pl.nankiewic.fleetappbackend.DTO.DataUseDTO;
 import pl.nankiewic.fleetappbackend.Entity.User;
-import pl.nankiewic.fleetappbackend.Entity.Vehicle;
-import pl.nankiewic.fleetappbackend.Entity.VehicleRefueling;
 import pl.nankiewic.fleetappbackend.Repository.*;
 
 import java.sql.Date;
