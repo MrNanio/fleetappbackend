@@ -35,7 +35,8 @@ public class UseService {
                 () -> new RuntimeException("Bład przetwarzania"));
         vehicleUse.setVehicle(vehicle);
         vehicleUse.setUser(userRepository.findUserByEmail(email));
-        int mil=Integer.parseInt(vehicle.getMileage())+Integer.parseInt(use.getTrip());
+
+        int mil=Integer.parseInt(vehicle.getMileage())+use.getTrip();
         vehicle.setMileage(Integer.toString(mil));
         vehicleUseRepository.save(vehicleUse);
         vehicleRepository.save(vehicle);
@@ -69,7 +70,7 @@ public class UseService {
     public void deleteUseById(Long id){
         VehicleUse use=vehicleUseRepository.findById(id).orElseThrow( () -> new RuntimeException("Bład przetwarzania"));
         Vehicle vehicle=use.getVehicle();
-        int mil=Integer.parseInt(vehicle.getMileage())-Integer.parseInt(use.getTrip());
+        int mil=Integer.parseInt(vehicle.getMileage())-use.getTrip();
         vehicle.setMileage(Integer.toString(mil));
         vehicleRepository.save(vehicle);
         vehicleUseRepository.deleteById(id);

@@ -1,13 +1,14 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
+import java.sql.Date;
 import java.time.LocalDate;
 
 public class UseDTO {
     private Long id;
     private Long vehicleId;
     private Long userId;
-    private String trip;
-    private LocalDate tripDate;
+    private Short trip;
+    private Date tripDate;
     private String tripType;
     private String description;
 
@@ -38,19 +39,19 @@ public class UseDTO {
         this.userId = userId;
     }
 
-    public String getTrip() {
+    public Short getTrip() {
         return trip;
     }
 
-    public void setTrip(String trip) {
+    public void setTrip(Short trip) {
         this.trip = trip;
     }
 
-    public LocalDate getTripDate() {
+    public Date getTripDate() {
         return tripDate;
     }
 
-    public void setTripDate(LocalDate tripDate) {
+    public void setTripDate(Date tripDate) {
         this.tripDate = tripDate;
     }
 

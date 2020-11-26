@@ -48,7 +48,7 @@ public class UsePDFExporter {
         for (VehicleUse vehicleUse : vehicleUseList) {
             table.addCell(vehicleUse.getTripDate().toString());
             table.addCell(vehicleUse.getDescription());
-            table.addCell(vehicleUse.getTrip());
+            table.addCell(vehicleUse.getTrip().toString());
             table.addCell(vehicleUse.getUser().getEmail());
         }
     }

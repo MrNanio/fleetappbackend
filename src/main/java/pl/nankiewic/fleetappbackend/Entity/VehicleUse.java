@@ -3,6 +3,7 @@ package pl.nankiewic.fleetappbackend.Entity;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.sql.Date;
 import java.time.LocalDate;
 
 @Entity
@@ -14,11 +15,11 @@ public class VehicleUse {
     private Long id;
 
     @Column(length = 6, nullable = false)
-    private String trip;
+    private Short trip;
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate tripDate;
+    private Date tripDate;
 
     @Column(length = 255)
     private String description;
@@ -42,19 +43,19 @@ public class VehicleUse {
         this.id = id;
     }
 
-    public String getTrip() {
+    public Short getTrip() {
         return trip;
     }
 
-    public void setTrip(String trip) {
+    public void setTrip(Short trip) {
         this.trip = trip;
     }
 
-    public LocalDate getTripDate() {
+    public Date getTripDate() {
         return tripDate;
     }
 
-    public void setTripDate(LocalDate tripDate) {
+    public void setTripDate(Date tripDate) {
         this.tripDate = tripDate;
     }
 
