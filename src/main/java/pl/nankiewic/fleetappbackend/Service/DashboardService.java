@@ -2,10 +2,9 @@ package pl.nankiewic.fleetappbackend.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.nankiewic.fleetappbackend.DTO.ChartDataRespondDTO;
-import pl.nankiewic.fleetappbackend.DTO.DataDTO;
-import pl.nankiewic.fleetappbackend.DTO.DataUseDTO;
+import pl.nankiewic.fleetappbackend.DTO.*;
 import pl.nankiewic.fleetappbackend.Entity.User;
+import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Repository.*;
 
 import java.sql.Date;
@@ -19,45 +18,171 @@ public class DashboardService {
     VehicleRefuelingRepository vehicleRefuelingRepository;
     VehicleRepairRepository vehicleRepairRepository;
     VehicleUseRepository vehicleUseRepository;
+    VehicleRepository vehicleRepository;
     UserRepository userRepository;
     @Autowired
     public DashboardService(VehicleInspectionRepository vehicleInspectionRepository,
                             VehicleInsuranceRepository vehicleInsuranceRepository,
                             VehicleRefuelingRepository vehicleRefuelingRepository,
                             VehicleRepairRepository vehicleRepairRepository,
-                            VehicleUseRepository vehicleUseRepository, UserRepository userRepository) {
+                            VehicleUseRepository vehicleUseRepository,
+                            VehicleRepository vehicleRepository,
+                            UserRepository userRepository) {
         this.vehicleInspectionRepository = vehicleInspectionRepository;
         this.vehicleInsuranceRepository = vehicleInsuranceRepository;
         this.vehicleRefuelingRepository = vehicleRefuelingRepository;
         this.vehicleRepairRepository = vehicleRepairRepository;
         this.vehicleUseRepository = vehicleUseRepository;
+        this.vehicleRepository = vehicleRepository;
         this.userRepository = userRepository;
     }
 
-    public Float costByCategoriesRepair(User user, Date begin, Date end){
+    /*
+           by vehicle
+        */
+    public Float vehicleCostByCategoriesRepair(Vehicle vehicle, Date begin, Date end){
+        if(vehicleRepairRepository.vehicleSumCostOfRepair(vehicle, begin, end)==null)
+        {
+            return Float.valueOf("0");
+        } else return vehicleRepairRepository.vehicleSumCostOfRepair(vehicle, begin, end);
+    }
+    public Float vehicleCostByCategoriesInsurance(Vehicle vehicle, Date begin, Date end){
+        if(vehicleInsuranceRepository.vehicleSumCostOfInsurance(vehicle, begin, end)==null)
+        {
+            return Float.valueOf("0");
+        } else  return vehicleInsuranceRepository.vehicleSumCostOfInsurance(vehicle, begin, end);
+
+    }
+    public Float vehicleCostByCategoriesInspection(Vehicle vehicle, Date begin, Date end){
+        if(vehicleInspectionRepository.vehicleSumCostOfInspection(vehicle, begin, end)==null)
+        {
+            return Float.valueOf("0");
+        } else  return vehicleInspectionRepository.vehicleSumCostOfInspection(vehicle, begin, end);
+    }
+    public Float vehicleCostByCategoriesRefueling(Vehicle vehicle, Date begin, Date end){
+        if(vehicleRefuelingRepository.vehicleSumCostOfRefueling(vehicle, begin, end)==null)
+        {
+            return Float.valueOf("0");
+        } else  return vehicleRefuelingRepository.vehicleSumCostOfRefueling(vehicle, begin, end);
+    }
+    public Iterable<ChartDataRespondDTO> vehicleCostByCategory(String username, String vehicleId, Date begin, Date end){
+        User user =userRepository.findUserByEmail(username);
+        Vehicle vehicle=vehicleRepository.findById(Long.parseLong(vehicleId)).orElseThrow(
+                () -> new RuntimeException("Bład przetwarzania"));
+        List<ChartDataRespondDTO> summary = new ArrayList<>();
+        ChartDataRespondDTO chartDataRepair=new ChartDataRespondDTO(
+                vehicleCostByCategoriesRepair(vehicle, begin, end), "Naprawy");
+        summary.add(chartDataRepair);
+        ChartDataRespondDTO chartDataInsurance=new ChartDataRespondDTO(
+                vehicleCostByCategoriesInsurance(vehicle, begin, end), "Ubezpieczenia");
+        summary.add(chartDataInsurance);
+        ChartDataRespondDTO chartDataInspection=new ChartDataRespondDTO(
+                vehicleCostByCategoriesInspection(vehicle, begin, end), "Przeglądy");
+        summary.add(chartDataInspection);
+        ChartDataRespondDTO chartDataRefueling=new ChartDataRespondDTO(
+                vehicleCostByCategoriesRefueling(vehicle, begin, end), "Paliwo");
+        summary.add(chartDataRefueling);
+        return summary;
+    }
+    public Iterable<ChartDataRespondDTO> distanceByVehicleAndDataAndUseType(String username, Date begin, Date end, String vehicleId) {
+        Vehicle vehicle=vehicleRepository.findById(Long.parseLong(vehicleId)).orElseThrow(
+                () -> new RuntimeException("Bład przetwarzania"));
+        List<ChartDataRespondDTO> summary = new ArrayList<>();
+        Iterable<DataUseTypeDTO> list = vehicleUseRepository.tripByVehicleAndDataAndTripType(vehicle, begin, end);
+
+        for (DataUseTypeDTO dataDTO : list) {
+            switch (dataDTO.getType()) {
+                case "city":
+                    dataDTO.setType("MIEJSKI");
+                    break;
+                case "average":
+                    dataDTO.setType("MIESZANY");
+                    break;
+                case "country":
+                    dataDTO.setType("POZAMIEJSKI");
+                    break;
+            }
+            ChartDataRespondDTO chartData=new ChartDataRespondDTO(
+                    dataDTO.getCost().floatValue(),
+                    dataDTO.getType());
+            summary.add(chartData);
+        }
+        return summary;
+    }
+    public Iterable<ChartDataRespondDTO> fuelCostByVehicleAndData(String username, Date begin, Date end, String vehicleId) {
+        //User user =userRepository.findUserByEmail(username);
+        Vehicle vehicle=vehicleRepository.findById(Long.parseLong(vehicleId)).orElseThrow(
+                () -> new RuntimeException("Bład przetwarzania"));
+        List<ChartDataRespondDTO> summary = new ArrayList<>();
+        Iterable<DataRefuelingDTO> list = vehicleRefuelingRepository.refuelingByVehicle(vehicle, begin, end);
+        for (DataRefuelingDTO dataDTO : list) {
+            ChartDataRespondDTO chartData=new ChartDataRespondDTO(
+                    dataDTO.getValue().floatValue(),
+                    dataDTO.getDate().toString());
+            summary.add(chartData);
+        }
+        return summary;
+
+    }
+    public Iterable<ChartDataRespondDTO> distanceByVehicleAndData(String username, Date begin, Date end, String vehicleId) {
+        Vehicle vehicle=vehicleRepository.findById(Long.parseLong(vehicleId)).orElseThrow(
+                () -> new RuntimeException("Bład przetwarzania"));
+        List<ChartDataRespondDTO> summary = new ArrayList<>();
+        Iterable<DataTripDTO> list = vehicleUseRepository.tripByVehicleAndData(vehicle, begin, end);
+
+        for (DataTripDTO dataDTO : list) {
+            ChartDataRespondDTO chartData=new ChartDataRespondDTO(
+                    dataDTO.getValue().floatValue(),
+                    dataDTO.getDate().toString());
+            summary.add(chartData);
+        }
+        return summary;
+    }
+    /*
+    by fleet
+     */
+    public Float fleetCostByCategoriesRepair(User user, Date begin, Date end){
         if(vehicleRepairRepository.sumOfRepair(user, begin, end)==null)
         {
             return Float.valueOf("0");
         } else return vehicleRepairRepository.sumOfRepair(user, begin, end);
     }
-    public Float costByCategoriesInsurance(User user, Date begin, Date end){
+    public Float fleetCostByCategoriesInsurance(User user, Date begin, Date end){
         if(vehicleInsuranceRepository.sumOfInsurance(user, begin, end)==null)
         {
             return Float.valueOf("0");
         } else  return vehicleInsuranceRepository.sumOfInsurance(user, begin, end);
 
     }
-    public Float costByCategoriesInspection(User user, Date begin, Date end){
+    public Float fleetCostByCategoriesInspection(User user, Date begin, Date end){
         if(vehicleInspectionRepository.sumOfInspection(user, begin, end)==null)
         {
             return Float.valueOf("0");
         } else  return vehicleInspectionRepository.sumOfInspection(user, begin, end);
     }
-    public Float costByCategoriesRefueling(User user, Date begin, Date end){
+    public Float fleetCostByCategoriesRefueling(User user, Date begin, Date end){
         if(vehicleRefuelingRepository.sumOfRefueling(user, begin, end)==null)
         {
             return Float.valueOf("0");
         } else  return vehicleRefuelingRepository.sumOfRefueling(user, begin, end);
+    }
+
+    public Iterable<ChartDataRespondDTO> fleetCostByCategory(String username, Date begin, Date end){
+        User user =userRepository.findUserByEmail(username);
+        List<ChartDataRespondDTO> summary = new ArrayList<>();
+        ChartDataRespondDTO chartDataRepair=new ChartDataRespondDTO(
+                fleetCostByCategoriesRepair(user, begin, end), "Naprawy");
+        summary.add(chartDataRepair);
+        ChartDataRespondDTO chartDataInsurance=new ChartDataRespondDTO(
+                fleetCostByCategoriesInsurance(user, begin, end), "Ubezpieczenia");
+        summary.add(chartDataInsurance);
+        ChartDataRespondDTO chartDataInspection=new ChartDataRespondDTO(
+                fleetCostByCategoriesInspection(user, begin, end), "Przeglądy");
+        summary.add(chartDataInspection);
+        ChartDataRespondDTO chartDataRefueling=new ChartDataRespondDTO(
+                fleetCostByCategoriesRefueling(user, begin, end), "Paliwo");
+        summary.add(chartDataRefueling);
+        return summary;
     }
     public Iterable<ChartDataRespondDTO> sumRefuelingByVehicle(String username, Date begin, Date end)
     {
@@ -72,23 +197,6 @@ public class DashboardService {
         }
         return summary;
     }
-    public Iterable<ChartDataRespondDTO> sumCategory(String username, Date begin, Date end){
-        User user =userRepository.findUserByEmail(username);
-        List<ChartDataRespondDTO> summary = new ArrayList<>();
-        ChartDataRespondDTO chartDataRepair=new ChartDataRespondDTO(
-                costByCategoriesRepair(user, begin, end), "Naprawy");
-        summary.add(chartDataRepair);
-        ChartDataRespondDTO chartDataInsurance=new ChartDataRespondDTO(
-                costByCategoriesInsurance(user, begin, end), "Ubezpieczenia");
-        summary.add(chartDataInsurance);
-        ChartDataRespondDTO chartDataInspection=new ChartDataRespondDTO(
-                costByCategoriesInspection(user, begin, end), "Przeglądy");
-        summary.add(chartDataInspection);
-        ChartDataRespondDTO chartDataRefueling=new ChartDataRespondDTO(
-                costByCategoriesRefueling(user, begin, end), "Paliwo");
-        summary.add(chartDataRefueling);
-        return summary;
-    }
     public Iterable <ChartDataRespondDTO> sumUseByVehicle(String username, Date begin, Date end){
         User user =userRepository.findUserByEmail(username);
         List<ChartDataRespondDTO> summary = new ArrayList<>();
@@ -100,6 +208,5 @@ public class DashboardService {
             summary.add(chartData);
         }
         return summary;
-
     }
 }

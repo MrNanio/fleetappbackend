@@ -17,5 +17,6 @@ public interface VehicleRepairRepository extends JpaRepository<VehicleRepair, Lo
     Iterable <VehicleRepair> findAllByVehicleAndRepairDateBetween(Vehicle vehicle, LocalDate begin, LocalDate end);
     @Query("SELECT SUM(r.cost) FROM VehicleRepair r WHERE r.vehicle.user=?1 and (r.repairDate between ?2 and ?3)")
     Float sumOfRepair(User user, Date begin, Date end);
-
+    @Query("SELECT SUM(r.cost) FROM VehicleRepair r WHERE r.vehicle=?1 and (r.repairDate between ?2 and ?3)")
+    Float vehicleSumCostOfRepair(Vehicle vehicle, Date begin, Date end);
 }

@@ -17,4 +17,6 @@ public interface VehicleInspectionRepository extends JpaRepository<VehicleInspec
     Iterable <VehicleInspection> findAllByVehicleAndInspectionDateBetween(Vehicle vehicle, LocalDate begin, LocalDate end);
     @Query("SELECT SUM(i.cost) FROM VehicleInspection i WHERE i.vehicle.user=?1 and (i.inspectionDate between ?2 and ?3)")
     Float sumOfInspection(User user, Date begin, Date end);
+    @Query("SELECT SUM(i.cost) FROM VehicleInspection i WHERE i.vehicle=?1 and (i.inspectionDate between ?2 and ?3)")
+    Float vehicleSumCostOfInspection(Vehicle vehicle, Date begin, Date end);
 }

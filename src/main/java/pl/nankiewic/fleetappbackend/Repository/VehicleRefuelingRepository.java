@@ -5,14 +5,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import pl.nankiewic.fleetappbackend.DTO.DataDTO;
+import pl.nankiewic.fleetappbackend.DTO.DataRefuelingDTO;
+
 import pl.nankiewic.fleetappbackend.Entity.User;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleRefueling;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
+
 
 @CrossOrigin(origins = "http://localhost:4200")
 public interface VehicleRefuelingRepository extends JpaRepository<VehicleRefueling, Long> {
@@ -25,7 +26,8 @@ public interface VehicleRefuelingRepository extends JpaRepository<VehicleRefueli
     Float sumOfRefueling(User user, Date begin, Date end);
     @Query("SELECT  new pl.nankiewic.fleetappbackend.DTO.DataDTO(r.vehicle, SUM(r.cost)) FROM VehicleRefueling r WHERE r.vehicle.user=?1 and (r.refuelingDate between ?2 and ?3) group by r.vehicle")
     Iterable<DataDTO> sumOfRefuelingByVehicle(User user, Date begin, Date end);
-
-
-
+    @Query("SELECT  new pl.nankiewic.fleetappbackend.DTO.DataRefuelingDTO(r.cost, r.refuelingDate) FROM VehicleRefueling r WHERE r.vehicle=?1 and (r.refuelingDate between ?2 and ?3)")
+    Iterable<DataRefuelingDTO> refuelingByVehicle(Vehicle vehicle, Date begin, Date end);
+    @Query("SELECT SUM(r.cost) FROM VehicleRefueling r WHERE r.vehicle=?1 and (r.refuelingDate between ?2 and ?3)")
+    Float vehicleSumCostOfRefueling(Vehicle vehicle, Date begin, Date end);
 }

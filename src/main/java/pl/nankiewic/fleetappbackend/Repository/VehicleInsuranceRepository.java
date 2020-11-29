@@ -18,4 +18,6 @@ public interface VehicleInsuranceRepository extends JpaRepository<VehicleInsuran
     Iterable <VehicleInsurance> findAllByVehicleAndEffectiveDateBetween(Vehicle vehicle, LocalDate begin, LocalDate end);
     @Query("SELECT SUM(i.cost) FROM VehicleInsurance i WHERE (i.vehicle.user=?1 )and (i.effectiveDate between ?2 and ?3)")
     Float sumOfInsurance(User user, Date begin, Date end);
+    @Query("SELECT SUM(i.cost) FROM VehicleInsurance i WHERE (i.vehicle=?1 )and (i.effectiveDate between ?2 and ?3)")
+    Float vehicleSumCostOfInsurance(Vehicle vehicle, Date begin, Date end);
 }

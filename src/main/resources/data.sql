@@ -136,16 +136,18 @@ REPLACE INTO `vehicle_refueling` VALUES (8, '130.67', 'NOWY', '30', '2020-11-18'
 REPLACE INTO `vehicle_refueling` VALUES (9, '450.99', 'NOWY', '60', '2019-11-18', 2, 5);
 REPLACE INTO `vehicle_refueling` VALUES (10, '45.00', 'NOWY', '10', '2020-09-18', 2, 9);
 -- VEHICLE USE
-REPLACE INTO `vehicle_use` VALUES (1, 'Lublin-Warszawa', '156', '2020-11-05', 2, 2, 1);
-REPLACE INTO `vehicle_use` VALUES (2, 'Lublin-Łuków', '56', '2020-11-05', 2, 2, 2);
-REPLACE INTO `vehicle_use` VALUES (3, 'Lublin-Rzeszów', '256', '2020-11-04', 2, 2, 2);
-REPLACE INTO `vehicle_use` VALUES (4, 'Lublin-Rzeszów', '220', '2020-11-12', 2, 2, 2);
-REPLACE INTO `vehicle_use` VALUES (5, 'Lublin-Kraków-Lublin', '870', '2020-11-15', 2, 2, 7);
-REPLACE INTO `vehicle_use` VALUES (6, 'Lublin-Wrocław-Karpacz-Łódz-Lublin', '1506', '2020-11-11', 2, 2, 6);
-REPLACE INTO `vehicle_use` VALUES (7, 'Lublin-Warszawa', '159', '2020-11-10', 2, 2, 6);
-REPLACE INTO `vehicle_use` VALUES (8, 'Warszawa-Lublin', '160', '2020-11-18', 2, 2, 4);
-REPLACE INTO `vehicle_use` VALUES (9, 'Lublin-Kraków-Lublin', '780', '2020-11-12', 2, 2, 4);
-REPLACE INTO `vehicle_use` VALUES (10, 'Lublin-Gdańsk', '430', '2020-11-05', 2, 2, 12);
+REPLACE INTO `vehicle_use` VALUES (1, 'Lublin-Warszawa', '156', '2020-11-05', 'average', 2, 1);
+REPLACE INTO `vehicle_use` VALUES (2, 'Lublin-Łuków', '56', '2020-11-05', 'country', 2, 2);
+REPLACE INTO `vehicle_use` VALUES (3, 'Lublin-Rzeszów', '256', '2020-11-04', 'average', 2, 2);
+REPLACE INTO `vehicle_use` VALUES (4, 'Lublin-Rzeszów', '220', '2020-11-12', 'city', 2, 2);
+REPLACE INTO `vehicle_use` VALUES (5, 'Lublin-Kraków-Lublin', '870', '2020-11-15', 'average', 2, 7);
+REPLACE INTO `vehicle_use` VALUES (6, 'Lublin-Wrocław-Karpacz-Łódz-Lublin', '1506', '2020-11-11', 'average', 2, 6);
+REPLACE INTO `vehicle_use` VALUES (7, 'Lublin-Warszawa', '159', '2020-11-10', 'average', 2, 6);
+REPLACE INTO `vehicle_use` VALUES (8, 'Warszawa-Lublin', '160', '2020-11-18', 'average', 2, 4);
+REPLACE INTO `vehicle_use` VALUES (9, 'Lublin-Kraków-Lublin', '780', '2020-11-12', 'average', 2, 4);
+REPLACE INTO `vehicle_use` VALUES (10, 'Lublin-Gdańsk', '430', '2020-11-05', 'average', 2, 12);
+REPLACE INTO `vehicle_use` VALUES (11, 'Lublin-Rzeszów', '100', '2020-11-14', 'average', 2, 2);
+REPLACE INTO `vehicle_use` VALUES (12, 'Lublin-Rzeszów', '50', '2020-11-13', 'city', 2, 2);
 -- VEHICLE INSURANCE
 REPLACE  INTO `vehicle_insurances` VALUES (1, '1500','ubezpieczenie ac+oc WARTA ', '2019-11-05', '2020-11-05', '6710902457960012126533076', 2, 2);
 REPLACE  INTO `vehicle_insurances` VALUES (2, '2500','ubezpieczenie ac+oc PZU', '2020-11-05', '2021-11-05', '9881400009096721648841155', 2, 2);
