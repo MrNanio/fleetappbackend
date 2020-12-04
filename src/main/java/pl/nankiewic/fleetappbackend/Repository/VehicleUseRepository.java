@@ -25,4 +25,9 @@ public interface VehicleUseRepository extends JpaRepository<VehicleUse, Long> {
     Iterable<DataTripDTO> tripByVehicleAndData(Vehicle vehicle, Date begin, Date end);
     @Query("SELECT  new pl.nankiewic.fleetappbackend.DTO.DataUseTypeDTO(u.tripType, SUM(u.trip)) FROM VehicleUse u WHERE u.vehicle=?1 and (u.tripDate between ?2 and ?3) group by u.tripType")
     Iterable<DataUseTypeDTO> tripByVehicleAndDataAndTripType(Vehicle vehicle, Date begin, Date end);
+    @Query("SELECT  new pl.nankiewic.fleetappbackend.DTO.DataTripUserDTO(u.vehicle, SUM(u.trip)) FROM VehicleUse u WHERE u.user=?1 and (u.tripDate between ?2 and ?3) group by u.vehicle")
+    Iterable<DataTripUserDTO> tripByVehicleAndDataAndUser(User user, Date begin, Date end);
+    @Query("SELECT  new pl.nankiewic.fleetappbackend.DTO.DataTripUserDTO(u.vehicle, COUNT(u.id)) FROM VehicleUse u WHERE u.vehicle.user=?1 and (u.tripDate between ?2 and ?3) group by u.vehicle")
+    Iterable<DataTripUserDTO> numberOfUsesByVehicleAndDataAndUser(User user, Date begin, Date end);
+
 }

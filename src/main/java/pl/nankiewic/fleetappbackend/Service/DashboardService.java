@@ -209,4 +209,71 @@ public class DashboardService {
         }
         return summary;
     }
+    public Iterable<ChartDataRespondDTO> numberOfUsesByVehicle(String username, Date begin, Date end) {
+        User user =userRepository.findUserByEmail(username);
+        List<ChartDataRespondDTO> summary = new ArrayList<>();
+        Iterable<DataTripUserDTO> list = vehicleUseRepository.numberOfUsesByVehicleAndDataAndUser(user, begin, end);
+        for (DataTripUserDTO dataDTO : list) {
+            ChartDataRespondDTO chartData=new ChartDataRespondDTO(
+                    dataDTO.getTrip().floatValue(),
+                    dataDTO.getVehicle().getModel()+" | "+dataDTO.getVehicle().getVehicleRegistrationNumber());
+            summary.add(chartData);
+        }
+        return summary;
+    }
+
+    public Iterable<ChartDataRespondDTO> distanceByVehicleAndDataAndUser(String username, Date begin, Date end, String userId) {
+        User user=userRepository.findUserById(Long.parseLong(userId));
+        List<ChartDataRespondDTO> summary = new ArrayList<>();
+        Iterable<DataTripUserDTO> list=vehicleUseRepository.tripByVehicleAndDataAndUser(user, begin, end);
+
+        for (DataTripUserDTO dataDTO : list) {
+            ChartDataRespondDTO chartData=new ChartDataRespondDTO(
+                    dataDTO.getTrip().floatValue(),
+                    dataDTO.getVehicle().getModel()+" | "+dataDTO.getVehicle().getVehicleRegistrationNumber());
+            summary.add(chartData);
+        }
+        return summary;
+    }
+
+    public Iterable<ChartDataRespondDTO> fuelCostByVehicleAndDataAndUser(String username, Date begin, Date end, String userId) {
+        User user=userRepository.findUserById(Long.parseLong(userId));
+        List<ChartDataRespondDTO> summary = new ArrayList<>();
+        Iterable<DataFuelCostUserDTO> list=vehicleRefuelingRepository.fuelCostByVehicleAndUser(user, begin, end);
+        for (DataFuelCostUserDTO dataDTO : list) {
+            ChartDataRespondDTO chartData=new ChartDataRespondDTO(
+                    dataDTO.getCost().floatValue(),
+                    dataDTO.getVehicle().getModel()+" | "+dataDTO.getVehicle().getVehicleRegistrationNumber());
+            summary.add(chartData);
+        }
+        return summary;
+    }
+
+    public Iterable<ChartDataRespondDTO> distanceByVehicleAndDataByLoginUser(String username, Date begin, Date end) {
+        User user=userRepository.findUserByEmail(username);
+        List<ChartDataRespondDTO> summary = new ArrayList<>();
+        Iterable<DataTripUserDTO> list=vehicleUseRepository.tripByVehicleAndDataAndUser(user, begin, end);
+        for (DataTripUserDTO dataDTO : list) {
+            ChartDataRespondDTO chartData=new ChartDataRespondDTO(
+                    dataDTO.getTrip().floatValue(),
+                    dataDTO.getVehicle().getModel()+" | "+dataDTO.getVehicle().getVehicleRegistrationNumber());
+            summary.add(chartData);
+        }
+        return summary;
+    }
+
+    public Iterable<ChartDataRespondDTO> fuelCostByVehicleAndDataByLoginUser(String username, Date begin, Date end) {
+        User user=userRepository.findUserByEmail(username);
+        List<ChartDataRespondDTO> summary = new ArrayList<>();
+        Iterable<DataFuelCostUserDTO> list=vehicleRefuelingRepository.fuelCostByVehicleAndUser(user, begin, end);
+        for (DataFuelCostUserDTO dataDTO : list) {
+            ChartDataRespondDTO chartData=new ChartDataRespondDTO(
+                    dataDTO.getCost().floatValue(),
+                    dataDTO.getVehicle().getModel()+" | "+dataDTO.getVehicle().getVehicleRegistrationNumber());
+            summary.add(chartData);
+        }
+        return summary;
+    }
+
+
 }
