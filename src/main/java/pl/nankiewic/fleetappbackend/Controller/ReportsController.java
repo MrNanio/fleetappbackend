@@ -27,7 +27,7 @@ public class ReportsController {
     }
     @GetMapping("/by_user")
     public void exportVehicleReportToPDF( @RequestParam (name = "r") String report,
-                                          @RequestParam (name = "v") String idS,
+                                          @RequestParam (name = "u") String idS,
                                           @RequestParam (name = "b") String beginS,
                                           @RequestParam (name = "e") String endS,
                                           HttpServletResponse response) throws DocumentException, IOException {
@@ -60,7 +60,7 @@ public class ReportsController {
 
 
     /*
-    http://localhost:8080/reports/by_user?r=use&v=2&b=2020-08-01&e=2020-12-22
+    http://localhost:8080/reports/by_user?r=use&u=2&b=2020-08-01&e=2020-12-22
     http://localhost:8080/reports/by_vehicle?r=use&v=2&b=2020-08-01&e=2020-12-22
      */
     @GetMapping("/by_vehicle")
@@ -94,7 +94,7 @@ public class ReportsController {
                 exporter.export(response);
                 break;
             }
-            case "repairs": {
+            case "repair": {
                 List<VehicleRepair> list = (List<VehicleRepair>) reportsService.repairByVehicle(id, begin, end);
                 RepairPDFExporter exporter = new RepairPDFExporter(list, reportsService.getVehicleInfo(id));
                 exporter.export(response);
@@ -112,7 +112,6 @@ public class ReportsController {
                 exporter.export(response);
                 break;
             }
-
         }
     }
 }
