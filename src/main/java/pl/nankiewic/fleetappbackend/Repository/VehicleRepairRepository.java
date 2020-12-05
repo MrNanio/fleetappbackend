@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public interface VehicleRepairRepository extends JpaRepository<VehicleRepair, Long> {
     Iterable <VehicleRepair> findAllByVehicle(Vehicle vehicle);
     Iterable <VehicleRepair> findAllByVehicleIn(Iterable<Vehicle> vehicle);
-    Iterable <VehicleRepair> findAllByVehicleAndRepairDateBetween(Vehicle vehicle, LocalDate begin, LocalDate end);
+    Iterable <VehicleRepair> findAllByVehicleAndRepairDateBetween(Vehicle vehicle, Date begin, Date end);
     @Query("SELECT SUM(r.cost) FROM VehicleRepair r WHERE r.vehicle.user=?1 and (r.repairDate between ?2 and ?3)")
     Float sumOfRepair(User user, Date begin, Date end);
     @Query("SELECT SUM(r.cost) FROM VehicleRepair r WHERE r.vehicle=?1 and (r.repairDate between ?2 and ?3)")

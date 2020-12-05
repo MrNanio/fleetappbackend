@@ -7,7 +7,8 @@ import pl.nankiewic.fleetappbackend.Entity.*;
 import pl.nankiewic.fleetappbackend.Repository.*;
 
 import javax.persistence.EntityNotFoundException;
-import java.time.LocalDate;
+import java.sql.Date;
+
 
 @Service
 public class ReportsService {
@@ -34,47 +35,55 @@ public class ReportsService {
     }
 
     //get report by id vehicle and refueling date
-    public Iterable<VehicleRefueling> refuelingByVehicle(Long id, LocalDate begin, LocalDate end){
+    public Iterable<VehicleRefueling> refuelingByVehicle(Long id, Date begin, Date end){
        if(vehicleRepository.existsById(id)){
            Vehicle vehicle=vehicleRepository.findById(id).orElseThrow(() -> new RuntimeException("Bład przetwarzania"));
            return vehicleRefuelingRepository.findAllByVehicleIsAndRefuelingDateIsBetween(vehicle, begin, end);
        } else throw new EntityNotFoundException("xd");
     }
     //get report by id vehicle and insurance date
-    public Iterable<VehicleInsurance> insuranceByVehicle(Long id, LocalDate begin, LocalDate end){
+    public Iterable<VehicleInsurance> insuranceByVehicle(Long id, Date begin, Date end){
         if(vehicleRepository.existsById(id)){
             Vehicle vehicle=vehicleRepository.findById(id).orElseThrow(() -> new RuntimeException("Bład przetwarzania"));
             return vehicleInsuranceRepository.findAllByVehicleAndEffectiveDateBetween(vehicle, begin, end);
         } else throw new EntityNotFoundException("xd");
     }
     //get report by id vehicle and inspection date
-    public Iterable<VehicleInspection> inspectionByVehicle(Long id, LocalDate begin, LocalDate end){
+    public Iterable<VehicleInspection> inspectionByVehicle(Long id, Date begin, Date end){
         if(vehicleRepository.existsById(id)){
             Vehicle vehicle=vehicleRepository.findById(id).orElseThrow(() -> new RuntimeException("Bład przetwarzania"));
             return vehicleInspectionRepository.findAllByVehicleAndInspectionDateBetween(vehicle, begin, end);
         } else throw new EntityNotFoundException("xd");
     }
     //get report by id vehicle and repair date
-    public Iterable<VehicleRepair> repairByVehicle(Long id, LocalDate begin, LocalDate end){
+    public Iterable<VehicleRepair> repairByVehicle(Long id, Date begin, Date end){
         if(vehicleRepository.existsById(id)){
             Vehicle vehicle=vehicleRepository.findById(id).orElseThrow(() -> new RuntimeException("Bład przetwarzania"));
             return vehicleRepairRepository.findAllByVehicleAndRepairDateBetween(vehicle, begin, end);
         } else throw new EntityNotFoundException("xd");
     }
     //get report by id vehicle and use date
-    public Iterable<VehicleUse> useByVehicle(Long id, LocalDate begin, LocalDate end){
+    public Iterable<VehicleUse> useByVehicle(Long id, Date begin, Date end){
         if(vehicleRepository.existsById(id)){
             Vehicle vehicle=vehicleRepository.findById(id).orElseThrow(() -> new RuntimeException("Bład przetwarzania"));
             return vehicleUseRepository.findAllByVehicleIsAndTripDateBetween(vehicle, begin, end);
         } else throw new EntityNotFoundException("xd");
     }
     //get report by id user and use date
-    public Iterable<VehicleUse> useByUser(Long id, LocalDate begin, LocalDate end) {
+    public Iterable<VehicleUse> useByUser(Long id, Date begin, Date end) {
         if (userRepository.existsById(id)) {
             User user = userRepository.findUserById(id);
             return vehicleUseRepository.findAllByUserIsAndTripDateBetween(user, begin, end);
         } else throw new EntityNotFoundException("xd");
     }
+    //get report by id user and refueling date
+    public Iterable<VehicleRefueling> refuelingByUser(Long id, Date begin, Date end) {
+        if (userRepository.existsById(id)) {
+            User user = userRepository.findUserById(id);
+            return vehicleRefuelingRepository.findAllByUserIsAndRefuelingDateIsBetween(user, begin, end);
+        } else throw new EntityNotFoundException("xd");
+    }
+
     //get vehicle list by user
     public Iterable<Vehicle> vehicleByUser(String email){
         if (userRepository.existsByEmail(email)) {

@@ -13,8 +13,6 @@ import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleRefueling;
 
 import java.sql.Date;
-import java.time.LocalDate;
-
 
 @CrossOrigin(origins = "http://localhost:4200")
 public interface VehicleRefuelingRepository extends JpaRepository<VehicleRefueling, Long> {
@@ -22,7 +20,8 @@ public interface VehicleRefuelingRepository extends JpaRepository<VehicleRefueli
     Iterable <VehicleRefueling> findRefuelingsByVehicleIn(Iterable<Vehicle> vehicles);
     Iterable <VehicleRefueling> findRefuelingsByUser(User user);
     Iterable <VehicleRefueling> findAllByVehicleAndUser(Vehicle vehicle, User user);
-    Iterable <VehicleRefueling> findAllByVehicleIsAndRefuelingDateIsBetween(Vehicle vehicle, LocalDate begin, LocalDate end);
+    Iterable <VehicleRefueling> findAllByVehicleIsAndRefuelingDateIsBetween(Vehicle vehicle, Date begin, Date end);
+    Iterable <VehicleRefueling> findAllByUserIsAndRefuelingDateIsBetween(User user, Date begin, Date end);
     @Query("SELECT SUM(r.cost) FROM VehicleRefueling r WHERE r.vehicle.user=?1 and (r.refuelingDate between ?2 and ?3) ")
     Float sumOfRefueling(User user, Date begin, Date end);
     @Query("SELECT  new pl.nankiewic.fleetappbackend.DTO.DataDTO(r.vehicle, SUM(r.cost)) FROM VehicleRefueling r WHERE r.vehicle.user=?1 and (r.refuelingDate between ?2 and ?3) group by r.vehicle")

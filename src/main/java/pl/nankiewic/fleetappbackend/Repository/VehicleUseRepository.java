@@ -17,8 +17,8 @@ public interface VehicleUseRepository extends JpaRepository<VehicleUse, Long> {
     Iterable <VehicleUse> findAllByVehicle(Vehicle vehicle);
     Iterable <VehicleUse> findAllByUser(User user);
     Iterable <VehicleUse> findAllByVehicleAndUser(Vehicle vehicle, User user);
-    Iterable <VehicleUse> findAllByVehicleIsAndTripDateBetween(Vehicle vehicle, LocalDate begin, LocalDate end);
-    Iterable <VehicleUse> findAllByUserIsAndTripDateBetween(User user, LocalDate begin, LocalDate end);
+    Iterable <VehicleUse> findAllByVehicleIsAndTripDateBetween(Vehicle vehicle, Date begin, Date end);
+    Iterable <VehicleUse> findAllByUserIsAndTripDateBetween(User user, Date tripDate, Date tripDate2);
     @Query("SELECT  new pl.nankiewic.fleetappbackend.DTO.DataUseDTO(u.vehicle, SUM(u.trip)) FROM VehicleUse u WHERE u.vehicle.user=?1 and (u.tripDate between ?2 and ?3) group by u.vehicle")
     Iterable<DataUseDTO> sumOfRefuelingByVehicle(User user, Date begin, Date end);
     @Query("SELECT  new pl.nankiewic.fleetappbackend.DTO.DataTripDTO(u.trip, u.tripDate) FROM VehicleUse u WHERE u.vehicle=?1 and (u.tripDate between ?2 and ?3)")

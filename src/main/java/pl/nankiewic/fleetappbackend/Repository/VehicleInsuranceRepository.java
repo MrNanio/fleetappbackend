@@ -8,14 +8,13 @@ import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleInsurance;
 
 import java.sql.Date;
-import java.time.LocalDate;
 
 @CrossOrigin(origins = "http://localhost:4200")
 public interface VehicleInsuranceRepository extends JpaRepository<VehicleInsurance, Long> {
 
     Iterable <VehicleInsurance> findAllByVehicleIn(Iterable<Vehicle> vehicle);
     Iterable <VehicleInsurance> findAllByVehicle(Vehicle vehicle);
-    Iterable <VehicleInsurance> findAllByVehicleAndEffectiveDateBetween(Vehicle vehicle, LocalDate begin, LocalDate end);
+    Iterable <VehicleInsurance> findAllByVehicleAndEffectiveDateBetween(Vehicle vehicle, Date begin, Date end);
     @Query("SELECT SUM(i.cost) FROM VehicleInsurance i WHERE (i.vehicle.user=?1 )and (i.effectiveDate between ?2 and ?3)")
     Float sumOfInsurance(User user, Date begin, Date end);
     @Query("SELECT SUM(i.cost) FROM VehicleInsurance i WHERE (i.vehicle=?1 )and (i.effectiveDate between ?2 and ?3)")
