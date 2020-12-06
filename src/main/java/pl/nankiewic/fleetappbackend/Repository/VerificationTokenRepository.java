@@ -7,7 +7,6 @@ import pl.nankiewic.fleetappbackend.Entity.VerificationToken;
 
 @CrossOrigin(origins = "http://localhost:4200")
 public interface VerificationTokenRepository extends JpaRepository<VerificationToken, Long> {
-
     VerificationToken findByToken(String token);
     VerificationToken findByUser(User user);
     boolean existsByToken(String token);

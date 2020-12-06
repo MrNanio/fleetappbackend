@@ -14,10 +14,10 @@ import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
 
 @Service
 public class RepairService {
-    VehicleRepairRepository vehicleRepairRepository;
-    VehicleRepository vehicleRepository;
-    UserRepository userRepository;
-    RepairMapper mapper;
+    private final VehicleRepairRepository vehicleRepairRepository;
+    private final VehicleRepository vehicleRepository;
+    private final UserRepository userRepository;
+    private final RepairMapper mapper;
     @Autowired
     public RepairService(VehicleRepairRepository vehicleRepairRepository, VehicleRepository vehicleRepository,
                          UserRepository userRepository, RepairMapper mapper) {

@@ -12,26 +12,26 @@ import java.sql.Date;
 
 @Service
 public class ReportsService {
-    UserRepository userRepository;
-    VehicleRepository vehicleRepository;
-    VehicleRefuelingRepository vehicleRefuelingRepository;
-    VehicleUseRepository vehicleUseRepository;
-    VehicleRepairRepository vehicleRepairRepository;
-    VehicleInsuranceRepository vehicleInsuranceRepository;
-    VehicleInspectionRepository vehicleInspectionRepository;
+    private final UserRepository userRepository;
+    private final VehicleRepository vehicleRepository;
+    private final VehicleUseRepository vehicleUseRepository;
+    private final VehicleRepairRepository vehicleRepairRepository;
+    private final VehicleInsuranceRepository vehicleInsuranceRepository;
+    private final VehicleInspectionRepository vehicleInspectionRepository;
+    private final VehicleRefuelingRepository vehicleRefuelingRepository;
     @Autowired
     public ReportsService(UserRepository userRepository, VehicleRepository vehicleRepository,
-                          VehicleRefuelingRepository vehicleRefuelingRepository, VehicleUseRepository vehicleUseRepository,
-                          VehicleRepairRepository vehicleRepairRepository,
+                          VehicleUseRepository vehicleUseRepository, VehicleRepairRepository vehicleRepairRepository,
                           VehicleInsuranceRepository vehicleInsuranceRepository,
-                          VehicleInspectionRepository vehicleInspectionRepository) {
+                          VehicleInspectionRepository vehicleInspectionRepository,
+                          VehicleRefuelingRepository vehicleRefuelingRepository) {
         this.userRepository = userRepository;
         this.vehicleRepository = vehicleRepository;
-        this.vehicleRefuelingRepository = vehicleRefuelingRepository;
         this.vehicleUseRepository = vehicleUseRepository;
         this.vehicleRepairRepository = vehicleRepairRepository;
         this.vehicleInsuranceRepository = vehicleInsuranceRepository;
         this.vehicleInspectionRepository = vehicleInspectionRepository;
+        this.vehicleRefuelingRepository = vehicleRefuelingRepository;
     }
 
     //get report by id vehicle and refueling date
@@ -95,4 +95,9 @@ public class ReportsService {
     public Vehicle getVehicleInfo(Long id){
         return vehicleRepository.findById(id).orElseThrow(() -> new RuntimeException("Bład przetwarzania"));
     }
+
+
+
+
+
 }

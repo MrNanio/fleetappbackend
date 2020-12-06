@@ -7,10 +7,10 @@ import pl.nankiewic.fleetappbackend.Entity.User;
 
 @CrossOrigin(origins = "http://localhost:4200")
 public interface UserRepository extends JpaRepository<User, Long > {
+    Iterable <User> findAllByRoleIsNot(Role role);
+    Iterable <User> findByUser(User manager);
+    User findUserByEmail(String email);
+    User findUserById(Long user_id);
     boolean existsByEmail(String email);
     boolean existsById(Long id);
-    User findUserByEmail(String email);
-    Iterable <User> findByUser(User manager);
-    User findUserById(Long user_id);
-    Iterable <User> findAllByRoleIsNot(Role role);
 }

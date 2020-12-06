@@ -5,6 +5,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import pl.nankiewic.fleetappbackend.DTO.ChartDataRespondDTO;
+import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
+import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.DashboardService;
 
 import java.sql.Date;
@@ -13,11 +15,14 @@ import java.sql.Date;
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/dashboard")
 public class DashboardController {
-        DashboardService dashboardService;
+        private final DashboardService dashboardService;
+        private final CheckService checkService;
         @Autowired
-        public DashboardController(DashboardService dashboardService) {
+        public DashboardController(DashboardService dashboardService, CheckService checkService) {
                 this.dashboardService = dashboardService;
+                this.checkService = checkService;
         }
+
         /*
         WYKRESY DLA FLOTY
          */
@@ -76,7 +81,6 @@ public class DashboardController {
         WYKRESY DLA POJAZDÓW
          */
         /*
-        Wykres numer 1
         name: data tankowania
         value: koszt danego tankowania
          */
@@ -88,10 +92,12 @@ public class DashboardController {
                  Date begin=Date.valueOf(beginS);
                  Date end=Date.valueOf(endS);
                  UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                 return dashboardService.fuelCostByVehicleAndData(userDetails.getUsername(), begin, end, vehicle);
+                 if(checkService.accessToVehicle(userDetails.getUsername(),Long.parseLong(vehicle))){
+                        return dashboardService.fuelCostByVehicleAndData(begin, end, vehicle);
+                 } else throw new PermissionDeniedException("Odmowa dostępu");
+
          }
         /*
-        Wykres numer 2
         name: data przebiegu
         value: długość tego przebiegu
           */
@@ -103,10 +109,12 @@ public class DashboardController {
                 Date begin=Date.valueOf(beginS);
                 Date end=Date.valueOf(endS);
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                return dashboardService.distanceByVehicleAndData(userDetails.getUsername(), begin, end, vehicle);
+                if(checkService.accessToVehicle(userDetails.getUsername(),Long.parseLong(vehicle))){
+                        return dashboardService.distanceByVehicleAndData(begin, end, vehicle);
+                } else throw new PermissionDeniedException("Odmowa dostępu");
+
         }
         /*
-        Wykres numer 3
         koszty utrzymania pojazdu całościowe tak jak było dla foloty tylko dla
         pojedyńczego pojazdu (ubezpiecznia, naprawy itd) to ten wykres kołowy
          */
@@ -118,10 +126,11 @@ public class DashboardController {
                 Date begin=Date.valueOf(beginS);
                 Date end=Date.valueOf(endS);
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                return dashboardService.vehicleCostByCategory(userDetails.getUsername(), vehicle, begin, end);
+                if(checkService.accessToVehicle(userDetails.getUsername(),Long.parseLong(vehicle))){
+                        return dashboardService.vehicleCostByCategory(vehicle, begin, end);
+                } else throw new PermissionDeniedException("Odmowa dostępu");
         }
         /*
-        Wykres numer 4
         name: miejski, pozamiejski, mieszny
         value: długość tego przebiegu
          */
@@ -133,21 +142,16 @@ public class DashboardController {
                 Date begin=Date.valueOf(beginS);
                 Date end=Date.valueOf(endS);
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                return dashboardService.distanceByVehicleAndDataAndUseType(userDetails.getUsername(), begin, end, vehicle);
+                if(checkService.accessToVehicle(userDetails.getUsername(),Long.parseLong(vehicle))){
+                        return dashboardService.distanceByVehicleAndDataAndUseType(begin, end, vehicle);
+                } else throw new PermissionDeniedException("Odmowa dostępu");
+
         }
-        /*
-        dla driverów
-        do query zamiast v
-        podaję u
-        i to jest id kierowcy
-         */
-
-        /*
-
+       /*
         name: model | numer rejestracyjny
         value kilometry przejechane przez drivera na danym pojeździe
         */
-        @GetMapping("trip_by_user")//new
+        @GetMapping("trip_by_user")
         public Iterable<ChartDataRespondDTO> vehicleTripByUser(@RequestParam (name = "u") String user,
                                                                @RequestParam (name = "b") String beginS,
                                                                @RequestParam (name = "e") String endS,
@@ -155,7 +159,7 @@ public class DashboardController {
                 Date begin=Date.valueOf(beginS);
                 Date end=Date.valueOf(endS);
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                return dashboardService.distanceByVehicleAndDataAndUser(userDetails.getUsername(), begin, end, user);
+                return dashboardService.distanceByVehicleAndDataAndUser(begin, end, user);
         }
 
         /*
@@ -170,7 +174,7 @@ public class DashboardController {
                 Date begin=Date.valueOf(beginS);
                 Date end=Date.valueOf(endS);
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                return dashboardService.fuelCostByVehicleAndDataAndUser(userDetails.getUsername(), begin, end, user);
+                return dashboardService.fuelCostByVehicleAndDataAndUser(begin, end, user);
         }
 
         /*
@@ -180,7 +184,7 @@ public class DashboardController {
         name: model | numer rejestracyjny
         value kilometry przejechane przez menagera na danym pojeździe
          */
-        @GetMapping("trip_by_login_user")//new
+        @GetMapping("trip_by_login_user")
         public Iterable<ChartDataRespondDTO> vehicleTripBySuperUser(@RequestParam (name = "b") String beginS,
                                                                     @RequestParam (name = "e") String endS,
                                                                     Authentication authentication){
@@ -194,7 +198,7 @@ public class DashboardController {
         name: model | numer rejestracyjny
         value koszty paliwa dodane prez tego menagera do danego pojazdu
          */
-        @GetMapping("fuel_cost_by_login_user")//new
+        @GetMapping("fuel_cost_by_login_user")
         public Iterable<ChartDataRespondDTO> fuelCostBySuperUser(@RequestParam (name = "b") String beginS,
                                                                  @RequestParam (name = "e") String endS,
                                                                  Authentication authentication){

@@ -17,24 +17,25 @@ import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
 @Service
 public class InsuranceService {
 
-    VehicleInsuranceRepository vehicleInsuranceRepository;
-    VehicleRepository vehicleRepository;
-    UserRepository userRepository;
-    InsuranceTypeRepository insuranceType;
+    private final VehicleInsuranceRepository vehicleInsuranceRepository;
+    private final InsuranceTypeRepository insuranceType;
+    private final VehicleRepository vehicleRepository;
+    private final UserRepository userRepository;
     private final InsuranceMapper mapper;
     private final InsuranceTypeMapper insuranceTypeMapper;
     @Autowired
     public InsuranceService(VehicleInsuranceRepository vehicleInsuranceRepository,
-                            VehicleRepository vehicleRepository, UserRepository userRepository,
-                            InsuranceTypeRepository insuranceType,
-                            InsuranceMapper mapper, InsuranceTypeMapper insuranceTypeMapper) {
+                            InsuranceTypeRepository insuranceType, VehicleRepository vehicleRepository,
+                            UserRepository userRepository, InsuranceMapper mapper,
+                            InsuranceTypeMapper insuranceTypeMapper) {
         this.vehicleInsuranceRepository = vehicleInsuranceRepository;
+        this.insuranceType = insuranceType;
         this.vehicleRepository = vehicleRepository;
         this.userRepository = userRepository;
-        this.insuranceType = insuranceType;
         this.mapper = mapper;
         this.insuranceTypeMapper = insuranceTypeMapper;
     }
+
 
     public VehicleInsurance save(InsuranceDTO insuranceDTO) {
         VehicleInsurance vehicleInsurance = mapper.insuranceDTOtoVehicleInsurance(insuranceDTO);

@@ -8,7 +8,6 @@ import pl.nankiewic.fleetappbackend.DTO.UserDTO;
 import pl.nankiewic.fleetappbackend.Entity.Role;
 import pl.nankiewic.fleetappbackend.Entity.User;
 import pl.nankiewic.fleetappbackend.Entity.UserAccountStatus;
-import pl.nankiewic.fleetappbackend.Entity.VehicleMake;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
 public interface UserMapper {

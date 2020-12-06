@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 @Service
 public class DashboardService {
-    VehicleInspectionRepository vehicleInspectionRepository;
-    VehicleInsuranceRepository vehicleInsuranceRepository;
-    VehicleRefuelingRepository vehicleRefuelingRepository;
-    VehicleRepairRepository vehicleRepairRepository;
-    VehicleUseRepository vehicleUseRepository;
-    VehicleRepository vehicleRepository;
-    UserRepository userRepository;
+    private final VehicleInspectionRepository vehicleInspectionRepository;
+    private final VehicleInsuranceRepository vehicleInsuranceRepository;
+    private final VehicleRefuelingRepository vehicleRefuelingRepository;
+    private final VehicleRepairRepository vehicleRepairRepository;
+    private final VehicleUseRepository vehicleUseRepository;
+    private final VehicleRepository vehicleRepository;
+    private final UserRepository userRepository;
     @Autowired
     public DashboardService(VehicleInspectionRepository vehicleInspectionRepository,
                             VehicleInsuranceRepository vehicleInsuranceRepository,
@@ -38,8 +38,8 @@ public class DashboardService {
     }
 
     /*
-           by vehicle
-        */
+    by vehicle
+    */
     public Float vehicleCostByCategoriesRepair(Vehicle vehicle, Date begin, Date end){
         if(vehicleRepairRepository.vehicleSumCostOfRepair(vehicle, begin, end)==null)
         {
@@ -65,8 +65,7 @@ public class DashboardService {
             return Float.valueOf("0");
         } else  return vehicleRefuelingRepository.vehicleSumCostOfRefueling(vehicle, begin, end);
     }
-    public Iterable<ChartDataRespondDTO> vehicleCostByCategory(String username, String vehicleId, Date begin, Date end){
-        User user =userRepository.findUserByEmail(username);
+    public Iterable<ChartDataRespondDTO> vehicleCostByCategory(String vehicleId, Date begin, Date end){
         Vehicle vehicle=vehicleRepository.findById(Long.parseLong(vehicleId)).orElseThrow(
                 () -> new RuntimeException("Bład przetwarzania"));
         List<ChartDataRespondDTO> summary = new ArrayList<>();
@@ -84,7 +83,7 @@ public class DashboardService {
         summary.add(chartDataRefueling);
         return summary;
     }
-    public Iterable<ChartDataRespondDTO> distanceByVehicleAndDataAndUseType(String username, Date begin, Date end, String vehicleId) {
+    public Iterable<ChartDataRespondDTO> distanceByVehicleAndDataAndUseType(Date begin, Date end, String vehicleId) {
         Vehicle vehicle=vehicleRepository.findById(Long.parseLong(vehicleId)).orElseThrow(
                 () -> new RuntimeException("Bład przetwarzania"));
         List<ChartDataRespondDTO> summary = new ArrayList<>();
@@ -109,8 +108,7 @@ public class DashboardService {
         }
         return summary;
     }
-    public Iterable<ChartDataRespondDTO> fuelCostByVehicleAndData(String username, Date begin, Date end, String vehicleId) {
-        //User user =userRepository.findUserByEmail(username);
+    public Iterable<ChartDataRespondDTO> fuelCostByVehicleAndData(Date begin, Date end, String vehicleId) {
         Vehicle vehicle=vehicleRepository.findById(Long.parseLong(vehicleId)).orElseThrow(
                 () -> new RuntimeException("Bład przetwarzania"));
         List<ChartDataRespondDTO> summary = new ArrayList<>();
@@ -124,7 +122,7 @@ public class DashboardService {
         return summary;
 
     }
-    public Iterable<ChartDataRespondDTO> distanceByVehicleAndData(String username, Date begin, Date end, String vehicleId) {
+    public Iterable<ChartDataRespondDTO> distanceByVehicleAndData(Date begin, Date end, String vehicleId) {
         Vehicle vehicle=vehicleRepository.findById(Long.parseLong(vehicleId)).orElseThrow(
                 () -> new RuntimeException("Bład przetwarzania"));
         List<ChartDataRespondDTO> summary = new ArrayList<>();
@@ -222,7 +220,7 @@ public class DashboardService {
         return summary;
     }
 
-    public Iterable<ChartDataRespondDTO> distanceByVehicleAndDataAndUser(String username, Date begin, Date end, String userId) {
+    public Iterable<ChartDataRespondDTO> distanceByVehicleAndDataAndUser(Date begin, Date end, String userId) {
         User user=userRepository.findUserById(Long.parseLong(userId));
         List<ChartDataRespondDTO> summary = new ArrayList<>();
         Iterable<DataTripUserDTO> list=vehicleUseRepository.tripByVehicleAndDataAndUser(user, begin, end);
@@ -236,7 +234,7 @@ public class DashboardService {
         return summary;
     }
 
-    public Iterable<ChartDataRespondDTO> fuelCostByVehicleAndDataAndUser(String username, Date begin, Date end, String userId) {
+    public Iterable<ChartDataRespondDTO> fuelCostByVehicleAndDataAndUser(Date begin, Date end, String userId) {
         User user=userRepository.findUserById(Long.parseLong(userId));
         List<ChartDataRespondDTO> summary = new ArrayList<>();
         Iterable<DataFuelCostUserDTO> list=vehicleRefuelingRepository.fuelCostByVehicleAndUser(user, begin, end);

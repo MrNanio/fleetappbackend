@@ -12,12 +12,12 @@ import javax.persistence.EntityNotFoundException;
 @Service
 public class VehicleService {
 
-    private VehicleRepository vehicleRepository;
-    private VehicleStatusRepository vehicleStatusRepository;
-    private VehicleMakeRepository vehicleMakeRepository;
-    private FuelTypeRepository fuelTypeRepository;
-    private UserRepository userRepository;
-    private VehicleMapper mapper;
+    private final VehicleRepository vehicleRepository;
+    private final VehicleStatusRepository vehicleStatusRepository;
+    private final VehicleMakeRepository vehicleMakeRepository;
+    private final FuelTypeRepository fuelTypeRepository;
+    private final UserRepository userRepository;
+    private final VehicleMapper mapper;
 
     @Autowired
     public VehicleService(VehicleRepository vehicleRepository, VehicleStatusRepository vehicleStatusRepository,

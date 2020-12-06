@@ -1,9 +1,5 @@
 package pl.nankiewic.fleetappbackend.Entity;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.HashSet;

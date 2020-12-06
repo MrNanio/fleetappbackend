@@ -9,7 +9,6 @@ import pl.nankiewic.fleetappbackend.Entity.VehicleInspection;
 
 import java.sql.Date;
 
-
 @CrossOrigin(origins = "http://localhost:4200")
 public interface VehicleInspectionRepository extends JpaRepository<VehicleInspection, Long> {
     Iterable <VehicleInspection> findAllByVehicleIn(Iterable<Vehicle> vehicle);

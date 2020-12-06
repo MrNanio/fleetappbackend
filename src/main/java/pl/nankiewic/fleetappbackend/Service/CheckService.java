@@ -9,30 +9,30 @@ import java.util.Optional;
 
 @Service
 public class CheckService {
-
-    UserRepository userRepository;
-    VehicleRepository vehicleRepository;
-    VehicleRefuelingRepository vehicleRefuelingRepository;
-    VehicleUseRepository vehicleUseRepository;
-    VehicleRepairRepository vehicleRepairRepository;
-    VehicleInsuranceRepository vehicleInsuranceRepository;
-    VehicleInspectionRepository vehicleInspectionRepository;
-    CurrentVehicleUserRepository currentVehicleUserRepository;
+    private final CurrentVehicleUserRepository currentVehicleUserRepository;
+    private final VehicleInspectionRepository vehicleInspectionRepository;
+    private final VehicleRefuelingRepository vehicleRefuelingRepository;
+    private final VehicleInsuranceRepository vehicleInsuranceRepository;
+    private final VehicleRepairRepository vehicleRepairRepository;
+    private final VehicleUseRepository vehicleUseRepository;
+    private final VehicleRepository vehicleRepository;
+    private final UserRepository userRepository;
     @Autowired
-    public CheckService(UserRepository userRepository, VehicleRepository vehicleRepository,
-                        VehicleRefuelingRepository vehicleRefuelingRepository, VehicleUseRepository vehicleUseRepository,
-                        VehicleRepairRepository vehicleRepairRepository,
-                        VehicleInsuranceRepository vehicleInsuranceRepository,
+    public CheckService(CurrentVehicleUserRepository currentVehicleUserRepository,
                         VehicleInspectionRepository vehicleInspectionRepository,
-                        CurrentVehicleUserRepository currentVehicleUserRepository) {
-        this.userRepository = userRepository;
-        this.vehicleRepository = vehicleRepository;
-        this.vehicleRefuelingRepository = vehicleRefuelingRepository;
-        this.vehicleUseRepository = vehicleUseRepository;
-        this.vehicleRepairRepository = vehicleRepairRepository;
-        this.vehicleInsuranceRepository = vehicleInsuranceRepository;
-        this.vehicleInspectionRepository = vehicleInspectionRepository;
+                        VehicleRefuelingRepository vehicleRefuelingRepository,
+                        VehicleInsuranceRepository vehicleInsuranceRepository,
+                        VehicleRepairRepository vehicleRepairRepository,
+                        VehicleUseRepository vehicleUseRepository, VehicleRepository vehicleRepository,
+                        UserRepository userRepository) {
         this.currentVehicleUserRepository = currentVehicleUserRepository;
+        this.vehicleInspectionRepository = vehicleInspectionRepository;
+        this.vehicleRefuelingRepository = vehicleRefuelingRepository;
+        this.vehicleInsuranceRepository = vehicleInsuranceRepository;
+        this.vehicleRepairRepository = vehicleRepairRepository;
+        this.vehicleUseRepository = vehicleUseRepository;
+        this.vehicleRepository = vehicleRepository;
+        this.userRepository = userRepository;
     }
 
     public boolean isMyVehicle(User user, Vehicle vehicle){
@@ -105,11 +105,12 @@ public class CheckService {
             } else throw new EntityNotFoundException("Zasób nie istnieje: użycie");
         } else throw new EntityNotFoundException("Zasób nie istnieje: użycie");
     }
+    /*
     public boolean accessToUser(String email, Long userId){
         User user=userRepository.findUserByEmail(email);
         if(userRepository.existsById(userId)){
             User user1=userRepository.findUserById(userId);
             return (user1.getUser() == null && user == user1) || user1.getUser() == user;
         } else throw new EntityNotFoundException("Zasób nie istnieje: user");
-    }
+    }*/
 }

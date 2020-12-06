@@ -28,24 +28,25 @@ import java.util.Random;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    RoleRepository roleRepository;
-    UserRepository userRepository;
-    UserAccountStatusRepository userAccountStatusRepository;
-    VerificationTokenRepository verificationTokenRepository;
-    MailService mailService;
-    PasswordEncoder passwordEncoder;
+    private final UserAccountStatusRepository userAccountStatusRepository;
+    private final VerificationTokenRepository verificationTokenRepository;
+    private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final MailService mailService;
     @Autowired
-    public CustomUserDetailsService(RoleRepository roleRepository, UserRepository userRepository,
-                                    UserAccountStatusRepository userAccountStatusRepository,
-                                    VerificationTokenRepository verificationTokenRepository, MailService mailService,
-                                    PasswordEncoder passwordEncoder) {
-        this.roleRepository = roleRepository;
-        this.userRepository = userRepository;
+    public CustomUserDetailsService(UserAccountStatusRepository userAccountStatusRepository,
+                                    VerificationTokenRepository verificationTokenRepository,
+                                    RoleRepository roleRepository, UserRepository userRepository,
+                                    PasswordEncoder passwordEncoder, MailService mailService) {
         this.userAccountStatusRepository = userAccountStatusRepository;
         this.verificationTokenRepository = verificationTokenRepository;
-        this.mailService = mailService;
+        this.roleRepository = roleRepository;
+        this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.mailService = mailService;
     }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findUserByEmail(email);
@@ -127,8 +128,5 @@ public class CustomUserDetailsService implements UserDetailsService {
             verificationTokenRepository.save(verificationToken);
             mailService.sendInviteMail(emailDTO.getEmail(), verificationToken.getToken());
         }
-    }
-    public List<User> listAll() {
-        return userRepository.findAll();
     }
 }

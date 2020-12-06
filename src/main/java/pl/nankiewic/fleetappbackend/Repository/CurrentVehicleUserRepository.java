@@ -10,6 +10,6 @@ import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 public interface CurrentVehicleUserRepository extends JpaRepository<CurrentVehicleUser, Long> {
     Iterable <CurrentVehicleUser> findCurrentVehicleUsersByVehicleIs(Vehicle vehicle);
     Iterable <CurrentVehicleUser> findCurrentVehicleUsersByUserIs(User user);
-    boolean existsByVehicle(Vehicle vehicle);
     CurrentVehicleUser findByVehicle(Vehicle vehicle);
+    boolean existsByVehicle(Vehicle vehicle);
 }

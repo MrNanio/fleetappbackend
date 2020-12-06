@@ -26,31 +26,32 @@ import java.util.Random;
 
 @Service
 public class AccountService {
-    JWTokenUtility tokenUtility;
-    UserRepository userRepository;
-    RoleRepository roleRepository;
-    UserAccountStatusRepository userAccountStatusRepository;
-    VerificationTokenRepository verificationTokenRepository;
-    UserDataRepository userDataRepository;
-    UserDataMapper mapper;
-    UserMapper userMapper;
-    PasswordEncoder passwordEncoder;
-    MailService mailService;
+    private final UserAccountStatusRepository userAccountStatusRepository;
+    private final VerificationTokenRepository verificationTokenRepository;
+    private final UserDataRepository userDataRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final JWTokenUtility tokenUtility;
+    private final UserDataMapper mapper;
+    private final UserMapper userMapper;
+    private final MailService mailService;
     @Autowired
-    public AccountService(JWTokenUtility tokenUtility, UserRepository userRepository, RoleRepository roleRepository,
-                          UserAccountStatusRepository userAccountStatusRepository,
+    public AccountService(UserAccountStatusRepository userAccountStatusRepository,
                           VerificationTokenRepository verificationTokenRepository,
-                          UserDataRepository userDataRepository, UserDataMapper mapper,
-                          UserMapper userMapper, PasswordEncoder passwordEncoder, MailService mailService) {
-        this.tokenUtility = tokenUtility;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+                          UserDataRepository userDataRepository, PasswordEncoder passwordEncoder,
+                          UserRepository userRepository, RoleRepository roleRepository,
+                          JWTokenUtility tokenUtility, UserDataMapper mapper,
+                          UserMapper userMapper, MailService mailService) {
         this.userAccountStatusRepository = userAccountStatusRepository;
         this.verificationTokenRepository = verificationTokenRepository;
         this.userDataRepository = userDataRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.tokenUtility = tokenUtility;
         this.mapper = mapper;
         this.userMapper = userMapper;
-        this.passwordEncoder = passwordEncoder;
         this.mailService = mailService;
     }
 
@@ -62,7 +63,6 @@ public class AccountService {
         userRepository.save(user);
         return new AuthenticationResponse(jwt, userDetails.getUsername(), user.getId(), user.getRole().getRoleName());
     }
-    //userdata
     public void saveUserData(UserDataDTO userDataDTO, String email){
         User user= userRepository.findUserByEmail(email);
         if(userDataRepository.existsByUser(user)){
@@ -105,7 +105,6 @@ public class AccountService {
         userDataRepository.deleteById(userDataRepository.findByUser(user).getId());
     }
 
-    //potwierdzenie emaila
     public void getAccountActivation(String activation_token){
         if(activation_token!= null){
             if(verificationTokenRepository.existsVerificationTokenByTokenIs(activation_token)){
@@ -123,7 +122,7 @@ public class AccountService {
         user.setUserAccountStatus(userAccountStatusRepository.findByUserAccountStatusName("ACTIVE"));
         userRepository.save(user);
     }
-    //reset hasła
+
     public String createResetCode() {
         int leftLimit = 97; // letter 'a'
         int rightLimit = 122; // letter 'z'

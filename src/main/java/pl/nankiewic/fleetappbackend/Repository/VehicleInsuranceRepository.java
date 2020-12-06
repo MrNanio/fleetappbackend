@@ -11,7 +11,6 @@ import java.sql.Date;
 
 @CrossOrigin(origins = "http://localhost:4200")
 public interface VehicleInsuranceRepository extends JpaRepository<VehicleInsurance, Long> {
-
     Iterable <VehicleInsurance> findAllByVehicleIn(Iterable<Vehicle> vehicle);
     Iterable <VehicleInsurance> findAllByVehicle(Vehicle vehicle);
     Iterable <VehicleInsurance> findAllByVehicleAndEffectiveDateBetween(Vehicle vehicle, Date begin, Date end);

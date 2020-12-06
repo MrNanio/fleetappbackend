@@ -15,7 +15,6 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 
-//@ControllerAdvice(assignableTypes= AuthorizationController.class)
 @ControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ExceptionHandlingController extends ResponseEntityExceptionHandler {

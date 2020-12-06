@@ -16,10 +16,10 @@ import javax.persistence.EntityNotFoundException;
 
 @Service
 public class UseService {
-    VehicleUseRepository vehicleUseRepository;
-    VehicleRepository vehicleRepository;
-    UserRepository userRepository;
-    UseMapper useMapper;
+    private final VehicleUseRepository vehicleUseRepository;
+    private final VehicleRepository vehicleRepository;
+    private final UserRepository userRepository;
+    private final UseMapper useMapper;
     @Autowired
     public UseService(VehicleUseRepository vehicleUseRepository, VehicleRepository vehicleRepository,
                       UserRepository userRepository, UseMapper useMapper) {

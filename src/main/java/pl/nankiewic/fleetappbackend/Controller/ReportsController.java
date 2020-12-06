@@ -3,11 +3,14 @@ package pl.nankiewic.fleetappbackend.Controller;
 import com.lowagie.text.DocumentException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import pl.nankiewic.fleetappbackend.Entity.*;
+import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.Reports.*;
+import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.ReportsService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -21,10 +24,13 @@ import java.util.List;
 @RequestMapping("/reports")
 public class ReportsController {
     ReportsService reportsService;
+    CheckService checkService;
     @Autowired
-    public ReportsController(ReportsService reportsService) {
+    public ReportsController(ReportsService reportsService, CheckService checkService) {
         this.reportsService = reportsService;
+        this.checkService = checkService;
     }
+
     @GetMapping("/by_user")
     public void exportVehicleReportToPDF( @RequestParam (name = "r") String report,
                                           @RequestParam (name = "u") String idS,
@@ -37,8 +43,8 @@ public class ReportsController {
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=vehicle_" + currentDateTime + ".pdf";
         response.setHeader(headerKey, headerValue);
-        //UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
+        response.setHeader("Pragma", "public");
+        response.setHeader("responseType", "blob");
         Long id=Long.valueOf(idS);
         java.sql.Date begin= java.sql.Date.valueOf(beginS);
         java.sql.Date end= java.sql.Date.valueOf(endS);
@@ -57,19 +63,17 @@ public class ReportsController {
             }
         }
     }
-
-
     /*
     http://localhost:8080/reports/by_user?r=use&u=2&b=2020-08-01&e=2020-12-22
     http://localhost:8080/reports/by_vehicle?r=use&v=2&b=2020-08-01&e=2020-12-22
      */
-    @GetMapping("/by_vehicle")
+    @GetMapping(value="/by_vehicle",  produces = MediaType.APPLICATION_PDF_VALUE)
     public void exportReportToPDF(
             @RequestParam (name = "r") String report,
             @RequestParam (name = "v") String idS,
             @RequestParam (name = "b") String beginS,
             @RequestParam (name = "e") String endS,
-            HttpServletResponse response) throws DocumentException, IOException {
+            HttpServletResponse response, Authentication authentication) throws DocumentException, IOException {
         response.setContentType("application/pdf");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
         String currentDateTime = dateFormatter.format(new Date());
@@ -77,8 +81,10 @@ public class ReportsController {
         String headerValue = "attachment; filename=vehicle_" + currentDateTime + ".pdf";
         response.setHeader(headerKey, headerValue);
         Long id=Long.valueOf(idS);
-        //LocalDate begin= LocalDate.parse(beginS);
-        //LocalDate end= LocalDate.parse(endS);
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        if (!checkService.accessToVehicle(userDetails.getUsername(), id)){
+            throw new PermissionDeniedException("Odmowa dostępu");
+        }
         java.sql.Date begin= java.sql.Date.valueOf(beginS);
         java.sql.Date end= java.sql.Date.valueOf(endS);
         switch (report) {
@@ -112,6 +118,7 @@ public class ReportsController {
                 exporter.export(response);
                 break;
             }
+            //default: throw new
         }
     }
 }

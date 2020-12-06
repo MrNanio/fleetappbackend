@@ -9,11 +9,9 @@ import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleUse;
 
 import java.sql.Date;
-import java.time.LocalDate;
 
 @CrossOrigin(origins = "http://localhost:4200")
 public interface VehicleUseRepository extends JpaRepository<VehicleUse, Long> {
-
     Iterable <VehicleUse> findAllByVehicle(Vehicle vehicle);
     Iterable <VehicleUse> findAllByUser(User user);
     Iterable <VehicleUse> findAllByVehicleAndUser(Vehicle vehicle, User user);
@@ -21,7 +19,7 @@ public interface VehicleUseRepository extends JpaRepository<VehicleUse, Long> {
     Iterable <VehicleUse> findAllByUserIsAndTripDateBetween(User user, Date tripDate, Date tripDate2);
     @Query("SELECT  new pl.nankiewic.fleetappbackend.DTO.DataUseDTO(u.vehicle, SUM(u.trip)) FROM VehicleUse u WHERE u.vehicle.user=?1 and (u.tripDate between ?2 and ?3) group by u.vehicle")
     Iterable<DataUseDTO> sumOfRefuelingByVehicle(User user, Date begin, Date end);
-    @Query("SELECT  new pl.nankiewic.fleetappbackend.DTO.DataTripDTO(u.trip, u.tripDate) FROM VehicleUse u WHERE u.vehicle=?1 and (u.tripDate between ?2 and ?3)")
+    @Query("SELECT  new pl.nankiewic.fleetappbackend.DTO.DataTripDTO(u.trip, u.tripDate) FROM VehicleUse u WHERE u.vehicle=?1 and (u.tripDate between ?2 and ?3) ORDER BY u.tripDate ASC")
     Iterable<DataTripDTO> tripByVehicleAndData(Vehicle vehicle, Date begin, Date end);
     @Query("SELECT  new pl.nankiewic.fleetappbackend.DTO.DataUseTypeDTO(u.tripType, SUM(u.trip)) FROM VehicleUse u WHERE u.vehicle=?1 and (u.tripDate between ?2 and ?3) group by u.tripType")
     Iterable<DataUseTypeDTO> tripByVehicleAndDataAndTripType(Vehicle vehicle, Date begin, Date end);
@@ -29,5 +27,4 @@ public interface VehicleUseRepository extends JpaRepository<VehicleUse, Long> {
     Iterable<DataTripUserDTO> tripByVehicleAndDataAndUser(User user, Date begin, Date end);
     @Query("SELECT  new pl.nankiewic.fleetappbackend.DTO.DataTripUserDTO(u.vehicle, COUNT(u.id)) FROM VehicleUse u WHERE u.vehicle.user=?1 and (u.tripDate between ?2 and ?3) group by u.vehicle")
     Iterable<DataTripUserDTO> numberOfUsesByVehicleAndDataAndUser(User user, Date begin, Date end);
-
 }

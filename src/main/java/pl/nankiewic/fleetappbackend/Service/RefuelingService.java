@@ -7,6 +7,7 @@ import pl.nankiewic.fleetappbackend.Entity.User;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleRefueling;
 import pl.nankiewic.fleetappbackend.Mapper.RefuelingMapper;
+import pl.nankiewic.fleetappbackend.Repository.InsuranceTypeRepository;
 import pl.nankiewic.fleetappbackend.Repository.VehicleRefuelingRepository;
 import pl.nankiewic.fleetappbackend.Repository.UserRepository;
 import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
@@ -18,10 +19,10 @@ import java.util.Optional;
 @Service
 public class RefuelingService {
 
-    VehicleRepository vehicleRepository;
-    VehicleRefuelingRepository refuelingRepository;
-    UserRepository userRepository;
-    RefuelingMapper mapper;
+    private final VehicleRepository vehicleRepository;
+    private final VehicleRefuelingRepository refuelingRepository;
+    private final UserRepository userRepository;
+    private final RefuelingMapper mapper;
     @Autowired
     public RefuelingService(VehicleRepository vehicleRepository, VehicleRefuelingRepository vehicleRefuelingRepository,
                             UserRepository userRepository, RefuelingMapper mapper) {
@@ -36,7 +37,8 @@ public class RefuelingService {
          */
     public void save(RefuelingDTO refuelingDTO, String email) {
         VehicleRefueling refueling = mapper.refuelingDTOToRefueling(refuelingDTO);
-        Vehicle vehicle=vehicleRepository.findById(refuelingDTO.getVehicleId()).orElseThrow(  () -> new RuntimeException("Bład przetwarzania"));
+        Vehicle vehicle=vehicleRepository.findById(refuelingDTO.getVehicleId()).orElseThrow(
+                () -> new RuntimeException("Bład przetwarzania"));
         refueling.setVehicle(vehicle);
         refueling.setUser(userRepository.findUserByEmail(email));
         refuelingRepository.save(refueling);

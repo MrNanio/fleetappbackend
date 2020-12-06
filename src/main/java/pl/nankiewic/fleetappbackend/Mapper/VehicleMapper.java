@@ -61,17 +61,15 @@ public interface VehicleMapper {
             @Mapping(target = "cityFuelConsumption", source = "cityFuelConsumption"),
             @Mapping(target = "countryFuelConsumption", source = "countryFuelConsumption"),
             @Mapping(target = "averageFuelConsumption", source = "averageFuelConsumption"),
-
+            @Mapping(target = "currentVehicleUser", ignore = true),
+            @Mapping(target = "refuelings", ignore = true),
+            @Mapping(target = "user", ignore = true),
+            @Mapping(target = "vehicleInspections", ignore = true),
+            @Mapping(target = "vehicleInsurances", ignore = true),
+            @Mapping(target = "vehicleRepairs", ignore = true),
+            @Mapping(target = "vehicleUses", ignore = true)
     })
     Vehicle vehicleDTOtoVehicle(final VehicleDTO vehicleDTO);
-    default VehicleMake makeStringToVehicleMake(String make) {
-        if (make == null) {
-            return null;
-        }
-        VehicleMake vehicleMake=new VehicleMake();
-        vehicleMake.setName(make);
-        return vehicleMake;
-    }
     Iterable<VehicleDTO> map(Iterable<Vehicle> vehicles);
 
 }

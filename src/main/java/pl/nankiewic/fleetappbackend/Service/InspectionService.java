@@ -13,13 +13,15 @@ import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
 
 @Service
 public class InspectionService {
-    VehicleInspectionRepository vehicleInspectionRepository;
-    VehicleRepository vehicleRepository;
-    UserRepository userRepository;
+    private final VehicleInspectionRepository vehicleInspectionRepository;
+    private final VehicleRepository vehicleRepository;
+    private final UserRepository userRepository;
     private final InspectionMapper mapper;
     @Autowired
     public InspectionService(VehicleInspectionRepository vehicleInspectionRepository,
-                             VehicleRepository vehicleRepository, UserRepository userRepository, InspectionMapper mapper) {
+                             VehicleRepository vehicleRepository,
+                             UserRepository userRepository,
+                             InspectionMapper mapper) {
         this.vehicleInspectionRepository = vehicleInspectionRepository;
         this.vehicleRepository = vehicleRepository;
         this.userRepository = userRepository;

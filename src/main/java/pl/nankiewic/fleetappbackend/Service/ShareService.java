@@ -18,10 +18,10 @@ import java.util.List;
 
 @Service
 public class ShareService {
-    VehicleRepository vehicleRepository;
-    UserRepository userRepository;
-    CurrentVehicleUserRepository currentVehicleUserRepository;
-    VehicleMapper vehicleMapper;
+    private final VehicleRepository vehicleRepository;
+    private final UserRepository userRepository;
+    private final CurrentVehicleUserRepository currentVehicleUserRepository;
+    private final VehicleMapper vehicleMapper;
     @Autowired
     public ShareService(VehicleRepository vehicleRepository, UserRepository userRepository,
                         CurrentVehicleUserRepository currentVehicleUserRepository, VehicleMapper vehicleMapper) {

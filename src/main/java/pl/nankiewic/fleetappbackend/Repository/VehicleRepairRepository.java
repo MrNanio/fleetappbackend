@@ -8,7 +8,6 @@ import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleRepair;
 
 import java.sql.Date;
-import java.time.LocalDate;
 
 @CrossOrigin(origins = "http://localhost:4200")
 public interface VehicleRepairRepository extends JpaRepository<VehicleRepair, Long> {
