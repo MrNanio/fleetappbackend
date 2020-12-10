@@ -1,7 +1,6 @@
 # fleetappbackend
 server application about supporting the management and maintenance of the vehicle fleet
 
-Server application about supporting the management and maintenance of the vehicle fleet
 # Tech stack
 Java / Spring Boot\
 Spring Security\
