@@ -1,6 +1,5 @@
 package pl.nankiewic.fleetappbackend.Controller;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -45,7 +44,7 @@ public class VehicleController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return vehicleService.findVehiclesByUser(userDetails.getUsername());
     }
-   // @PreAuthorize("hasAnyRole('ROLE_SUPERUSER','ROLE_USER')")
+
     @GetMapping("/{id}")
     public VehicleDTO getVehicleById(@PathVariable Long id, Authentication authentication){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -53,7 +52,7 @@ public class VehicleController {
             return vehicleService.findById(id);
         } else throw new PermissionDeniedException();
     }
-   @PutMapping
+    @PutMapping
     public Vehicle updateVehicle(@RequestBody VehicleDTO vehicleDTO, Authentication authentication){
        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
        return vehicleService.save(vehicleDTO, userDetails.getUsername());

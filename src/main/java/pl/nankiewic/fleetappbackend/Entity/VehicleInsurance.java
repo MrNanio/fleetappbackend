@@ -10,33 +10,24 @@ import java.sql.Date;
 @Entity
 @Table(name = "vehicle_insurances")
 public class VehicleInsurance {
-
     @Id
-
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date effectiveDate;
-
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date expirationDate;
-
     @Column(precision=8, scale=2, nullable = false)
     private BigDecimal cost;
-
     @Column(length = 25, nullable = false)
     private String policyNumber;
-
     @Column(length = 100)
     private String description;
-
     @ManyToOne
     @JoinColumn(name = "InsuranceTypeFk", nullable = false)
     private InsuranceType insuranceType;
-
     @ManyToOne
     @JoinColumn(name = "VehicleFk", nullable = false)
     private Vehicle vehicle;

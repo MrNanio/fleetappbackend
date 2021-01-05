@@ -6,5 +6,5 @@ import pl.nankiewic.fleetappbackend.Entity.UserAccountStatus;
 
 @CrossOrigin(origins = "http://localhost:4200")
 public interface UserAccountStatusRepository extends JpaRepository<UserAccountStatus, Long> {
-    UserAccountStatus findByUserAccountStatusName(String s);
+    UserAccountStatus findByName(String s);
 }

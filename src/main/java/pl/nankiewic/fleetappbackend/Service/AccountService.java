@@ -61,7 +61,7 @@ public class AccountService {
         User user=userRepository.findUserByEmail(userDetails.getUsername());
         user.setLastLoginAt(LocalDateTime.now());
         userRepository.save(user);
-        return new AuthenticationResponse(jwt, userDetails.getUsername(), user.getId(), user.getRole().getRoleName());
+        return new AuthenticationResponse(jwt, userDetails.getUsername(), user.getId(), user.getRole().getName());
     }
     public void saveUserData(UserDataDTO userDataDTO, String email){
         User user= userRepository.findUserByEmail(email);
@@ -119,7 +119,7 @@ public class AccountService {
         }
     }
     public void activation(User user){
-        user.setUserAccountStatus(userAccountStatusRepository.findByUserAccountStatusName("ACTIVE"));
+        user.setUserAccountStatus(userAccountStatusRepository.findByName("ACTIVE"));
         userRepository.save(user);
     }
 
@@ -220,7 +220,7 @@ public class AccountService {
                 if(user1.getEmail().equals(user.getEmail())){
                     user.setPassword(passwordEncoder.encode(idDTO.getNewPassword()));
                     user.setEnabled(true);
-                    user.setUserAccountStatus(userAccountStatusRepository.findByUserAccountStatusName("ACTIVE"));
+                    user.setUserAccountStatus(userAccountStatusRepository.findByName("ACTIVE"));
                     userRepository.save(user);
                     mailService.sendSuccessInfo(user.getEmail());
                 }else throw new TokenException("błąd danych autoryzacyjnych: email");
@@ -232,13 +232,13 @@ public class AccountService {
         return userRepository.findByUser(manager);
     }
     public Iterable<UserDTO> getAllUser(){
-        return userMapper.userToUserDTOs(userRepository.findAllByRoleIsNot(roleRepository.findRoleByRoleName("ROLE_ADMIN")));
+        return userMapper.userToUserDTOs(userRepository.findAllByRoleIsNot(roleRepository.findRoleByName("ROLE_ADMIN")));
     }
     public void blockOrUnblockUser(BlockOrUnblock blockOrUnblock){
         if(userRepository.existsById(blockOrUnblock.getId())){
             User user=userRepository.findUserById(blockOrUnblock.getId());
-            UserAccountStatus userAccountStatus= userAccountStatusRepository.findByUserAccountStatusName(blockOrUnblock.getUserStatus());
-            switch (userAccountStatus.getUserAccountStatusName()) {
+            UserAccountStatus userAccountStatus= userAccountStatusRepository.findByName(blockOrUnblock.getUserStatus());
+            switch (userAccountStatus.getName()) {
                 case "ACTIVE":
                 case "INACTIVE":
                     user.setEnabled(true);

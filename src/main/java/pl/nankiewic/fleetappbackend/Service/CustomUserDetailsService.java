@@ -53,7 +53,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (user == null) {
             return new org.springframework.security.core.userdetails.User(" ",
                     " ", true, true, true, true,
-            getAuthorities(roleRepository.findRoleByRoleName("ROLE_USER")));
+            getAuthorities(roleRepository.findRoleByName("ROLE_USER")));
         }
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(), user.getPassword(), user.isEnabled(), true, true,
@@ -63,7 +63,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             Role roles) {
         List<GrantedAuthority> authorities
                 = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(roles.getRoleName()));
+        authorities.add(new SimpleGrantedAuthority(roles.getName()));
         return authorities;
     }
 
@@ -75,16 +75,16 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
     public void superuserRegister(User user) {
         user.setCreatedAt(LocalDateTime.now());
-        user.setRole(roleRepository.findRoleByRoleName("ROLE_SUPERUSER"));
-        user.setUserAccountStatus(userAccountStatusRepository.findByUserAccountStatusName("INACTIVE"));
+        user.setRole(roleRepository.findRoleByName("ROLE_SUPERUSER"));
+        user.setUserAccountStatus(userAccountStatusRepository.findByName("INACTIVE"));
         user.setEnabled(true);
         userRepository.save(user);
         activationToken(userRepository.findUserByEmail(user.getEmail()));
     }
     public void userRegister(User user){
         user.setCreatedAt(LocalDateTime.now());
-        user.setRole(roleRepository.findRoleByRoleName("ROLE_USER"));
-        user.setUserAccountStatus(userAccountStatusRepository.findByUserAccountStatusName("INACTIVE"));
+        user.setRole(roleRepository.findRoleByName("ROLE_USER"));
+        user.setUserAccountStatus(userAccountStatusRepository.findByName("INACTIVE"));
         user.setEnabled(false);
         userRepository.save(user);
     }

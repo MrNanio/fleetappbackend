@@ -57,7 +57,7 @@ public class UserController {
 /*
     @PostMapping("/activation")
     public String activationAccountTokenRequest(EmailDTO emailDTO) {
-        return "xd";
+        return "";
     }
 */
     /*
@@ -145,8 +145,7 @@ public class UserController {
     }
     @PreAuthorize("hasRole('SUPERUSER')")
     @GetMapping("/get-user-by-id/{id}")
-    EmailDTO getUserEmail(@PathVariable Long id, Authentication authentication) {
-        //UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+    EmailDTO getUserEmail(@PathVariable Long id) {
         EmailDTO emailDTO= new EmailDTO();
         emailDTO.setEmail(userRepository.findUserById(id).getEmail());
         return emailDTO;

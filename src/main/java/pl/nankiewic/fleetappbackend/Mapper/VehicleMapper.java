@@ -9,8 +9,6 @@ import pl.nankiewic.fleetappbackend.Entity.FuelType;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleMake;
 import pl.nankiewic.fleetappbackend.Entity.VehicleStatus;
-
-
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
 public interface VehicleMapper {
     @Mappings({
@@ -45,7 +43,7 @@ public interface VehicleMapper {
         if (vehicleStatus == null) {
             return null;
         }
-        return vehicleStatus.getStatusName();
+        return vehicleStatus.getName();
     }
     @Mappings({
             @Mapping(target = "id", source = "id"),

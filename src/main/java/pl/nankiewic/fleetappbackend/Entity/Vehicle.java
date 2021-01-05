@@ -78,6 +78,23 @@ public class Vehicle {
     public Vehicle() {
     }
 
+    public Vehicle(Long id, VehicleMake vehicleMake, String model, String year, String color, String mileage, String vinNumber, String vehicleRegistrationNumber, FuelType fuelType, BigDecimal cityFuelConsumption, BigDecimal countryFuelConsumption, BigDecimal averageFuelConsumption, VehicleStatus vehicleStatus, User user) {
+        this.id = id;
+        this.vehicleMake = vehicleMake;
+        this.model = model;
+        this.year = year;
+        this.color = color;
+        this.mileage = mileage;
+        this.vinNumber = vinNumber;
+        this.vehicleRegistrationNumber = vehicleRegistrationNumber;
+        this.fuelType = fuelType;
+        this.cityFuelConsumption = cityFuelConsumption;
+        this.countryFuelConsumption = countryFuelConsumption;
+        this.averageFuelConsumption = averageFuelConsumption;
+        this.vehicleStatus = vehicleStatus;
+        this.user = user;
+    }
+
     public Long getId() {
         return id;
     }

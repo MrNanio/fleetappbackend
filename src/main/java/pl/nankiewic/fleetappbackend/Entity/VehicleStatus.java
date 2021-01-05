@@ -14,7 +14,7 @@ public class VehicleStatus {
     private Long id;
 
     @Column(length = 15, nullable = false)
-    private String statusName;
+    private String name;
 
     @OneToMany(mappedBy = "vehicleStatus", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Vehicle> vehicles = new HashSet<>();
@@ -27,12 +27,12 @@ public class VehicleStatus {
         this.id = id;
     }
 
-    public String getStatusName() {
-        return statusName;
+    public String getName() {
+        return name;
     }
 
-    public void setStatusName(String statusName) {
-        this.statusName = statusName;
+    public void setName(String statusName) {
+        this.name = statusName;
     }
 
     public Set<Vehicle> getVehicles() {

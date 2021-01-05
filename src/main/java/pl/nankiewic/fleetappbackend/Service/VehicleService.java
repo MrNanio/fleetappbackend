@@ -49,7 +49,7 @@ public class VehicleService {
     public Vehicle save(VehicleDTO vehicleDTO, String email) {
         Vehicle vehicle = mapper.vehicleDTOtoVehicle(vehicleDTO);
         vehicle.setFuelType(fuelTypeRepository.findByName(vehicleDTO.getFuelType()));
-        vehicle.setVehicleStatus(vehicleStatusRepository.findByStatusName(vehicleDTO.getVehicleStatus()));
+        vehicle.setVehicleStatus(vehicleStatusRepository.findByName(vehicleDTO.getVehicleStatus()));
         vehicle.setVehicleMake(vehicleMakeRepository.findByName(vehicleDTO.getMake()));
         vehicle.setUser(userRepository.findUserByEmail(email));
         return vehicleRepository.save(vehicle);

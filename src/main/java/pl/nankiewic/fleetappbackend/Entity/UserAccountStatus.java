@@ -11,7 +11,7 @@ public class UserAccountStatus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(length = 15, nullable = false)
-    private String userAccountStatusName;
+    private String name;
     @OneToMany(mappedBy = "userAccountStatus", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<User> users = new HashSet<>();
 
@@ -23,12 +23,12 @@ public class UserAccountStatus {
         this.id = id;
     }
 
-    public String getUserAccountStatusName() {
-        return userAccountStatusName;
+    public String getName() {
+        return name;
     }
 
-    public void setUserAccountStatusName(String userAccountStatusName) {
-        this.userAccountStatusName = userAccountStatusName;
+    public void setName(String userAccountStatusName) {
+        this.name = userAccountStatusName;
     }
 
     public Set<User> getUsers() {

@@ -25,13 +25,13 @@ public interface UserMapper {
                 if (roles == null) {
                         return null;
                 }
-                return roles.getRoleName();
+                return roles.getName();
         }
         default String userStatusToString(UserAccountStatus accountStatus) {
                 if (accountStatus == null) {
                         return null;
                 }
-                return accountStatus.getUserAccountStatusName();
+                return accountStatus.getName();
         }
         Iterable<UserDTO> userToUserDTOs(Iterable<User> users);
 

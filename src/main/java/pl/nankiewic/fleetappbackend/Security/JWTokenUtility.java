@@ -18,7 +18,6 @@ public class JWTokenUtility {
         int jwtExpirationMs = 86400000;
         return Jwts.builder()
                 .setSubject((userDetails.getUsername()))
-                .claim("userid",userDetails.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)

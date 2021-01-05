@@ -16,6 +16,24 @@ public class VehicleDTO {
     private String averageFuelConsumption;
     private String vehicleStatus;
 
+    public VehicleDTO(Long id, String make, String model, String year, String color, String mileage, String vinNumber,
+                      String vehicleRegistrationNumber, String fuelType, String cityFuelConsumption,
+                      String countryFuelConsumption, String averageFuelConsumption, String vehicleStatus) {
+        this.id = id;
+        this.make = make;
+        this.model = model;
+        this.year = year;
+        this.color = color;
+        this.mileage = mileage;
+        this.vinNumber = vinNumber;
+        this.vehicleRegistrationNumber = vehicleRegistrationNumber;
+        this.fuelType = fuelType;
+        this.cityFuelConsumption = cityFuelConsumption;
+        this.countryFuelConsumption = countryFuelConsumption;
+        this.averageFuelConsumption = averageFuelConsumption;
+        this.vehicleStatus = vehicleStatus;
+    }
+
     public Long getId() {
         return id;
     }

@@ -10,7 +10,6 @@ import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.InspectionService;
 
-
 @RestController
 @PreAuthorize("hasRole('SUPERUSER')")
 @RequestMapping("/inspection")

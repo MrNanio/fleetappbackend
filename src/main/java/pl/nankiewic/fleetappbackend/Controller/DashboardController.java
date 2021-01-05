@@ -154,26 +154,22 @@ public class DashboardController {
         @GetMapping("trip_by_user")
         public Iterable<ChartDataRespondDTO> vehicleTripByUser(@RequestParam (name = "u") String user,
                                                                @RequestParam (name = "b") String beginS,
-                                                               @RequestParam (name = "e") String endS,
-                                                               Authentication authentication){
+                                                               @RequestParam (name = "e") String endS){
                 Date begin=Date.valueOf(beginS);
                 Date end=Date.valueOf(endS);
-                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 return dashboardService.distanceByVehicleAndDataAndUser(begin, end, user);
         }
 
         /*
         name: model | numer rejestracyjny
-        value koszty paliwa dodane prez tego drivera do danego pojazdu
+        value koszty paliwa dodane przez tego drivera do danego pojazdu
          */
         @GetMapping("fuel_cost_by_user")//new
         public Iterable<ChartDataRespondDTO> fuelCostByUser(@RequestParam (name = "u") String user,
                                                             @RequestParam (name = "b") String beginS,
-                                                            @RequestParam (name = "e") String endS,
-                                                            Authentication authentication){
+                                                            @RequestParam (name = "e") String endS){
                 Date begin=Date.valueOf(beginS);
                 Date end=Date.valueOf(endS);
-                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 return dashboardService.fuelCostByVehicleAndDataAndUser(begin, end, user);
         }
 

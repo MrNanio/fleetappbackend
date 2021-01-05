@@ -9,9 +9,6 @@ public class ChartDataRespondDTO {
         this.name = name;
     }
 
-    public ChartDataRespondDTO() {
-    }
-
     public Float getValue() {
         return value;
     }

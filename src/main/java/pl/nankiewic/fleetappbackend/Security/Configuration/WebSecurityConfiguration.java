@@ -58,8 +58,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/activation-account").permitAll()
                 .antMatchers("/user/reset-password").permitAll()
                 .antMatchers("/user/reset-password/new").permitAll()
-                .antMatchers("/user/new-account/**").permitAll()
-                .antMatchers("/reports/**").permitAll()
+                .antMatchers("/user/new-account").permitAll()
+                .antMatchers("/user/new-account/password").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

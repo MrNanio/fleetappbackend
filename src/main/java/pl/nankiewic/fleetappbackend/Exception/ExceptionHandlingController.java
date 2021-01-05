@@ -19,8 +19,6 @@ import java.time.LocalDateTime;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ExceptionHandlingController extends ResponseEntityExceptionHandler {
 
-
-
     @ExceptionHandler(EntityExistsException.class)
     public final ResponseEntity<Object> handleEntityBadRequest(EntityExistsException exception,
                                                                WebRequest request) {

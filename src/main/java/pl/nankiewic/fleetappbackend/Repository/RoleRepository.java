@@ -6,7 +6,7 @@ import pl.nankiewic.fleetappbackend.Entity.Role;
 
 @CrossOrigin(origins = "http://localhost:4200")
 public interface RoleRepository extends JpaRepository<Role, Long> {
-    Role findRoleByRoleName(String name);
+    Role findRoleByName(String name);
 
 
 }

@@ -118,7 +118,6 @@ public class ReportsController {
                 exporter.export(response);
                 break;
             }
-            //default: throw new
         }
     }
 }

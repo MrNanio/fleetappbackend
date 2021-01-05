@@ -11,9 +11,7 @@ import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.ShareService;
 
-
 @RestController
-//@PreAuthorize("hasRole('SUPERUSER')")
 @CrossOrigin(origins = "http://localhost:4200")
 public class ShareController {
 
@@ -32,9 +30,7 @@ public class ShareController {
     @GetMapping("/share/user/{id}")
     public Iterable<VehicleDTO> getShareVehicleByIdUser(@PathVariable Long id, Authentication authentication){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-       // if(checkService.accessToUser(userDetails.getUsername(), id)){
-            return shareService.getShareVehicleListByUserId(id, userDetails.getUsername());
-       // } else throw new PermissionDeniedException();
+        return shareService.getShareVehicleListByUserId(id, userDetails.getUsername());
     }
     @GetMapping("/share/vehicles")
     public Iterable<VehicleDTO> getPossibleVehicleListToShare(Authentication authentication){
