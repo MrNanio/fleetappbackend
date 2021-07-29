@@ -5,14 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import pl.nankiewic.fleetappbackend.DTO.VehicleDTO;
-import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Mapper.VehicleMapper;
 import pl.nankiewic.fleetappbackend.Repository.*;
-
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.ArrayList;
 import static org.mockito.Mockito.*;
 
 class VehicleServiceTest {
@@ -35,15 +30,21 @@ class VehicleServiceTest {
         vehicleService=new VehicleService(vehicleRepository, vehicleStatusRepository,
                 vehicleMakeRepository, fuelTypeRepository, userRepository, vehicleMapper);
     }
+    @Test
+    void should_select_vehicles_by_user() {
+        when(userRepository.existsByEmail(any())).thenReturn(true);
+        when(vehicleRepository.existsByUser(any())).thenReturn(true);
+        when(vehicleRepository.selectVehiclesDataByUser(any())).thenReturn(new ArrayList<>());
+        vehicleService.getVehiclesDataByUser("example@example.com");
+        verify(vehicleRepository, times(1)).selectVehiclesDataByUser(any());
+    }
 
     @Test
-    void should_find_vehicle_by_id() {
+    void should_select_vehicle_by_id() {
         when(vehicleRepository.existsById(any())).thenReturn(true);
-        when(vehicleRepository.findById(any())).thenReturn(Optional.of(new Vehicle()));
-        when(vehicleMapper.vehicleToVehicleDTO(any())).thenReturn(new VehicleDTO());
-        vehicleService.findById(1L);
-        verify(vehicleRepository, times(1)).findById(any());
-        verify(vehicleMapper, times(1)).vehicleToVehicleDTO(any());
+        when(vehicleRepository.selectVehicleDetailsById(any())).thenReturn(new VehicleDTO());
+        vehicleService.getVehicleDataById(1L);
+        verify(vehicleRepository, times(1)).selectVehicleDetailsById(any());
     }
 
     @Test

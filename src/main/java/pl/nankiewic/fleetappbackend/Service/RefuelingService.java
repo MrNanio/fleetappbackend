@@ -7,14 +7,12 @@ import pl.nankiewic.fleetappbackend.Entity.User;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleRefueling;
 import pl.nankiewic.fleetappbackend.Mapper.RefuelingMapper;
-import pl.nankiewic.fleetappbackend.Repository.InsuranceTypeRepository;
 import pl.nankiewic.fleetappbackend.Repository.VehicleRefuelingRepository;
 import pl.nankiewic.fleetappbackend.Repository.UserRepository;
 import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
-
 
 @Service
 public class RefuelingService {

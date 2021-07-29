@@ -42,14 +42,14 @@ public class VehicleController {
     @GetMapping()
     public Iterable<VehicleDTO> getVehiclesByVehicleOwner(Authentication authentication){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return vehicleService.findVehiclesByUser(userDetails.getUsername());
+        return vehicleService.getVehiclesDataByUser(userDetails.getUsername());
     }
 
     @GetMapping("/{id}")
     public VehicleDTO getVehicleById(@PathVariable Long id, Authentication authentication){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), id)) {
-            return vehicleService.findById(id);
+            return vehicleService.getVehicleDataById(id);
         } else throw new PermissionDeniedException();
     }
     @PutMapping
