@@ -1,5 +1,7 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
+import java.math.BigDecimal;
+
 public class VehicleDTO {
 
     private Long id;
@@ -11,14 +13,14 @@ public class VehicleDTO {
     private String vinNumber;
     private String vehicleRegistrationNumber;
     private String fuelType;
-    private String cityFuelConsumption;
-    private String countryFuelConsumption;
-    private String averageFuelConsumption;
+    private BigDecimal cityFuelConsumption;
+    private BigDecimal countryFuelConsumption;
+    private BigDecimal averageFuelConsumption;
     private String vehicleStatus;
 
     public VehicleDTO(Long id, String make, String model, String year, String color, String mileage, String vinNumber,
-                      String vehicleRegistrationNumber, String fuelType, String cityFuelConsumption,
-                      String countryFuelConsumption, String averageFuelConsumption, String vehicleStatus) {
+                      String vehicleRegistrationNumber, String fuelType, BigDecimal cityFuelConsumption,
+                      BigDecimal countryFuelConsumption, BigDecimal averageFuelConsumption, String vehicleStatus) {
         this.id = id;
         this.make = make;
         this.model = model;
@@ -32,6 +34,10 @@ public class VehicleDTO {
         this.countryFuelConsumption = countryFuelConsumption;
         this.averageFuelConsumption = averageFuelConsumption;
         this.vehicleStatus = vehicleStatus;
+    }
+
+    public VehicleDTO() {
+
     }
 
     public Long getId() {
@@ -106,27 +112,27 @@ public class VehicleDTO {
         this.fuelType = fuelType;
     }
 
-    public String getCityFuelConsumption() {
+    public BigDecimal getCityFuelConsumption() {
         return cityFuelConsumption;
     }
 
-    public void setCityFuelConsumption(String cityFuelConsumption) {
+    public void setCityFuelConsumption(BigDecimal cityFuelConsumption) {
         this.cityFuelConsumption = cityFuelConsumption;
     }
 
-    public String getCountryFuelConsumption() {
+    public BigDecimal getCountryFuelConsumption() {
         return countryFuelConsumption;
     }
 
-    public void setCountryFuelConsumption(String countryFuelConsumption) {
+    public void setCountryFuelConsumption(BigDecimal countryFuelConsumption) {
         this.countryFuelConsumption = countryFuelConsumption;
     }
 
-    public String getAverageFuelConsumption() {
+    public BigDecimal getAverageFuelConsumption() {
         return averageFuelConsumption;
     }
 
-    public void setAverageFuelConsumption(String averageFuelConsumption) {
+    public void setAverageFuelConsumption(BigDecimal averageFuelConsumption) {
         this.averageFuelConsumption = averageFuelConsumption;
     }
 

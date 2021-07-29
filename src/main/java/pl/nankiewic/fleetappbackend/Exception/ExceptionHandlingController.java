@@ -16,7 +16,7 @@ import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
-@Order(Ordered.HIGHEST_PRECEDENCE)
+//@Order(Ordered.HIGHEST_PRECEDENCE)
 public class ExceptionHandlingController extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntityExistsException.class)
