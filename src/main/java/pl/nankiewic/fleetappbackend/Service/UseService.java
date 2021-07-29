@@ -68,7 +68,8 @@ public class UseService {
         } else throw new EntityNotFoundException();
     }
     public void deleteUseById(Long id){
-        VehicleUse use=vehicleUseRepository.findById(id).orElseThrow( () -> new RuntimeException("Bład przetwarzania"));
+        VehicleUse use=vehicleUseRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Bład przetwarzania"));
         Vehicle vehicle=use.getVehicle();
         int mil=Integer.parseInt(vehicle.getMileage())-use.getTrip();
         vehicle.setMileage(Integer.toString(mil));

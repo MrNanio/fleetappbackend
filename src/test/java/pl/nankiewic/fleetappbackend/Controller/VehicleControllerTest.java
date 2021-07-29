@@ -12,6 +12,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import pl.nankiewic.fleetappbackend.DTO.VehicleDTO;
+
+import java.math.BigDecimal;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -29,8 +32,8 @@ class VehicleControllerTest {
 
         VehicleDTO vehicleDTO=new VehicleDTO(33L,
                 "FORD", "KUGA", "2020", "BIAŁY", "20200", "12345678998765432",
-                "LU3421E", "ON", "12",
-                "10", "11", "Aktywny");
+                "LU3421E", "ON", BigDecimal.valueOf(12),
+                BigDecimal.valueOf(12), BigDecimal.valueOf(12), "Aktywny");
 
         mockMvc.perform(MockMvcRequestBuilders.post("/vehicle")
                 .content(asJsonString(vehicleDTO))
@@ -82,8 +85,8 @@ class VehicleControllerTest {
 
         VehicleDTO vehicleDTO=new VehicleDTO(33L,
                 "FORD", "KUGAa", "2020", "BIAŁY", "20200", "12345678998765432",
-                "LU3421E", "ON", "12",
-                "10", "11", "Aktywny");
+                "LU3421E", "ON", BigDecimal.valueOf(12),
+                BigDecimal.valueOf(12), BigDecimal.valueOf(12), "Aktywny");
 
         mockMvc.perform(MockMvcRequestBuilders.put("/vehicle")
                 .content(asJsonString(vehicleDTO))
