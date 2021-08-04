@@ -45,6 +45,7 @@ public class VehicleService {
         } else throw new EntityNotFoundException("Nie znaleziono pojazdu o danym id");
     }
 
+
     public Vehicle save(VehicleDTO vehicleDTO, String email) {
         Vehicle vehicle = mapper.vehicleDTOtoVehicle(vehicleDTO);
         vehicle.setFuelType(fuelTypeRepository.findByName(vehicleDTO.getFuelType()));
