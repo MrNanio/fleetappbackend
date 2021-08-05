@@ -33,18 +33,18 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final MailService mailService;
+    //private final MailService mailService;
     @Autowired
     public CustomUserDetailsService(UserAccountStatusRepository userAccountStatusRepository,
                                     VerificationTokenRepository verificationTokenRepository,
                                     RoleRepository roleRepository, UserRepository userRepository,
-                                    PasswordEncoder passwordEncoder, MailService mailService) {
+                                    PasswordEncoder passwordEncoder) {
         this.userAccountStatusRepository = userAccountStatusRepository;
         this.verificationTokenRepository = verificationTokenRepository;
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.mailService = mailService;
+       // this.mailService = mailService;
     }
 
     @Override
@@ -91,7 +91,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public void activationToken(User user){
         VerificationToken verificationToken=new VerificationToken(user);
         verificationTokenRepository.save(verificationToken);
-        mailService.sendActivationEmail(user.getEmail(),verificationTokenRepository.findByUser(user).getToken());
+        //mailService.sendActivationEmail(user.getEmail(),verificationTokenRepository.findByUser(user).getToken());
     }
     public String createPasswordCode() {
         int lLimit = 97; // letter 'a'
@@ -109,7 +109,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         if(userRepository.existsByEmail(emailDTO.getEmail())){
             User user=userRepository.findUserByEmail(emailDTO.getEmail());
             if(!user.isEnabled() && user.getVerificationToken().getExpiryDate().isAfter(LocalDateTime.now())){
-                mailService.sendInviteMail(emailDTO.getEmail(), user.getVerificationToken().getToken());
+               // mailService.sendInviteMail(emailDTO.getEmail(), user.getVerificationToken().getToken());
             } else if(!user.isEnabled() && user.getVerificationToken().getExpiryDate().isBefore(LocalDateTime.now())) {
                VerificationToken verificationToken=verificationTokenRepository.findByUser(user);
                 VerificationToken verificationTokenv2=new VerificationToken(user);
@@ -126,7 +126,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             userRegister(user);
             VerificationToken verificationToken=new VerificationToken(user);
             verificationTokenRepository.save(verificationToken);
-            mailService.sendInviteMail(emailDTO.getEmail(), verificationToken.getToken());
+            //mailService.sendInviteMail(emailDTO.getEmail(), verificationToken.getToken());
         }
     }
 }

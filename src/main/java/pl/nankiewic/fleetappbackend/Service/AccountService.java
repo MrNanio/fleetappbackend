@@ -144,7 +144,7 @@ public class AccountService {
             verificationToken.setExpiryDate(LocalDateTime.now().plusMinutes(120));
             verificationTokenRepository.save(verificationToken);
             userRepository.save(user);
-            mailService.sendResetPassword(user.getEmail(), user.getResetCode(), verificationTokenRepository.findByUser(user).getToken());
+            //mailService.sendResetPassword(user.getEmail(), user.getResetCode(), verificationTokenRepository.findByUser(user).getToken());
         } else throw new UsernameNotFoundException("nie znaleziono użytkownika");
     }
     public ResetChangePasswordDTO getResetPassword(String user_token, String user_code){
@@ -178,7 +178,7 @@ public class AccountService {
                 if(user1.getEmail().equals(user.getEmail())){
                     user.setPassword(passwordEncoder.encode(resetChangePasswordDTO.getNew_password()));
                     userRepository.save(user);
-                    mailService.sendPasswordInfo(user.getEmail());
+                    //mailService.sendPasswordInfo(user.getEmail());
                 }else throw new TokenException("coś poszło nie tak");
             }else throw new TokenException("twoja tożsamość nie została potwierdzona");
         }else throw new TokenException("nie nadałeś nowego hasła lub twoja tożsamość nie została potwierdzona ");
@@ -190,7 +190,7 @@ public class AccountService {
         {
             user.setPassword(passwordEncoder.encode(passwordDTO.getNewPassword()));
             userRepository.save(user);
-            mailService.sendPasswordInfo(user.getEmail());
+            //mailService.sendPasswordInfo(user.getEmail());
         } else throw new WrongOldPasswordException();
     }
     //dodanie konta usera i show
@@ -222,7 +222,7 @@ public class AccountService {
                     user.setEnabled(true);
                     user.setUserAccountStatus(userAccountStatusRepository.findByName("ACTIVE"));
                     userRepository.save(user);
-                    mailService.sendSuccessInfo(user.getEmail());
+                    //mailService.sendSuccessInfo(user.getEmail());
                 }else throw new TokenException("błąd danych autoryzacyjnych: email");
             }else throw new TokenException("błąd danych autoryzacyjnych: token");
         }else throw new TokenException("twoja tożsamość nie została potwierdzona ");
