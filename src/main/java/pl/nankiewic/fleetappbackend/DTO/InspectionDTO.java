@@ -1,7 +1,6 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.sql.Date;
 
 public class InspectionDTO {

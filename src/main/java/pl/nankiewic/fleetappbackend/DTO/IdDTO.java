@@ -1,10 +1,10 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
 public class IdDTO {
-    String email;
-    String newPassword;
-    Long id;
-    String token;
+    private String email;
+    private String newPassword;
+    private Long id;
+    private String token;
 
     public IdDTO(String email, String newPassword, Long id, String token) {
         this.email = email;

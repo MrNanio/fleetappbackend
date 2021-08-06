@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class DataRefuelingDTO {
-    BigDecimal value;
-    Date date;
+    private BigDecimal value;
+    private Date date;
 
     public DataRefuelingDTO(BigDecimal value, Date date) {
         this.value = value;

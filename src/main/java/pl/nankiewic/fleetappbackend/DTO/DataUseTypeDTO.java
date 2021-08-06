@@ -2,8 +2,8 @@ package pl.nankiewic.fleetappbackend.DTO;
 
 
 public class DataUseTypeDTO {
-    String type;
-    Long cost;
+    private String type;
+    private Long cost;
 
     public DataUseTypeDTO(String type, Long cost) {
         this.type = type;

@@ -1,8 +1,8 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
 public class PasswordDTO {
-    String newPassword;
-    String oldPassword;
+    private String newPassword;
+    private String oldPassword;
 
     public String getNewPassword() {
         return newPassword;

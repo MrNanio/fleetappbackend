@@ -1,6 +1,5 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
-
 import java.math.BigDecimal;
 import java.sql.Date;
 
