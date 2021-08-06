@@ -5,8 +5,8 @@ import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import java.math.BigDecimal;
 
 public class DataUseDTO {
-    Vehicle vehicle;
-    Long cost;
+    private Vehicle vehicle;
+    private Long cost;
 
     public DataUseDTO(Vehicle vehicle, Long cost) {
         this.vehicle = vehicle;

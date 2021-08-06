@@ -1,8 +1,8 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
 public class ChartDataRespondDTO {
-    Float value;
-    String name;
+    private Float value;
+    private String name;
 
     public ChartDataRespondDTO(Float value, String name) {
         this.value = value;

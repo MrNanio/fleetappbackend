@@ -1,7 +1,5 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
-
-import java.time.LocalDate;
 import java.sql.Date;
 
 public class RefuelingDTO {

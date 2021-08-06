@@ -3,8 +3,8 @@ package pl.nankiewic.fleetappbackend.DTO;
 import java.util.Date;
 
 public class DataTripDTO {
-    Short value;
-    Date date;
+    private Short value;
+    private Date date;
 
     public DataTripDTO(Short value, Date date) {
         this.value = value;

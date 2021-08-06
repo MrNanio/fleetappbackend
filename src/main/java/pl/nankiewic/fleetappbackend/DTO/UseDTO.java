@@ -1,7 +1,6 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
 import java.sql.Date;
-import java.time.LocalDate;
 
 public class UseDTO {
     private Long id;

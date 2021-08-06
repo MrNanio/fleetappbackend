@@ -1,6 +1,5 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
-
 public class InsuranceTypeDTO {
     private Long id;
     private String name;

@@ -3,8 +3,8 @@ package pl.nankiewic.fleetappbackend.DTO;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 
 public class DataTripUserDTO {
-    Vehicle vehicle;
-    Long trip;
+    private Vehicle vehicle;
+    private Long trip;
 
     public DataTripUserDTO(Vehicle vehicle, Long trip) {
         this.vehicle = vehicle;
