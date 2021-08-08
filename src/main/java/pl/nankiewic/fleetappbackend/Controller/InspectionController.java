@@ -10,6 +10,8 @@ import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.InspectionService;
 
+import javax.validation.Valid;
+
 @RestController
 @PreAuthorize("hasRole('SUPERUSER')")
 @RequestMapping("/inspection")
@@ -28,7 +30,7 @@ public class InspectionController {
      only owner
      */
     @PostMapping
-    public void addInspection(@RequestBody InspectionDTO inspectionDTO, Authentication authentication){
+    public void addInspection(@RequestBody @Valid InspectionDTO inspectionDTO, Authentication authentication){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), inspectionDTO.getVehicleId())) {
             inspectionService.saveInspection(inspectionDTO);
@@ -66,7 +68,7 @@ public class InspectionController {
     update inspection
      */
     @PutMapping
-    public void updateInspection(@RequestBody InspectionDTO inspectionDTO, Authentication authentication){
+    public void updateInspection(@RequestBody @Valid InspectionDTO inspectionDTO, Authentication authentication){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), inspectionDTO.getVehicleId())) {
             inspectionService.saveInspection(inspectionDTO);

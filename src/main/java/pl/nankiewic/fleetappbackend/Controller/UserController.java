@@ -18,8 +18,8 @@ import pl.nankiewic.fleetappbackend.Service.MailService;
 id user dostaje maila
 share
 
-
  */
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 
 @RestController
@@ -64,7 +64,7 @@ public class UserController {
     RESET PASSWORD
      */
     @PostMapping("/reset-password")
-    public void resetPasswordEmailRequest(@RequestBody EmailDTO emailDTO) {
+    public void resetPasswordEmailRequest(@RequestBody @Valid EmailDTO emailDTO) {
         accountService.postResetPassword(emailDTO);
     }
 
@@ -75,14 +75,14 @@ public class UserController {
     }
 
     @PostMapping("/reset-password/new")
-    public void createNewPassword(@RequestBody ResetChangePasswordDTO resetChangePasswordDTO) {
+    public void createNewPassword(@RequestBody @Valid ResetChangePasswordDTO resetChangePasswordDTO) {
         accountService.postNewPassword(resetChangePasswordDTO);
     }
     /*
     CHANGE PASSWORD
      */
     @PostMapping("/change-password")
-    public void changePassword(@RequestBody PasswordDTO passwordDTO, Authentication authentication) {
+    public void changePassword(@RequestBody @Valid PasswordDTO passwordDTO, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         accountService.changePassword(passwordDTO, userDetails.getUsername());
     }
@@ -97,14 +97,14 @@ public class UserController {
     }
 
     @PostMapping("/userdata")
-    public ResponseEntity<MessageResponse> addUserData(@RequestBody UserDataDTO userDataDTO,
+    public ResponseEntity<MessageResponse> addUserData(@RequestBody @Valid UserDataDTO userDataDTO,
                                                        Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         accountService.saveUserData(userDataDTO, userDetails.getUsername());
         return ResponseEntity.ok().body(new MessageResponse("ok", LocalDateTime.now()));
     }
     @PutMapping("/userdata")
-    public ResponseEntity<MessageResponse> updateUserData(@RequestBody UserDataDTO userDataDTO,
+    public ResponseEntity<MessageResponse> updateUserData(@RequestBody @Valid UserDataDTO userDataDTO,
                                                           Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         accountService.updateUserData(userDataDTO,userDetails.getUsername());
@@ -122,7 +122,7 @@ public class UserController {
      */
     @PreAuthorize("hasRole('SUPERUSER')")
     @PostMapping("/new-account")
-    public void postInviteToNewUser(@RequestBody EmailDTO emailDTO, Authentication authentication) {
+    public void postInviteToNewUser(@RequestBody @Valid EmailDTO emailDTO, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         customUserDetailsService.addNewUser(emailDTO, userDetails.getUsername());
     }
@@ -133,7 +133,7 @@ public class UserController {
     }
 
     @PostMapping("/new-account/password")
-    public void setNewPasswordForUser(@RequestBody IdDTO idDTO) {
+    public void setNewPasswordForUser(@RequestBody @Valid IdDTO idDTO) {
         accountService.newPasswordForNewUser(idDTO);
     }
 

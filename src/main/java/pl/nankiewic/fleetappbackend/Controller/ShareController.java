@@ -11,6 +11,8 @@ import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.ShareService;
 
+import javax.validation.Valid;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 public class ShareController {
@@ -23,7 +25,7 @@ public class ShareController {
         this.checkService = checkService;
     }
     @PostMapping("/share")
-    public void addShare(Authentication authentication, @RequestBody ShareDTO shareDTO){
+    public void addShare(Authentication authentication, @RequestBody @Valid ShareDTO shareDTO){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         shareService.setCurrentVehicleUserToVehicle(shareDTO, userDetails.getUsername());
     }

@@ -1,6 +1,7 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
 public class BlockOrUnblock {
+
     private Long id;
     private String userStatus;
 

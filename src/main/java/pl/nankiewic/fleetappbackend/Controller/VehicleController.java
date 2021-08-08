@@ -15,6 +15,8 @@ import pl.nankiewic.fleetappbackend.Repository.VehicleMakeRepository;
 import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.VehicleService;
 
+import javax.validation.Valid;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/vehicle")
@@ -34,7 +36,7 @@ public class VehicleController {
     }
     @PreAuthorize("hasRole('SUPERUSER')")
     @PostMapping()
-    public Vehicle addVehicle(@RequestBody VehicleDTO vehicleDTO, Authentication authentication){
+    public Vehicle addVehicle(@RequestBody @Valid VehicleDTO vehicleDTO, Authentication authentication){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return vehicleService.save(vehicleDTO, userDetails.getUsername());
     }
@@ -53,7 +55,7 @@ public class VehicleController {
         } else throw new PermissionDeniedException();
     }
     @PutMapping
-    public Vehicle updateVehicle(@RequestBody VehicleDTO vehicleDTO, Authentication authentication){
+    public Vehicle updateVehicle(@RequestBody @Valid VehicleDTO vehicleDTO, Authentication authentication){
        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
        return vehicleService.save(vehicleDTO, userDetails.getUsername());
     }

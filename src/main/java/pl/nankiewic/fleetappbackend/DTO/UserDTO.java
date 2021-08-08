@@ -1,9 +1,12 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public class UserDTO {
+    @NotNull
     private String email;
+    @NotNull
     private String roles;
     private Long id;
     private LocalDateTime createdAt;

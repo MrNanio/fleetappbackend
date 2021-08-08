@@ -7,6 +7,8 @@ import pl.nankiewic.fleetappbackend.DTO.BlockOrUnblock;
 import pl.nankiewic.fleetappbackend.DTO.UserDTO;
 import pl.nankiewic.fleetappbackend.Service.AccountService;
 
+import javax.validation.Valid;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @PreAuthorize("hasRole('ADMIN')")
@@ -26,7 +28,7 @@ public class AdminController {
         return accountService.getUserById(id);
     }
     @PostMapping("/status")
-    public void blockOrUnblockUserById(@RequestBody BlockOrUnblock blockOrUnblock) {
+    public void blockOrUnblockUserById(@RequestBody @Valid BlockOrUnblock blockOrUnblock) {
        accountService.blockOrUnblockUser(blockOrUnblock);
     }
 }

@@ -1,17 +1,22 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
+import javax.validation.constraints.NotNull;
+
 public class AddressDTO {
+    @NotNull
     private Long id;
+    @NotNull
     private String city;
+    @NotNull
     private String street;
+    @NotNull
     private String buildingNumber;
     private String flatNumber;
+    @NotNull
     private String postalCode;
-
 
     public AddressDTO() {
     }
-
 
     public Long getId() {
         return id;
