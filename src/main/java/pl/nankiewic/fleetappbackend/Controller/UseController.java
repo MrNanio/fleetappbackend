@@ -9,6 +9,8 @@ import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.UseService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("use")
 @CrossOrigin(origins = "http://localhost:4200")
@@ -25,7 +27,7 @@ public class UseController {
     add use
      */
     @PostMapping
-    public void addUse(Authentication authentication, @RequestBody UseDTO useDTO) {
+    public void addUse(Authentication authentication, @RequestBody @Valid UseDTO useDTO) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (useDTO.getVehicleId()!=null && checkService.accessToVehicle(userDetails.getUsername(), useDTO.getVehicleId())) {
             useService.save(useDTO, userDetails.getUsername());
@@ -66,7 +68,7 @@ public class UseController {
     use update
     */
     @PutMapping
-    public void updateUse(Authentication authentication, @RequestBody UseDTO useDTO){
+    public void updateUse(Authentication authentication, @RequestBody @Valid UseDTO useDTO){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToUse(userDetails.getUsername(), useDTO.getId())) {
             useService.save(useDTO, userDetails.getUsername());

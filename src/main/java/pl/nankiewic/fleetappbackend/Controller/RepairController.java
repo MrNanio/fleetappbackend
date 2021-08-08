@@ -10,6 +10,8 @@ import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.RepairService;
 
+import javax.validation.Valid;
+
 @RestController
 @PreAuthorize("hasRole('SUPERUSER')")
 @RequestMapping("/repair")
@@ -27,7 +29,7 @@ public class RepairController {
      add repair
     */
    @PostMapping
-    public void addRepair(Authentication authentication, @RequestBody RepairDTO repairDTO) {
+    public void addRepair(Authentication authentication, @RequestBody @Valid RepairDTO repairDTO) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), repairDTO.getVehicleId())) {
             repairService.save(repairDTO);
@@ -65,7 +67,7 @@ public class RepairController {
     repair update
      */
     @PutMapping
-    public void updateRepair(Authentication authentication, @RequestBody RepairDTO repairDTO){
+    public void updateRepair(Authentication authentication, @RequestBody @Valid RepairDTO repairDTO){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToRepair(userDetails.getUsername(), repairDTO.getId())) {
             repairService.save(repairDTO);

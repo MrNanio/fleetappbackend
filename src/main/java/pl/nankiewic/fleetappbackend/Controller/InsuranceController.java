@@ -12,6 +12,8 @@ import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.InsuranceService;
 
+import javax.validation.Valid;
+
 @RestController
 @PreAuthorize("hasRole('SUPERUSER')")
 @RequestMapping("/insurance")
@@ -29,7 +31,7 @@ public class InsuranceController {
     add inspection
     */
     @PostMapping
-    VehicleInsurance addInsurance(Authentication authentication, @RequestBody InsuranceDTO insuranceDTO) {
+    VehicleInsurance addInsurance(Authentication authentication, @RequestBody @Valid InsuranceDTO insuranceDTO) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), insuranceDTO.getVehicleId())) {
             return insuranceService.save(insuranceDTO);
@@ -67,7 +69,7 @@ public class InsuranceController {
     update inspection
     */
     @PutMapping
-    VehicleInsurance updateInsurance(Authentication authentication, @RequestBody InsuranceDTO insuranceDTO){
+    VehicleInsurance updateInsurance(Authentication authentication, @RequestBody @Valid InsuranceDTO insuranceDTO){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), insuranceDTO.getVehicleId())) {
             return insuranceService.save(insuranceDTO);

@@ -9,6 +9,8 @@ import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.RefuelingService;
 
+import javax.validation.Valid;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/refueling")
@@ -22,7 +24,7 @@ public class RefuelingController {
     }
 
     @PostMapping
-    public void addRefueling(@RequestBody RefuelingDTO refuelingDTO, Authentication authentication){
+    public void addRefueling(@RequestBody @Valid RefuelingDTO refuelingDTO, Authentication authentication){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), refuelingDTO.getVehicleId())) {
             refuelingService.save(refuelingDTO, userDetails.getUsername());
@@ -53,7 +55,7 @@ public class RefuelingController {
         return refuelingService.getRefuelingByAuthor(userDetails.getUsername());
     }
     @PutMapping
-    public void updateRefueling(@RequestBody RefuelingDTO refuelingDTO, Authentication authentication){
+    public void updateRefueling(@RequestBody @Valid RefuelingDTO refuelingDTO, Authentication authentication){
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToRefueling(userDetails.getUsername(), refuelingDTO.getId())) {
             refuelingService.save(refuelingDTO, userDetails.getUsername());
