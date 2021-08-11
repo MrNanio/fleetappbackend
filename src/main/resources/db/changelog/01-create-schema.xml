@@ -3,157 +3,202 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
     <changeSet id="1" author="nankiewic">
-        <sql splitStatements="false">
 
-            CREATE TABLE fuel_types (
-            id BIGINT NOT NULL,
-            name VARCHAR(7)
-<!--            PRIMARY KEY(id)-->
-            );
+        <createTable tableName="fuel_types">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(7)"/>
+        </createTable>
 
-<!--            CREATE TABLE insurance_types (-->
-<!--            id BIGINT NOT NULL,-->
-<!--            name VARCHAR(45) NOT NULL-->
-<!--            );-->
+        <createTable tableName="vehicle_makes">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(45)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
 
-<!--            CREATE TABLE roles (-->
-<!--            id BIGINT NOT NULL,-->
-<!--            name VARCHAR(45) NOT NULL,-->
-<!--            PRIMARY KEY(id)-->
-<!--            );-->
+        <createTable tableName="insurance_types">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(45)"/>
+        </createTable>
 
-<!--            CREATE TABLE vehicle_status (-->
-<!--            id BIGINT PRIMARY KEY,-->
-<!--            name VARCHAR(15) NOT NULL-->
-<!--            );-->
+        <createTable tableName="roles">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(45)"/>
+        </createTable>
 
-<!--            CREATE TABLE address (-->
-<!--            id BIGINT PRIMARY KEY,-->
-<!--            city VARCHAR(45) NOT NULL,-->
-<!--            street VARCHAR(45),-->
-<!--            building_number VARCHAR(5) NOT NULL,-->
-<!--            flat_number VARCHAR(7),-->
-<!--            postal_code VARCHAR(7) NOT NULL,-->
-<!--            &lt;!&ndash;            id_user_data BIGINT NOT NULL REFERENCES "user_data"(id)&ndash;&gt;-->
-<!--            )-->
+        <createTable tableName="user_account_status">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(45)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
 
-<!--            CREATE TABLE users (-->
-<!--            id BIGINT PRIMARY KEY,-->
-<!--            email VARCHAR(45) NOT NULL,-->
-<!--            password VARCHAR(45) NOT NULL,-->
-<!--            reset_code VARCHAR(45),-->
-<!--            reset_at DATETIME,-->
-<!--            created_at DATETIME,-->
-<!--            last_login_at DATETIME,-->
-<!--            is_enabled BOOLEAN DEFAULT 'false',-->
-<!--            id_user_account_status,-->
-<!--            id_manager BIGINT NOT NULL REFERENCES users(id),-->
-<!--            &lt;!&ndash;            id_user_data BIGINT NOT NULL REFERENCES "user_data"(id),&ndash;&gt;-->
-<!--&lt;!&ndash;            id_verification_token BIGINT NOT NULL REFERENCES verification_token(id),&ndash;&gt;-->
-<!--            id_role BIGINT NOT NULL REFERENCES roles(id)-->
-<!--            )-->
+        <createTable tableName="vehicle_status">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(15)"/>
+        </createTable>
 
-<!--            CREATE TABLE verification_token (-->
-<!--            id BIGINT PRIMARY KEY,-->
-<!--            token VARCHAR,-->
-<!--            expiry_date DATETIME,-->
-<!--            id_user BIGINT NOT NULL REFERENCES users(id)-->
-<!--            )-->
+        <createTable tableName="users">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="email" type="varchar(45)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="varchar(45)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reset_code" type="varchar(45)"/>
+            <column name="reset_at" type="datetime"/>
+            <column name="created_at" type="datetime"/>
+            <column name="last_login_at" type="datetime"/>
+            <column name="is_enabled" type="boolean" defaultValue="false"/>
+            <column name="user_account_status_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_user_account_status"
+                             references="user_account_status(id)"/>
+            </column>
+            <column name="roles_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_roles"
+                             references="roles(id)"/>
+            </column>
+        </createTable>
 
-<!--            CREATE TABLE user_account_status (-->
-<!--            id BIGINT PRIMARY KEY,-->
-<!--            name VARCHAR(45) NOT NULL,-->
-<!--            )-->
+        <createTable tableName="verification_token">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="token" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expiry_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_users"
+                             references="users(id)"/>
+            </column>
+        </createTable>
 
-<!--            CREATE TABLE user_data (-->
-<!--            id BIGINT PRIMARY KEY,-->
-<!--            name VARCHAR(45) NOT NULL,-->
-<!--            surname VARCHAR(45) NOT NULL,-->
-<!--            phone_number VARCHAR(15) NOT NULL,-->
-<!--            &lt;!&ndash;            id_user BIGINT NOT NULL REFERENCES "users"(id)&ndash;&gt;-->
-<!--            &lt;!&ndash;            id_address BIGINT NOT NULL REFERENCES "address"(id)&ndash;&gt;-->
-<!--            )-->
+<!--        <createTable tableName="address">-->
+<!--            <column name="id" type="bigint">-->
+<!--                <constraints primaryKey="true"/>-->
+<!--            </column>-->
+<!--            <column name="city" type="varchar(45)">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--            <column name="street" type="varchar(45)"/>-->
+<!--            <column name="building_number" type="varchar(5)">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--            <column name="flat_number" type="varchar(7)"/>-->
+<!--            <column name="postal_code" type="varchar(7)">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--            <column name="user_data_id" type="bigint">-->
+<!--                <constraints nullable="false"-->
+<!--                             foreignKeyName="fk_user_data"-->
+<!--                             references="user_data(id)"/>-->
+<!--            </column>-->
+<!--        </createTable>-->
 
-<!--            CREATE TABLE vehicles (-->
-<!--            id BIGINT PRIMARY KEY,-->
-<!--            id_vehicle_make BIGINT NOT NULL REFERENCES vehicles_makes(id),-->
-<!--            model VARCHAR(45) NOT NULL,-->
-<!--            year VARCHAR(4) NOT NULL,-->
-<!--            color VARCHAR(45) NOT NULL,-->
-<!--            mileage VARCHAR(7) NOT NULL,-->
-<!--            vin_number VARCHAR(17) NOT NULL,-->
-<!--            vehicle_registration_number VARCHAR(10) NOT NULL,-->
-<!--            id_fuel_type BIGINT NOT NULL REFERENCES fuel_type(id),-->
-<!--            city_fuel_consumption DECIMAL(4, 2) NOT NULL,-->
-<!--            country_fuel_consumption DECIMAL(4, 2) NOT NULL,-->
-<!--            average_fuel_consumption DECIMAL(4, 2) NOT NULL,-->
-<!--            id_vehicle_status BIGINT NOT NULL REFERENCES vehicle_status(id),-->
-<!--            id_user BIGINT NOT NULL REFERENCES users(id)-->
-<!--            )-->
 
-<!--            CREATE TABLE current_vehicle_users (-->
-<!--            id BIGINT PRIMARY KEY,-->
-<!--            id_user BIGINT NOT NULL REFERENCES users(id)-->
-<!--            id_vehicle BIGINT NOT NULL REFERENCES vehicles(id)-->
-<!--            )-->
 
-<!--            CREATE TABLE vehicle_inspections (-->
-<!--            id BIGINT PRIMARY KEY,-->
-<!--            inspection_date DATE NOT NULL,-->
-<!--            expiration_date DATE NOT NULL,-->
-<!--            cost DECIMAL(5, 2) NOT NULL,-->
-<!--            description VARCHAR(45),-->
-<!--            id_vehicle BIGINT NOT NULL REFERENCES vehicles(id)-->
-<!--            )-->
+<!--&lt;!&ndash;            CREATE TABLE user_data (&ndash;&gt;-->
+<!--&lt;!&ndash;            id BIGINT PRIMARY KEY,&ndash;&gt;-->
+<!--&lt;!&ndash;            name VARCHAR(45) NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            surname VARCHAR(45) NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            phone_number VARCHAR(15) NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            &lt;!&ndash;            id_user BIGINT NOT NULL REFERENCES "users"(id)&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;            &lt;!&ndash;            id_address BIGINT NOT NULL REFERENCES "address"(id)&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;            )&ndash;&gt;-->
 
-<!--            CREATE TABLE vehicle_insurances (-->
-<!--            id BIGINT PRIMARY KEY,-->
-<!--            effective_date DATE NOT NULL,-->
-<!--            expiration_date DATE NOT NULL,-->
-<!--            cost DECIMAL(8, 2) NOT NULL,-->
-<!--            policy_number VARCHAR(25) NOT NULL,-->
-<!--            description VARCHAR(100),-->
-<!--            id_vehicle BIGINT NOT NULL REFERENCES vehicles(id),-->
-<!--            id_insurance_type BIGINT NOT NULL REFERENCES insurance_types(id)-->
-<!--            )-->
+<!--&lt;!&ndash;            CREATE TABLE vehicles (&ndash;&gt;-->
+<!--&lt;!&ndash;            id BIGINT PRIMARY KEY,&ndash;&gt;-->
+<!--&lt;!&ndash;            id_vehicle_make BIGINT NOT NULL REFERENCES vehicles_makes(id),&ndash;&gt;-->
+<!--&lt;!&ndash;            model VARCHAR(45) NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            year VARCHAR(4) NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            color VARCHAR(45) NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            mileage VARCHAR(7) NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            vin_number VARCHAR(17) NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            vehicle_registration_number VARCHAR(10) NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            id_fuel_type BIGINT NOT NULL REFERENCES fuel_type(id),&ndash;&gt;-->
+<!--&lt;!&ndash;            city_fuel_consumption DECIMAL(4, 2) NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            country_fuel_consumption DECIMAL(4, 2) NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            average_fuel_consumption DECIMAL(4, 2) NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            id_vehicle_status BIGINT NOT NULL REFERENCES vehicle_status(id),&ndash;&gt;-->
+<!--&lt;!&ndash;            id_user BIGINT NOT NULL REFERENCES users(id)&ndash;&gt;-->
+<!--&lt;!&ndash;            )&ndash;&gt;-->
 
-<!--            CREATE TABLE vehicle_makes (-->
-<!--            id BIGINT PRIMARY KEY,-->
-<!--            name VARCHAR-->
-<!--            )-->
+<!--&lt;!&ndash;            CREATE TABLE current_vehicle_users (&ndash;&gt;-->
+<!--&lt;!&ndash;            id BIGINT PRIMARY KEY,&ndash;&gt;-->
+<!--&lt;!&ndash;            id_user BIGINT NOT NULL REFERENCES users(id)&ndash;&gt;-->
+<!--&lt;!&ndash;            id_vehicle BIGINT NOT NULL REFERENCES vehicles(id)&ndash;&gt;-->
+<!--&lt;!&ndash;            )&ndash;&gt;-->
 
-<!--            CREATE TABLE vehicle_refueling (-->
-<!--            id BIGINT PRIMARY KEY,-->
-<!--            refueling_date DATE NOT NULL,-->
-<!--            litre VARCHAR,-->
-<!--            cost DECIMAL(8, 2),-->
-<!--            description VARCHAR(244),-->
-<!--            id_vehicle BIGINT NOT NULL REFERENCES vehicles(id),-->
-<!--            id_user BIGINT NOT NULL REFERENCES users(id),-->
-<!--            )-->
+<!--&lt;!&ndash;            CREATE TABLE vehicle_inspections (&ndash;&gt;-->
+<!--&lt;!&ndash;            id BIGINT PRIMARY KEY,&ndash;&gt;-->
+<!--&lt;!&ndash;            inspection_date DATE NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            expiration_date DATE NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            cost DECIMAL(5, 2) NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            description VARCHAR(45),&ndash;&gt;-->
+<!--&lt;!&ndash;            id_vehicle BIGINT NOT NULL REFERENCES vehicles(id)&ndash;&gt;-->
+<!--&lt;!&ndash;            )&ndash;&gt;-->
 
-<!--            CREATE TABLE vehicle_repairs (-->
-<!--            id BIGINT PRIMARY KEY,-->
-<!--            repair_date DATE NOT NULL,-->
-<!--            description VARCHAR(555) NOT NULL,-->
-<!--            cost DECIMAL(8, 2),-->
-<!--            title VARCHAR(20) NOT NULL,-->
-<!--            id_vehicle BIGINT NOT NULL REFERENCES vehicles(id)-->
-<!--            )-->
+<!--&lt;!&ndash;            CREATE TABLE vehicle_insurances (&ndash;&gt;-->
+<!--&lt;!&ndash;            id BIGINT PRIMARY KEY,&ndash;&gt;-->
+<!--&lt;!&ndash;            effective_date DATE NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            expiration_date DATE NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            cost DECIMAL(8, 2) NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            policy_number VARCHAR(25) NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            description VARCHAR(100),&ndash;&gt;-->
+<!--&lt;!&ndash;            id_vehicle BIGINT NOT NULL REFERENCES vehicles(id),&ndash;&gt;-->
+<!--&lt;!&ndash;            id_insurance_type BIGINT NOT NULL REFERENCES insurance_types(id)&ndash;&gt;-->
+<!--&lt;!&ndash;            )&ndash;&gt;-->
 
-<!--            CREATE TABLE vehicle_use (-->
-<!--            id BIGINT PRIMARY KEY,-->
-<!--            trip SMALLINT NOT NULL,-->
-<!--            trip_date DATE NOT NULL,-->
-<!--            description VARCHAR(244),-->
-<!--            trip_type VARCHAR(7),-->
-<!--            id_vehicle BIGINT NOT NULL REFERENCES vehicles(id),-->
-<!--            id_user BIGINT NOT NULL REFERENCES users(id)-->
-<!--            )-->
-        </sql>
+<!--&lt;!&ndash;            CREATE TABLE vehicle_refueling (&ndash;&gt;-->
+<!--&lt;!&ndash;            id BIGINT PRIMARY KEY,&ndash;&gt;-->
+<!--&lt;!&ndash;            refueling_date DATE NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            litre VARCHAR,&ndash;&gt;-->
+<!--&lt;!&ndash;            cost DECIMAL(8, 2),&ndash;&gt;-->
+<!--&lt;!&ndash;            description VARCHAR(244),&ndash;&gt;-->
+<!--&lt;!&ndash;            id_vehicle BIGINT NOT NULL REFERENCES vehicles(id),&ndash;&gt;-->
+<!--&lt;!&ndash;            id_user BIGINT NOT NULL REFERENCES users(id),&ndash;&gt;-->
+<!--&lt;!&ndash;            )&ndash;&gt;-->
 
-        <!--        <createTable tableName="person">-->
-        <!--            <column name="address" type="varchar(255)"/>-->
-        <!--        </createTable>-->
+<!--&lt;!&ndash;            CREATE TABLE vehicle_repairs (&ndash;&gt;-->
+<!--&lt;!&ndash;            id BIGINT PRIMARY KEY,&ndash;&gt;-->
+<!--&lt;!&ndash;            repair_date DATE NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            description VARCHAR(555) NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            cost DECIMAL(8, 2),&ndash;&gt;-->
+<!--&lt;!&ndash;            title VARCHAR(20) NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            id_vehicle BIGINT NOT NULL REFERENCES vehicles(id)&ndash;&gt;-->
+<!--&lt;!&ndash;            )&ndash;&gt;-->
+
+<!--&lt;!&ndash;            CREATE TABLE vehicle_use (&ndash;&gt;-->
+<!--&lt;!&ndash;            id BIGINT PRIMARY KEY,&ndash;&gt;-->
+<!--&lt;!&ndash;            trip SMALLINT NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            trip_date DATE NOT NULL,&ndash;&gt;-->
+<!--&lt;!&ndash;            description VARCHAR(244),&ndash;&gt;-->
+<!--&lt;!&ndash;            trip_type VARCHAR(7),&ndash;&gt;-->
+<!--&lt;!&ndash;            id_vehicle BIGINT NOT NULL REFERENCES vehicles(id),&ndash;&gt;-->
+<!--&lt;!&ndash;            id_user BIGINT NOT NULL REFERENCES users(id)&ndash;&gt;-->
+<!--&lt;!&ndash;            )&ndash;&gt;-->
+<!--        </sql>-->
+
     </changeSet>
 </databaseChangeLog>
