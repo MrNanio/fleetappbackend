@@ -20,8 +20,8 @@ import javax.validation.Valid;
 @CrossOrigin(origins = "http://localhost:4200")
 public class InsuranceController {
 
-    InsuranceService insuranceService;
-    CheckService checkService;
+    private final InsuranceService insuranceService;
+    private final CheckService checkService;
     @Autowired
     public InsuranceController(InsuranceService insuranceService, CheckService checkService) {
         this.insuranceService = insuranceService;

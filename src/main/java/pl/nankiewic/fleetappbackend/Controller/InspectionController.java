@@ -18,8 +18,8 @@ import javax.validation.Valid;
 @CrossOrigin(origins = "http://localhost:4200")
 public class InspectionController {
 
-    CheckService checkService;
-    InspectionService inspectionService;
+    private final CheckService checkService;
+    private final InspectionService inspectionService;
     @Autowired
     public InspectionController(CheckService checkService, InspectionService inspectionService) {
         this.checkService = checkService;

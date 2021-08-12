@@ -22,10 +22,10 @@ import javax.validation.Valid;
 @RequestMapping("/vehicle")
 public class VehicleController {
 
-    VehicleService vehicleService;
-    CheckService checkService;
-    VehicleMakeRepository vehicleMakeRepository;
-    FuelTypeRepository fuelTypeRepository;
+    private final VehicleService vehicleService;
+    private final CheckService checkService;
+    private final VehicleMakeRepository vehicleMakeRepository;
+    private final FuelTypeRepository fuelTypeRepository;
     @Autowired
     public VehicleController(VehicleService vehicleService, CheckService checkService,
                              VehicleMakeRepository vehicleMakeRepository, FuelTypeRepository fuelTypeRepository) {

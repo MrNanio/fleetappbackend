@@ -116,33 +116,86 @@
 <!--            </column>-->
 <!--        </createTable>-->
 
+<!--        <createTable tableName="user_data">-->
+<!--            <column name="id" type="bigint">-->
+<!--                <constraints primaryKey="true"/>-->
+<!--            </column>-->
+<!--            <column name="name" type="varchar(45)">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--            <column name="surname" type="varchar(45)">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--            <column name="phone_number" type="varchar(15)">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--            <column name="user_id" type="bigint">-->
+<!--                <constraints nullable="false"-->
+<!--                             foreignKeyName="fk_users"-->
+<!--                             references="users(id)"/>-->
+<!--            </column>-->
+<!--            <column name="address_id" type="bigint">-->
+<!--                <constraints nullable="false"-->
+<!--                             foreignKeyName="fk_address"-->
+<!--                             references="address(id)"/>-->
+<!--            </column>-->
+<!--        </createTable>-->
 
 
-<!--&lt;!&ndash;            CREATE TABLE user_data (&ndash;&gt;-->
-<!--&lt;!&ndash;            id BIGINT PRIMARY KEY,&ndash;&gt;-->
-<!--&lt;!&ndash;            name VARCHAR(45) NOT NULL,&ndash;&gt;-->
-<!--&lt;!&ndash;            surname VARCHAR(45) NOT NULL,&ndash;&gt;-->
-<!--&lt;!&ndash;            phone_number VARCHAR(15) NOT NULL,&ndash;&gt;-->
-<!--&lt;!&ndash;            &lt;!&ndash;            id_user BIGINT NOT NULL REFERENCES "users"(id)&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;            &lt;!&ndash;            id_address BIGINT NOT NULL REFERENCES "address"(id)&ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;            )&ndash;&gt;-->
+        <createTable tableName="vehicles">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="vehicle_make_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_vehicle_make"
+                             references="vehicle_makes(id)"/>
+            </column>
+            <column name="model" type="varchar(45)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="year" type="varchar(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="color" type="varchar(45)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mileage" type="varchar(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="vin_number" type="varchar(17)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="vehicle_registration_number" type="varchar(10)">
+                <constraints nullable="false"/>
+            </column>
 
-<!--&lt;!&ndash;            CREATE TABLE vehicles (&ndash;&gt;-->
-<!--&lt;!&ndash;            id BIGINT PRIMARY KEY,&ndash;&gt;-->
-<!--&lt;!&ndash;            id_vehicle_make BIGINT NOT NULL REFERENCES vehicles_makes(id),&ndash;&gt;-->
-<!--&lt;!&ndash;            model VARCHAR(45) NOT NULL,&ndash;&gt;-->
-<!--&lt;!&ndash;            year VARCHAR(4) NOT NULL,&ndash;&gt;-->
-<!--&lt;!&ndash;            color VARCHAR(45) NOT NULL,&ndash;&gt;-->
-<!--&lt;!&ndash;            mileage VARCHAR(7) NOT NULL,&ndash;&gt;-->
-<!--&lt;!&ndash;            vin_number VARCHAR(17) NOT NULL,&ndash;&gt;-->
-<!--&lt;!&ndash;            vehicle_registration_number VARCHAR(10) NOT NULL,&ndash;&gt;-->
-<!--&lt;!&ndash;            id_fuel_type BIGINT NOT NULL REFERENCES fuel_type(id),&ndash;&gt;-->
-<!--&lt;!&ndash;            city_fuel_consumption DECIMAL(4, 2) NOT NULL,&ndash;&gt;-->
-<!--&lt;!&ndash;            country_fuel_consumption DECIMAL(4, 2) NOT NULL,&ndash;&gt;-->
-<!--&lt;!&ndash;            average_fuel_consumption DECIMAL(4, 2) NOT NULL,&ndash;&gt;-->
-<!--&lt;!&ndash;            id_vehicle_status BIGINT NOT NULL REFERENCES vehicle_status(id),&ndash;&gt;-->
-<!--&lt;!&ndash;            id_user BIGINT NOT NULL REFERENCES users(id)&ndash;&gt;-->
-<!--&lt;!&ndash;            )&ndash;&gt;-->
+            <column name="fuel_type_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_fuel_type"
+                             references="fuel_types(id)"/>
+            </column>
+            <column name="city_fuel_consumption" type="decimal(4, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country_fuel_consumption" type="decimal(4, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="average_fuel_consumption" type="decimal(4, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="vehicle_status_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_vehicle_status"
+                             references="vehicle_status(id)"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_users"
+                             references="users(id)"/>
+            </column>
+        </createTable>
+
 
 <!--&lt;!&ndash;            CREATE TABLE current_vehicle_users (&ndash;&gt;-->
 <!--&lt;!&ndash;            id BIGINT PRIMARY KEY,&ndash;&gt;-->

@@ -23,8 +23,8 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/reports")
 public class ReportsController {
-    ReportsService reportsService;
-    CheckService checkService;
+    private final ReportsService reportsService;
+    private final CheckService checkService;
     @Autowired
     public ReportsController(ReportsService reportsService, CheckService checkService) {
         this.reportsService = reportsService;

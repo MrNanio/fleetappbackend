@@ -15,8 +15,8 @@ import javax.validation.Valid;
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/refueling")
 public class RefuelingController {
-    RefuelingService refuelingService;
-    CheckService checkService;
+    private final RefuelingService refuelingService;
+    private final CheckService checkService;
     @Autowired
     public RefuelingController(RefuelingService refuelingService, CheckService checkService) {
         this.refuelingService = refuelingService;

@@ -26,13 +26,13 @@ import java.time.LocalDateTime;
 @RequestMapping("/user")
 @CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
-    AccountService accountService;
-    UserRepository userRepository;
-    MailService mailService;
-    PasswordEncoder passwordEncoder;
-    CustomUserDetailsService customUserDetailsService;
-    VerificationTokenRepository verificationTokenRepository;
-    UserMapper userMapper;
+    private final AccountService accountService;
+    private final UserRepository userRepository;
+    private final MailService mailService;
+    private final PasswordEncoder passwordEncoder;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final VerificationTokenRepository verificationTokenRepository;
+    private final UserMapper userMapper;
     @Autowired
     public UserController(AccountService accountService, UserRepository userRepository, MailService mailService,
                           PasswordEncoder passwordEncoder, CustomUserDetailsService customUserDetailsService,

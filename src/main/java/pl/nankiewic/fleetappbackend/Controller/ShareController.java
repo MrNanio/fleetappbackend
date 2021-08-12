@@ -17,8 +17,8 @@ import javax.validation.Valid;
 @CrossOrigin(origins = "http://localhost:4200")
 public class ShareController {
 
-    ShareService shareService;
-    CheckService checkService;
+    private final ShareService shareService;
+    private final CheckService checkService;
     @Autowired
     public ShareController(ShareService shareService, CheckService checkService) {
         this.shareService = shareService;

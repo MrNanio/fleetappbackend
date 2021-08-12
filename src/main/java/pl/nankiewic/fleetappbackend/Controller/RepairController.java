@@ -18,8 +18,8 @@ import javax.validation.Valid;
 @CrossOrigin(origins = "http://localhost:4200")
 public class RepairController {
 
-    CheckService checkService;
-    RepairService repairService;
+    private final CheckService checkService;
+    private final RepairService repairService;
     @Autowired
     public RepairController(CheckService checkService, RepairService repairService) {
         this.checkService = checkService;

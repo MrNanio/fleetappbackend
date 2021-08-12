@@ -24,10 +24,10 @@ import java.time.LocalDateTime;
 @RequestMapping("/api/auth")
 public class AuthorizationController {
 
-    AccountService accountService;
-    UserRepository userRepository;
-    AuthenticationManager authenticationManager;
-    CustomUserDetailsService customUserDetailsService;
+    private final AccountService accountService;
+    private final UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Autowired
     public AuthorizationController(AccountService accountService, UserRepository userRepository,

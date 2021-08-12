@@ -16,8 +16,8 @@ import javax.validation.Valid;
 @CrossOrigin(origins = "http://localhost:4200")
 public class UseController {
 
-    CheckService checkService;
-    UseService useService;
+    private final CheckService checkService;
+    private final UseService useService;
     @Autowired
     public UseController(CheckService checkService, UseService useService) {
         this.checkService = checkService;
