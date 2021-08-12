@@ -13,7 +13,6 @@ import pl.nankiewic.fleetappbackend.Repository.VehicleUseRepository;
 
 import javax.persistence.EntityNotFoundException;
 
-
 @Service
 public class UseService {
     private final VehicleUseRepository vehicleUseRepository;
@@ -21,8 +20,10 @@ public class UseService {
     private final UserRepository userRepository;
     private final UseMapper useMapper;
     @Autowired
-    public UseService(VehicleUseRepository vehicleUseRepository, VehicleRepository vehicleRepository,
-                      UserRepository userRepository, UseMapper useMapper) {
+    public UseService(VehicleUseRepository vehicleUseRepository,
+                      VehicleRepository vehicleRepository,
+                      UserRepository userRepository,
+                      UseMapper useMapper) {
         this.vehicleUseRepository = vehicleUseRepository;
         this.vehicleRepository = vehicleRepository;
         this.userRepository = userRepository;
@@ -48,7 +49,8 @@ public class UseService {
     public Iterable<UseDTO> getUseByVehicle(Long id) {
         if(vehicleRepository.existsById(id)) {
             return useMapper.vehicleUseToUseDTO(vehicleUseRepository.findAllByVehicle(
-                    vehicleRepository.findById(id).orElseThrow(() -> new RuntimeException("Bład przetwarzania"))));
+                    vehicleRepository.findById(id).orElseThrow(
+                            () -> new RuntimeException("Bład przetwarzania"))));
         } else throw new EntityNotFoundException();
     }
     /*
