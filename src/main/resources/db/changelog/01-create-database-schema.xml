@@ -90,7 +90,7 @@
             </column>
             <column name="user_id" type="bigint">
                 <constraints nullable="false"
-                             foreignKeyName="fk_users"
+                             foreignKeyName="fk_users_verification_token"
                              references="users(id)"/>
             </column>
         </createTable>
@@ -127,12 +127,12 @@
             </column>
             <column name="user_id" type="bigint">
                 <constraints nullable="false"
-                             foreignKeyName="fk_users"
+                             foreignKeyName="fk_users_user_data"
                              references="users(id)"/>
             </column>
             <column name="address_id" type="bigint">
                 <constraints nullable="false"
-                             foreignKeyName="fk_address"
+                             foreignKeyName="fk_address_user_data"
                              references="address(id)"/>
             </column>
         </createTable>
@@ -144,7 +144,7 @@
             </column>
             <column name="vehicle_make_id" type="bigint">
                 <constraints nullable="false"
-                             foreignKeyName="fk_vehicle_make"
+                             foreignKeyName="fk_vehicle_make_vehicle"
                              references="vehicle_makes(id)"/>
             </column>
             <column name="model" type="varchar(45)">
@@ -168,7 +168,7 @@
 
             <column name="fuel_type_id" type="bigint">
                 <constraints nullable="false"
-                             foreignKeyName="fk_fuel_types"
+                             foreignKeyName="fk_fuel_types_vehicle"
                              references="fuel_types(id)"/>
             </column>
             <column name="city_fuel_consumption" type="decimal(4, 2)">
@@ -182,12 +182,12 @@
             </column>
             <column name="vehicle_status_id" type="bigint">
                 <constraints nullable="false"
-                             foreignKeyName="fk_vehicle_status"
+                             foreignKeyName="fk_vehicle_status_vehicle"
                              references="vehicle_status(id)"/>
             </column>
             <column name="user_id" type="bigint">
                 <constraints nullable="false"
-                             foreignKeyName="fk_users"
+                             foreignKeyName="fk_users_vehicle"
                              references="users(id)"/>
             </column>
         </createTable>
@@ -199,12 +199,12 @@
 
             <column name="user_id" type="bigint">
                 <constraints nullable="false"
-                             foreignKeyName="fk_users"
+                             foreignKeyName="fk_users_current_vehicle_users"
                              references="users(id)"/>
             </column>
             <column name="vehicle_id" type="bigint">
                 <constraints nullable="false"
-                             foreignKeyName="fk_vehicles"
+                             foreignKeyName="fk_vehicles_current_vehicle_users"
                              references="vehicles(id)"/>
             </column>
         </createTable>
@@ -227,7 +227,7 @@
             </column>
             <column name="vehicle_id" type="bigint">
                 <constraints nullable="false"
-                             foreignKeyName="fk_vehicles"
+                             foreignKeyName="fk_vehicles_vehicle_inspections"
                              references="vehicles(id)"/>
             </column>
         </createTable>
@@ -258,7 +258,7 @@
             </column>
             <column name="insurance_type_id" type="bigint">
                 <constraints nullable="false"
-                             foreignKeyName="fk_insurance_type"
+                             foreignKeyName="fk_insurance_type_vehicle_insurances"
                              references="insurance_types(id)"/>
             </column>
         </createTable>
@@ -282,12 +282,12 @@
 
             <column name="vehicle_id" type="bigint">
                 <constraints nullable="false"
-                             foreignKeyName="fk_vehicles"
+                             foreignKeyName="fk_vehicles_vehicle_refueling"
                              references="vehicles(id)"/>
             </column>
             <column name="user_id" type="bigint">
                 <constraints nullable="false"
-                             foreignKeyName="fk_users"
+                             foreignKeyName="fk_users_vehicle_refueling"
                              references="users(id)"/>
             </column>
         </createTable>
@@ -310,7 +310,7 @@
             </column>
             <column name="vehicle_id" type="bigint">
                 <constraints nullable="false"
-                             foreignKeyName="fk_vehicles"
+                             foreignKeyName="fk_vehicles_vehicle_repairs"
                              references="vehicles(id)"/>
             </column>
         </createTable>
@@ -334,12 +334,12 @@
 
             <column name="vehicle_id" type="bigint">
                 <constraints nullable="false"
-                             foreignKeyName="fk_vehicles"
+                             foreignKeyName="fk_vehicles_vehicle_use"
                              references="vehicles(id)"/>
             </column>
             <column name="user_id" type="bigint">
                 <constraints nullable="false"
-                             foreignKeyName="fk_users"
+                             foreignKeyName="fk_users_vehicle_use"
                              references="users(id)"/>
             </column>
         </createTable>
