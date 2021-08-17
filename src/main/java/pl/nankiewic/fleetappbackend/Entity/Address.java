@@ -1,30 +1,30 @@
 package pl.nankiewic.fleetappbackend.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name = "addresses")
+@Table(name = "address")
 public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
 
-    @Column(length = 45, nullable = false)
+    @Column(name = "city", length = 45, nullable = false)
     private String city;
 
-    @Column(length = 45)
+    @Column(name = "street", length = 45)
     private String street;
 
-    @Column(length = 5, nullable = false)
+    @Column(name = "building_number", length = 5, nullable = false)
     private String buildingNumber;
 
-    @Column(length = 7)
+    @Column(name = "flat_number", length = 7)
     private String flatNumber;
 
-    @Column(length = 7, nullable = false)
+    @Column(name = "postal_code", length = 7, nullable = false)
     private String postalCode;
 
     @JsonIgnore

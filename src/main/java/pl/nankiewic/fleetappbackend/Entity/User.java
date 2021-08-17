@@ -10,39 +10,64 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "password")
     private String password;
+
+    @Column(name = "reset_code")
     private String resetCode;
+
+    @Column(name = "reset_at")
     private LocalDateTime resetAt;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(name = "last_login_at")
     private LocalDateTime lastLoginAt;
+
+    @Column(name = "is_enabled")
     private boolean isEnabled;
+
     @ManyToOne
-    @JoinColumn(name = "UserAccountStatusFk", nullable = false)
+    @JoinColumn(name = "user_account_status_id", nullable = false)
     private UserAccountStatus userAccountStatus;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="IdManagerFk")
+    @JoinColumn(name = "manager_id")
     private User user;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval=true)
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<User> users = new HashSet<>();
+
     @OneToOne(mappedBy = "user")
     private UserData userData;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Vehicle> vehicles = new HashSet<>();
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<VehicleUse> vehicleUses = new HashSet<>();
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<CurrentVehicleUser> currentVehicleUsers = new HashSet<>();
+
     @OneToOne(mappedBy = "user")
     private VerificationToken verificationToken;
 
     @ManyToOne
-    @JoinColumn(name = "RoleFk", nullable = false)
+    @JoinColumn(name = "roles_id", nullable = false)
     private Role role;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<VehicleRefueling> refuelings  = new HashSet<>();
+    private Set<VehicleRefueling> refuelings = new HashSet<>();
+
     public User() {
     }
+
     public User(String email, String password) {
         this.email = email;
         this.password = password;

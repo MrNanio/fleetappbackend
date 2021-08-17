@@ -76,6 +76,11 @@
                              foreignKeyName="fk_roles"
                              references="roles(id)"/>
             </column>
+            <column name="manager_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_users_user"
+                             references="users(id)"/>
+            </column>
         </createTable>
 
         <createTable tableName="verification_token">

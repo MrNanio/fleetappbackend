@@ -12,23 +12,23 @@ public class UserData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 45, nullable = false)
+    @Column(name = "name", length = 45, nullable = false)
     private String name;
 
-    @Column(length = 45, nullable = false)
+    @Column(name = "surname", length = 45, nullable = false)
     private String surname;
 
-    @Column(length = 15, nullable = false)
+    @Column(name = "phone_number", length = 15, nullable = false)
     private String phoneNumber;
 
-    @OneToOne
-    @JoinColumn(name = "UserFk", nullable = false, unique = true)
-    //@MapsId
     @JsonIgnore
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
+
     @JsonIgnore
     @OneToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "AddressFK", nullable = false)
+    @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
     public Long getId() {
@@ -62,19 +62,19 @@ public class UserData {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
-    @JsonIgnore
+
     public User getUser() {
         return user;
     }
-    @JsonIgnore
+
     public void setUser(User user) {
         this.user = user;
     }
-    @JsonIgnore
+
     public Address getAddress() {
         return address;
     }
-    @JsonIgnore
+
     public void setAddress(Address address) {
         this.address = address;
     }
