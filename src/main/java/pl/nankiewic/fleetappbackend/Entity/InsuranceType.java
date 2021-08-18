@@ -12,7 +12,7 @@ public class InsuranceType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 45, nullable = false)
+    @Column(name = "name", length = 45, nullable = false)
     private String name;
 
     @OneToMany(mappedBy = "insuranceType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

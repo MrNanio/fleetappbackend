@@ -5,7 +5,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.sql.Date;
 
 @Entity
 @Table(name = "vehicle_inspections")
@@ -15,22 +14,22 @@ public class VehicleInspection {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "inspection_date", nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date inspectionDate;
+    private LocalDate inspectionDate;
 
-    @Column(nullable = false)
+    @Column(name = "expiration_date", nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date expirationDate;
+    private LocalDate expirationDate;
 
-    @Column(precision=5, scale=2, nullable = false)
+    @Column(name = "cost", precision=5, scale=2, nullable = false)
     private BigDecimal cost;
 
-    @Column(length = 45)
+    @Column(name = "description", length = 45)
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "VehicleFk", nullable = false)
+    @JoinColumn(name = "vehicle_id", nullable = false)
     private Vehicle vehicle;
 
     public Long getId() {
@@ -41,19 +40,19 @@ public class VehicleInspection {
         this.id = id;
     }
 
-    public Date getInspectionDate() {
+    public LocalDate getInspectionDate() {
         return inspectionDate;
     }
 
-    public void setInspectionDate(Date inspectionDate) {
+    public void setInspectionDate(LocalDate inspectionDate) {
         this.inspectionDate = inspectionDate;
     }
 
-    public Date getExpirationDate() {
+    public LocalDate getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(Date expirationDate) {
+    public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
 

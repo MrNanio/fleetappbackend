@@ -11,19 +11,19 @@ public class CurrentVehicleUser {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "UserFk", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToOne
-    @JoinColumn(name = "VehicleFk", nullable = false, unique = true)
+    @JoinColumn(name = "vehicle_id", nullable = false, unique = true)
     private Vehicle vehicle;
 
     public CurrentVehicleUser() {
     }
 
     public CurrentVehicleUser(User user, Vehicle vehicle) {
-     this.user=user;
-     this.vehicle=vehicle;
+        this.user = user;
+        this.vehicle = vehicle;
     }
 
     public Long getId() {

@@ -1,6 +1,5 @@
 package pl.nankiewic.fleetappbackend.Entity;
 
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,7 +12,7 @@ public class VehicleStatus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 15, nullable = false)
+    @Column(name = "name", length = 15, nullable = false)
     private String name;
 
     @OneToMany(mappedBy = "vehicleStatus", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

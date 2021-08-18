@@ -1,36 +1,41 @@
 package pl.nankiewic.fleetappbackend.Entity;
 
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "verifcation_tokens")
+@Table(name = "verification_token")
 public class VerificationToken {
+
     private static final int EXPIRATION = 60 * 2;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "token")
     private String token;
+
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
+
+    @Column(name = "expiry_date")
     private LocalDateTime expiryDate;
 
     private LocalDateTime calculateExpiryDate() {
-        LocalDateTime localDateTime=LocalDateTime.now();
+        LocalDateTime localDateTime = LocalDateTime.now();
         return localDateTime.plusMinutes(VerificationToken.EXPIRATION);
     }
 
     public VerificationToken() {
     }
 
-    public VerificationToken(User user){
-        this.user =user;
+    public VerificationToken(User user) {
+        this.user = user;
         token = UUID.randomUUID().toString();
-        expiryDate=calculateExpiryDate();
+        expiryDate = calculateExpiryDate();
     }
 
     public static int getEXPIRATION() {

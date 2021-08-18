@@ -5,26 +5,35 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "vehicle_refueling")
 public class VehicleRefueling {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+
+    @Column(name = "refueling_date", nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date refuelingDate;
+    private LocalDate refuelingDate;
+
+    @Column(name = "litre")
     private String litre;
-    @Column(precision=8, scale=2, nullable = false)
+
+    @Column(name = "cost", precision = 8, scale = 2, nullable = false)
     private BigDecimal cost;
+
+    @Column(name = "description")
     private String description;
+
     @ManyToOne
-    @JoinColumn(name = "VehicleFk", nullable = false)
+    @JoinColumn(name = "vehicle_id", nullable = false)
     private Vehicle vehicle;
+
     @ManyToOne
-    @JoinColumn(name = "UserFk", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     public VehicleRefueling() {
@@ -38,12 +47,13 @@ public class VehicleRefueling {
     public void setId(Long id) {
         this.id = id;
     }
+
     @JsonIgnore
-    public Date getRefuelingDate() {
+    public LocalDate getRefuelingDate() {
         return refuelingDate;
     }
 
-    public void setRefuelingDate(Date refuelingDate) {
+    public void setRefuelingDate(LocalDate refuelingDate) {
         this.refuelingDate = refuelingDate;
     }
 
@@ -55,13 +65,16 @@ public class VehicleRefueling {
     public void setLitre(String litre) {
         this.litre = litre;
     }
+
     @JsonIgnore
     public BigDecimal getCost() {
         return cost;
     }
+
     public void setCost(BigDecimal cost) {
         this.cost = cost;
     }
+
     @JsonIgnore
     public String getDescription() {
         return description;
@@ -70,6 +83,7 @@ public class VehicleRefueling {
     public void setDescription(String description) {
         this.description = description;
     }
+
     @JsonIgnore
     public Vehicle getVehicle() {
         return vehicle;
@@ -78,6 +92,7 @@ public class VehicleRefueling {
     public void setVehicle(Vehicle vehicle) {
         this.vehicle = vehicle;
     }
+
     @JsonIgnore
     public User getUser() {
         return user;

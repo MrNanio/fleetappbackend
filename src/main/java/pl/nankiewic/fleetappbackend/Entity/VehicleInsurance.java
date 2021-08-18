@@ -5,7 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "vehicle_insurances")
@@ -13,23 +13,30 @@ public class VehicleInsurance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+
+    @Column(name = "effective_date", nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date effectiveDate;
-    @Column(nullable = false)
+    private LocalDate effectiveDate;
+
+    @Column(name = "expiration_date", nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date expirationDate;
-    @Column(precision=8, scale=2, nullable = false)
+    private LocalDate expirationDate;
+
+    @Column(name = "cost", precision = 8, scale = 2, nullable = false)
     private BigDecimal cost;
-    @Column(length = 25, nullable = false)
+
+    @Column(name = "policy_number", length = 25, nullable = false)
     private String policyNumber;
-    @Column(length = 100)
+
+    @Column(name = "description", length = 100)
     private String description;
+
     @ManyToOne
-    @JoinColumn(name = "InsuranceTypeFk", nullable = false)
+    @JoinColumn(name = "insurance_type_id", nullable = false)
     private InsuranceType insuranceType;
+
     @ManyToOne
-    @JoinColumn(name = "VehicleFk", nullable = false)
+    @JoinColumn(name = "vehicle_id", nullable = false)
     private Vehicle vehicle;
 
     public Long getId() {
@@ -40,19 +47,19 @@ public class VehicleInsurance {
         this.id = id;
     }
 
-    public Date getEffectiveDate() {
+    public LocalDate getEffectiveDate() {
         return effectiveDate;
     }
 
-    public void setEffectiveDate(Date effectiveDate) {
+    public void setEffectiveDate(LocalDate effectiveDate) {
         this.effectiveDate = effectiveDate;
     }
 
-    public Date getExpirationDate() {
+    public LocalDate getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(Date expirationDate) {
+    public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
 

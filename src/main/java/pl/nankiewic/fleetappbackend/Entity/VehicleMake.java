@@ -12,7 +12,10 @@ public class VehicleMake {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name")
     private String name;
+
     @JsonIgnore
     @OneToMany(mappedBy = "vehicleMake", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Vehicle> vehicle = new HashSet<>();

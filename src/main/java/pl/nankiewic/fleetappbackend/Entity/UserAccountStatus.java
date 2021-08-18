@@ -10,8 +10,10 @@ public class UserAccountStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(length = 15, nullable = false)
+
+    @Column(name = "name", length = 15, nullable = false)
     private String name;
+
     @OneToMany(mappedBy = "userAccountStatus", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<User> users = new HashSet<>();
 

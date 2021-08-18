@@ -13,11 +13,14 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     private Long id;
+
     @Column(name = "name")
     private String name;
+
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
-    private Set<User> users  = new HashSet<>();
+    private Set<User> users = new HashSet<>();
+
     public Role() {
     }
 
@@ -44,5 +47,5 @@ public class Role {
     public void setUsers(Set<User> users) {
         this.users = users;
     }
-    
+
 }

@@ -11,51 +11,49 @@ public class Vehicle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "vehicle_id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "VehcleMakeFk")
+    @JoinColumn(name = "vehicle_make_id")
     private VehicleMake vehicleMake;
 
-    @Column(length = 45, nullable = false)
+    @Column(name = "model", length = 45, nullable = false)
     private String model;
 
-    @Column(length = 4, nullable = false)
+    @Column(name = "year", length = 4, nullable = false)
     private String year;
 
-    @Column(length = 45, nullable = false)
+    @Column(name = "color", length = 45, nullable = false)
     private String color;
 
-    @Column(length = 7, nullable = false)
+    @Column(name = "mileage", length = 7, nullable = false)
     private String mileage;
 
-    @Column(length = 17, nullable = false)
+    @Column(name = "vin_number", length = 17, nullable = false)
     private String vinNumber;
 
-    @Column(length = 10, nullable = false)
+    @Column(name = "vehicle_registration_number", length = 10, nullable = false)
     private String vehicleRegistrationNumber;
 
     @ManyToOne
-    @JoinColumn(name = "FuelTypeFK", nullable = false)
+    @JoinColumn(name = "fuel_type_id", nullable = false)
     private FuelType fuelType;
 
-    @Column(precision=4, scale=2, nullable = false)
+    @Column(name = "city_fuel_consumption", precision = 4, scale = 2, nullable = false)
     private BigDecimal cityFuelConsumption;
 
-    @Column(precision=4, scale=2, nullable = false)
+    @Column(name = "country_fuel_consumption", precision = 4, scale = 2, nullable = false)
     private BigDecimal countryFuelConsumption;
 
-    @Column(precision=4, scale=2, nullable = false)
+    @Column(precision = 4, scale = 2, nullable = false)
     private BigDecimal averageFuelConsumption;
 
-
     @ManyToOne
-    @JoinColumn(name = "VehicleStatusFk", nullable = false)
+    @JoinColumn(name = "vehicle_status_id", nullable = false)
     private VehicleStatus vehicleStatus;
 
     @ManyToOne
-    @JoinColumn(name = "UserFk", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -72,13 +70,17 @@ public class Vehicle {
 
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<VehicleUse> vehicleUses = new HashSet<>();
+
     @OneToOne(mappedBy = "vehicle")
     private CurrentVehicleUser currentVehicleUser;
 
     public Vehicle() {
     }
 
-    public Vehicle(Long id, VehicleMake vehicleMake, String model, String year, String color, String mileage, String vinNumber, String vehicleRegistrationNumber, FuelType fuelType, BigDecimal cityFuelConsumption, BigDecimal countryFuelConsumption, BigDecimal averageFuelConsumption, VehicleStatus vehicleStatus, User user) {
+    public Vehicle(Long id, VehicleMake vehicleMake, String model, String year, String color,
+                   String mileage, String vinNumber, String vehicleRegistrationNumber, FuelType fuelType,
+                   BigDecimal cityFuelConsumption, BigDecimal countryFuelConsumption, BigDecimal averageFuelConsumption,
+                   VehicleStatus vehicleStatus, User user) {
         this.id = id;
         this.vehicleMake = vehicleMake;
         this.model = model;

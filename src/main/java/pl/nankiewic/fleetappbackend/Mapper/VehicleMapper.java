@@ -8,32 +8,34 @@ import pl.nankiewic.fleetappbackend.Entity.FuelType;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleMake;
 import pl.nankiewic.fleetappbackend.Entity.VehicleStatus;
+
 @Mapper(componentModel = "spring")
 public interface VehicleMapper {
-    @Mappings({
-            @Mapping(target="make", source = "vehicleMake"),
-            @Mapping(target ="vehicleStatus", source = "vehicleStatus"),
-            @Mapping(target ="fuelType", source = "fuelType"),
-    })
+
+    @Mapping(target = "make", source = "vehicleMake")
     VehicleDTO vehicleToVehicleDTO(final Vehicle vehicle);
+
     default String vehicleMakeToString(VehicleMake vehicleMake) {
         if (vehicleMake == null) {
             return null;
         }
         return vehicleMake.getName();
     }
+
     default String fuelTypeToString(FuelType fuelType) {
         if (fuelType == null) {
             return null;
         }
         return fuelType.getName();
     }
+
     default String vehicleStatusToString(VehicleStatus vehicleStatus) {
         if (vehicleStatus == null) {
             return null;
         }
         return vehicleStatus.getName();
     }
+
     @Mappings({
             @Mapping(target = "vehicleMake", ignore = true),
             @Mapping(target = "vehicleStatus", ignore = true),
@@ -47,6 +49,7 @@ public interface VehicleMapper {
             @Mapping(target = "vehicleUses", ignore = true)
     })
     Vehicle vehicleDTOtoVehicle(final VehicleDTO vehicleDTO);
+
     Iterable<VehicleDTO> map(Iterable<Vehicle> vehicles);
 
 }
