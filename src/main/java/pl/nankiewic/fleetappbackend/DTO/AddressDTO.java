@@ -11,6 +11,7 @@ public class AddressDTO {
     private String street;
     @NotNull
     private String buildingNumber;
+
     private String flatNumber;
     @NotNull
     private String postalCode;

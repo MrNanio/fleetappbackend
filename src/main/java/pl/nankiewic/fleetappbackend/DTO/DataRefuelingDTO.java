@@ -1,13 +1,13 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 public class DataRefuelingDTO {
     private BigDecimal value;
-    private Date date;
+    private LocalDate date;
 
-    public DataRefuelingDTO(BigDecimal value, Date date) {
+    public DataRefuelingDTO(BigDecimal value, LocalDate date) {
         this.value = value;
         this.date = date;
     }
@@ -20,11 +20,11 @@ public class DataRefuelingDTO {
         this.value = value;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 }

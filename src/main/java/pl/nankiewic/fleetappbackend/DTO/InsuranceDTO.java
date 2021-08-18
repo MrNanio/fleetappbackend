@@ -1,13 +1,15 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+
+import java.time.LocalDate;
 
 public class InsuranceDTO {
+
     private Long id;
     private Long vehicleId;
-    private Date effectiveDate;
-    private Date expirationDate;
+    private LocalDate effectiveDate;
+    private LocalDate expirationDate;
     private BigDecimal cost;
     private String policyNumber;
     private String insuranceType;
@@ -15,6 +17,7 @@ public class InsuranceDTO {
 
     public InsuranceDTO() {
     }
+
     public Long getId() {
         return id;
     }
@@ -31,19 +34,19 @@ public class InsuranceDTO {
         this.vehicleId = vehicleId;
     }
 
-    public Date getEffectiveDate() {
+    public LocalDate getEffectiveDate() {
         return effectiveDate;
     }
 
-    public void setEffectiveDate(Date effectiveDate) {
+    public void setEffectiveDate(LocalDate effectiveDate) {
         this.effectiveDate = effectiveDate;
     }
 
-    public Date getExpirationDate() {
+    public LocalDate getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(Date expirationDate) {
+    public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
 

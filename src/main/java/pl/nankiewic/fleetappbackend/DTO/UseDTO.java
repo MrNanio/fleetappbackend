@@ -2,7 +2,7 @@ package pl.nankiewic.fleetappbackend.DTO;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import javax.validation.constraints.NotNull;
-import java.sql.Date;
+import java.time.LocalDate;
 
 public class UseDTO {
     @NotNull
@@ -15,7 +15,7 @@ public class UseDTO {
     private Short trip;
     @NotNull
     @DateTimeFormat(pattern = "dd-MM-yyy")
-    private Date tripDate;
+    private LocalDate tripDate;
     private String tripType;
     private String description;
 
@@ -54,11 +54,11 @@ public class UseDTO {
         this.trip = trip;
     }
 
-    public Date getTripDate() {
+    public LocalDate getTripDate() {
         return tripDate;
     }
 
-    public void setTripDate(Date tripDate) {
+    public void setTripDate(LocalDate tripDate) {
         this.tripDate = tripDate;
     }
 

@@ -4,6 +4,7 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public class VehicleDTO {
+
     @NotNull
     private Long id;
     @NotNull

@@ -11,7 +11,6 @@ public class UserDataDTO {
     private Address address;
     private String email;
 
-
     public UserDataDTO() {
     }
 

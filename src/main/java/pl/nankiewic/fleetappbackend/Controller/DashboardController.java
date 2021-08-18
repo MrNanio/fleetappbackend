@@ -9,7 +9,7 @@ import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.DashboardService;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -33,8 +33,8 @@ public class DashboardController {
         public Iterable<ChartDataRespondDTO> costByCategories(@RequestParam (name = "b") String beginS,
                                                               @RequestParam (name = "e") String endS,
                                                               Authentication authentication){
-                Date begin=Date.valueOf(beginS);
-                Date end=Date.valueOf(endS);
+                LocalDate begin= LocalDate.parse(beginS);
+                LocalDate end=LocalDate.parse(endS);
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 return dashboardService.fleetCostByCategory(userDetails.getUsername(), begin, end);
         }
@@ -45,8 +45,8 @@ public class DashboardController {
         public Iterable<ChartDataRespondDTO> fuelCostByVehicle(@RequestParam (name = "b") String beginS,
                                                                @RequestParam (name = "e") String endS,
                                                                Authentication authentication){
-                Date begin=Date.valueOf(beginS);
-                Date end=Date.valueOf(endS);
+                LocalDate begin= LocalDate.parse(beginS);
+                LocalDate end=LocalDate.parse(endS);
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 return dashboardService.sumRefuelingByVehicle(userDetails.getUsername(), begin, end);
 
@@ -58,8 +58,8 @@ public class DashboardController {
         public Iterable<ChartDataRespondDTO> useCostByVehicle(@RequestParam (name = "b") String beginS,
                                                               @RequestParam (name = "e") String endS,
                                                               Authentication authentication){
-                Date begin=Date.valueOf(beginS);
-                Date end=Date.valueOf(endS);
+                LocalDate begin= LocalDate.parse(beginS);
+                LocalDate end=LocalDate.parse(endS);
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 return dashboardService.sumUseByVehicle(userDetails.getUsername(), begin, end);
         }
@@ -72,8 +72,8 @@ public class DashboardController {
         public Iterable<ChartDataRespondDTO> useByVehicle(@RequestParam (name = "b") String beginS,
                                                           @RequestParam (name = "e") String endS,
                                                           Authentication authentication){
-                Date begin=Date.valueOf(beginS);
-                Date end=Date.valueOf(endS);
+                LocalDate begin= LocalDate.parse(beginS);
+                LocalDate end=LocalDate.parse(endS);
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 return dashboardService.numberOfUsesByVehicle(userDetails.getUsername(), begin, end);
         }
@@ -89,8 +89,8 @@ public class DashboardController {
                                                                 @RequestParam (name = "b") String beginS,
                                                                 @RequestParam (name = "e") String endS,
                                                                 Authentication authentication){
-                 Date begin=Date.valueOf(beginS);
-                 Date end=Date.valueOf(endS);
+                 LocalDate begin= LocalDate.parse(beginS);
+                 LocalDate end=LocalDate.parse(endS);
                  UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                  if(checkService.accessToVehicle(userDetails.getUsername(),Long.parseLong(vehicle))){
                         return dashboardService.fuelCostByVehicleAndData(begin, end, vehicle);
@@ -106,8 +106,8 @@ public class DashboardController {
                                                                @RequestParam (name = "b") String beginS,
                                                                @RequestParam (name = "e") String endS,
                                                                Authentication authentication){
-                Date begin=Date.valueOf(beginS);
-                Date end=Date.valueOf(endS);
+                LocalDate begin= LocalDate.parse(beginS);
+                LocalDate end=LocalDate.parse(endS);
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 if(checkService.accessToVehicle(userDetails.getUsername(),Long.parseLong(vehicle))){
                         return dashboardService.distanceByVehicleAndData(begin, end, vehicle);
@@ -123,8 +123,8 @@ public class DashboardController {
                                                                    @RequestParam (name = "b") String beginS,
                                                                    @RequestParam (name = "e") String endS,
                                                                    Authentication authentication){
-                Date begin=Date.valueOf(beginS);
-                Date end=Date.valueOf(endS);
+                LocalDate begin= LocalDate.parse(beginS);
+                LocalDate end=LocalDate.parse(endS);
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 if(checkService.accessToVehicle(userDetails.getUsername(),Long.parseLong(vehicle))){
                         return dashboardService.vehicleCostByCategory(vehicle, begin, end);
@@ -139,8 +139,8 @@ public class DashboardController {
                                                                    @RequestParam (name = "b") String beginS,
                                                                    @RequestParam (name = "e") String endS,
                                                                    Authentication authentication){
-                Date begin=Date.valueOf(beginS);
-                Date end=Date.valueOf(endS);
+                LocalDate begin= LocalDate.parse(beginS);
+                LocalDate end=LocalDate.parse(endS);
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 if(checkService.accessToVehicle(userDetails.getUsername(),Long.parseLong(vehicle))){
                         return dashboardService.distanceByVehicleAndDataAndUseType(begin, end, vehicle);
@@ -155,8 +155,8 @@ public class DashboardController {
         public Iterable<ChartDataRespondDTO> vehicleTripByUser(@RequestParam (name = "u") String user,
                                                                @RequestParam (name = "b") String beginS,
                                                                @RequestParam (name = "e") String endS){
-                Date begin=Date.valueOf(beginS);
-                Date end=Date.valueOf(endS);
+                LocalDate begin= LocalDate.parse(beginS);
+                LocalDate end=LocalDate.parse(endS);
                 return dashboardService.distanceByVehicleAndDataAndUser(begin, end, user);
         }
 
@@ -168,8 +168,8 @@ public class DashboardController {
         public Iterable<ChartDataRespondDTO> fuelCostByUser(@RequestParam (name = "u") String user,
                                                             @RequestParam (name = "b") String beginS,
                                                             @RequestParam (name = "e") String endS){
-                Date begin=Date.valueOf(beginS);
-                Date end=Date.valueOf(endS);
+                LocalDate begin= LocalDate.parse(beginS);
+                LocalDate end=LocalDate.parse(endS);
                 return dashboardService.fuelCostByVehicleAndDataAndUser(begin, end, user);
         }
 
@@ -184,8 +184,8 @@ public class DashboardController {
         public Iterable<ChartDataRespondDTO> vehicleTripBySuperUser(@RequestParam (name = "b") String beginS,
                                                                     @RequestParam (name = "e") String endS,
                                                                     Authentication authentication){
-                Date begin=Date.valueOf(beginS);
-                Date end=Date.valueOf(endS);
+                LocalDate begin= LocalDate.parse(beginS);
+                LocalDate end=LocalDate.parse(endS);
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 return dashboardService.distanceByVehicleAndDataByLoginUser(userDetails.getUsername(), begin, end);
         }
@@ -198,8 +198,8 @@ public class DashboardController {
         public Iterable<ChartDataRespondDTO> fuelCostBySuperUser(@RequestParam (name = "b") String beginS,
                                                                  @RequestParam (name = "e") String endS,
                                                                  Authentication authentication){
-                Date begin=Date.valueOf(beginS);
-                Date end=Date.valueOf(endS);
+                LocalDate begin= LocalDate.parse(beginS);
+                LocalDate end=LocalDate.parse(endS);
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 return dashboardService.fuelCostByVehicleAndDataByLoginUser(userDetails.getUsername(), begin, end);
         }

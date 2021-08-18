@@ -1,12 +1,12 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 public class RefuelingDTO {
     private Long id;
     private Long vehicleId;
     private Long userId;
-    private Date refuelingDate;
+    private LocalDate refuelingDate;
     private String litre;
     private String cost;
     private String description;
@@ -38,11 +38,11 @@ public class RefuelingDTO {
         this.userId = userId;
     }
 
-    public Date getRefuelingDate() {
+    public LocalDate getRefuelingDate() {
         return refuelingDate;
     }
 
-    public void setRefuelingDate(Date refuelingDate) {
+    public void setRefuelingDate(LocalDate refuelingDate) {
         this.refuelingDate = refuelingDate;
     }
 

@@ -17,8 +17,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/reports")
@@ -44,10 +46,9 @@ public class ReportsController {
         String headerValue = "attachment; filename=vehicle_" + currentDateTime + ".pdf";
         response.setHeader(headerKey, headerValue);
         response.setHeader("Pragma", "public");
-        response.setHeader("responseType", "blob");
         Long id=Long.valueOf(idS);
-        java.sql.Date begin= java.sql.Date.valueOf(beginS);
-        java.sql.Date end= java.sql.Date.valueOf(endS);
+        LocalDate begin = LocalDate.parse(beginS);
+        LocalDate end = LocalDate.parse(endS);
         switch (report) {
             case "refueling": {
                 List<VehicleRefueling> list = (List<VehicleRefueling>) reportsService.refuelingByUser(id, begin, end);
@@ -67,12 +68,12 @@ public class ReportsController {
     http://localhost:8080/reports/by_user?r=use&u=2&b=2020-08-01&e=2020-12-22
     http://localhost:8080/reports/by_vehicle?r=use&v=2&b=2020-08-01&e=2020-12-22
      */
-    @GetMapping(value="/by_vehicle",  produces = MediaType.APPLICATION_PDF_VALUE)
+    @GetMapping(value = "/by_vehicle", produces = MediaType.APPLICATION_PDF_VALUE)
     public void exportReportToPDF(
-            @RequestParam (name = "r") String report,
-            @RequestParam (name = "v") String idS,
-            @RequestParam (name = "b") String beginS,
-            @RequestParam (name = "e") String endS,
+            @RequestParam(name = "r") String report,
+            @RequestParam(name = "v") String idS,
+            @RequestParam(name = "b") String beginS,
+            @RequestParam(name = "e") String endS,
             HttpServletResponse response, Authentication authentication) throws DocumentException, IOException {
         response.setContentType("application/pdf");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
@@ -80,13 +81,13 @@ public class ReportsController {
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=vehicle_" + currentDateTime + ".pdf";
         response.setHeader(headerKey, headerValue);
-        Long id=Long.valueOf(idS);
+        Long id = Long.valueOf(idS);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (!checkService.accessToVehicle(userDetails.getUsername(), id)){
+        if (!checkService.accessToVehicle(userDetails.getUsername(), id)) {
             throw new PermissionDeniedException("Odmowa dostępu");
         }
-        java.sql.Date begin= java.sql.Date.valueOf(beginS);
-        java.sql.Date end= java.sql.Date.valueOf(endS);
+        LocalDate begin = LocalDate.parse(beginS);
+        LocalDate end = LocalDate.parse(endS);
         switch (report) {
             case "refueling": {
                 List<VehicleRefueling> list = (List<VehicleRefueling>) reportsService.refuelingByVehicle(id, begin, end);

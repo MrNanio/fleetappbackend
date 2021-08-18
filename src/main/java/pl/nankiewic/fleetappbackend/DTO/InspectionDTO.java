@@ -1,17 +1,16 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.time.LocalDate;
 
 public class InspectionDTO {
 
     private Long id;
     private Long vehicleId;
-    private Date inspectionDate;
-    private Date expirationDate;
+    private LocalDate inspectionDate;
+    private LocalDate expirationDate;
     private BigDecimal cost;
     private String description;
-
 
     public InspectionDTO() {
     }
@@ -32,19 +31,19 @@ public class InspectionDTO {
         this.vehicleId = vehicleId;
     }
 
-    public Date getInspectionDate() {
+    public LocalDate getInspectionDate() {
         return inspectionDate;
     }
 
-    public void setInspectionDate(Date inspectionDate) {
+    public void setInspectionDate(LocalDate inspectionDate) {
         this.inspectionDate = inspectionDate;
     }
 
-    public Date getExpirationDate() {
+    public LocalDate getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(Date expirationDate) {
+    public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
 
