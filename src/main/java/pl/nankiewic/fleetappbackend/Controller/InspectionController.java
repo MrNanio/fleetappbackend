@@ -20,62 +20,53 @@ public class InspectionController {
 
     private final CheckService checkService;
     private final InspectionService inspectionService;
+
     @Autowired
     public InspectionController(CheckService checkService, InspectionService inspectionService) {
         this.checkService = checkService;
         this.inspectionService = inspectionService;
     }
-    /*
-     add vehicle inspection
-     only owner
-     */
+
     @PostMapping
-    public void addInspection(@RequestBody @Valid InspectionDTO inspectionDTO, Authentication authentication){
+    public void addInspection(@RequestBody @Valid InspectionDTO inspectionDTO, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), inspectionDTO.getVehicleId())) {
             inspectionService.saveInspection(inspectionDTO);
         } else throw new PermissionDeniedException();
     }
-    /*
-    get inspections by vehicle
-     */
+
     @GetMapping("/v/{id}")
-    public Iterable<InspectionDTO> getInspectionsByVehicle(@PathVariable Long id, Authentication authentication){
+    public Iterable<InspectionDTO> getInspectionsByVehicle(@PathVariable Long id, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), id)) {
             return inspectionService.getInspectionByVehicle(id);
         } else throw new PermissionDeniedException();
     }
-    /*
-    get inspection by id
-     */
+
     @GetMapping("/{id}")
-    public InspectionDTO getInspectionById(@PathVariable Long id, Authentication authentication){
+    public InspectionDTO getInspectionById(@PathVariable Long id, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToInspection(userDetails.getUsername(), id)) {
             return inspectionService.getInspectionById(id);
         } else throw new PermissionDeniedException();
     }
-    /*
-    all inspection by vehicle user
-     */
+
     @GetMapping
-    Iterable<InspectionDTO> getInspectionsByUser(Authentication authentication){
+    Iterable<InspectionDTO> getInspectionsByUser(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return inspectionService.getInspectionsByUser(userDetails.getUsername());
     }
-    /*
-    update inspection
-     */
+
     @PutMapping
-    public void updateInspection(@RequestBody @Valid InspectionDTO inspectionDTO, Authentication authentication){
+    public void updateInspection(@RequestBody @Valid InspectionDTO inspectionDTO, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), inspectionDTO.getVehicleId())) {
             inspectionService.saveInspection(inspectionDTO);
         } else throw new PermissionDeniedException();
     }
+
     @DeleteMapping("/{id}")
-    public void deleteInspection(Authentication authentication, @PathVariable Long id){
+    public void deleteInspection(Authentication authentication, @PathVariable Long id) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToInspection(userDetails.getUsername(), id)) {
             inspectionService.deleteInspectionById(id);

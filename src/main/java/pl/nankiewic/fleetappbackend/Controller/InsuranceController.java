@@ -22,14 +22,13 @@ public class InsuranceController {
 
     private final InsuranceService insuranceService;
     private final CheckService checkService;
+
     @Autowired
     public InsuranceController(InsuranceService insuranceService, CheckService checkService) {
         this.insuranceService = insuranceService;
         this.checkService = checkService;
     }
-    /*
-    add inspection
-    */
+
     @PostMapping
     VehicleInsurance addInsurance(Authentication authentication, @RequestBody @Valid InsuranceDTO insuranceDTO) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -37,44 +36,37 @@ public class InsuranceController {
             return insuranceService.save(insuranceDTO);
         } else throw new PermissionDeniedException();
     }
-    /*
-    get by vehicle id
-    */
+
     @GetMapping("/v/{id}")
-    Iterable <InsuranceDTO> getInsurancesByVehicle(@PathVariable Long id, Authentication authentication){
+    Iterable<InsuranceDTO> getInsurancesByVehicle(@PathVariable Long id, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), id)) {
             return insuranceService.getInsurancesByVehicle(id);
         } else throw new PermissionDeniedException();
     }
-    /*
-    get by inspection id
-     */
+
     @GetMapping("/{id}")
-    InsuranceDTO getInsurancesById(@PathVariable Long id, Authentication authentication){
+    InsuranceDTO getInsurancesById(@PathVariable Long id, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToInsurance(userDetails.getUsername(), id)) {
             return insuranceService.getInsuranceById(id);
         } else throw new PermissionDeniedException();
     }
-    /*
-    get by vehicle owner
-     */
+
     @GetMapping
-    Iterable<InsuranceDTO> getInsurancesByUser(Authentication authentication){
+    Iterable<InsuranceDTO> getInsurancesByUser(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return insuranceService.getInsurancesByUser(userDetails.getUsername());
     }
-    /*
-    update inspection
-    */
+
     @PutMapping
-    VehicleInsurance updateInsurance(Authentication authentication, @RequestBody @Valid InsuranceDTO insuranceDTO){
+    VehicleInsurance updateInsurance(Authentication authentication, @RequestBody @Valid InsuranceDTO insuranceDTO) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), insuranceDTO.getVehicleId())) {
             return insuranceService.save(insuranceDTO);
         } else throw new PermissionDeniedException();
     }
+
     @DeleteMapping("/{id}")
     public void deleteInsurance(Authentication authentication, @PathVariable Long id) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -82,9 +74,7 @@ public class InsuranceController {
             insuranceService.deleteInsuranceById(id);
         } else throw new PermissionDeniedException();
     }
-    /*
-    get all types
-     */
+
     @GetMapping("/types")
     Iterable<InsuranceTypeDTO> getInsuranceTypes() {
         return insuranceService.getInsuranceTypes();

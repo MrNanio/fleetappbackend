@@ -26,6 +26,7 @@ public class VehicleController {
     private final CheckService checkService;
     private final VehicleMakeRepository vehicleMakeRepository;
     private final FuelTypeRepository fuelTypeRepository;
+
     @Autowired
     public VehicleController(VehicleService vehicleService, CheckService checkService,
                              VehicleMakeRepository vehicleMakeRepository, FuelTypeRepository fuelTypeRepository) {
@@ -34,44 +35,50 @@ public class VehicleController {
         this.vehicleMakeRepository = vehicleMakeRepository;
         this.fuelTypeRepository = fuelTypeRepository;
     }
+
     @PreAuthorize("hasRole('SUPERUSER')")
     @PostMapping()
-    public Vehicle addVehicle(@RequestBody @Valid VehicleDTO vehicleDTO, Authentication authentication){
+    public Vehicle addVehicle(@RequestBody @Valid VehicleDTO vehicleDTO, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return vehicleService.save(vehicleDTO, userDetails.getUsername());
     }
+
     @PreAuthorize("hasRole('SUPERUSER')")
     @GetMapping()
-    public Iterable<VehicleDTO> getVehiclesByVehicleOwner(Authentication authentication){
+    public Iterable<VehicleDTO> getVehiclesByVehicleOwner(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return vehicleService.getVehiclesDataByUser(userDetails.getUsername());
     }
 
     @GetMapping("/{id}")
-    public VehicleDTO getVehicleById(@PathVariable Long id, Authentication authentication){
+    public VehicleDTO getVehicleById(@PathVariable Long id, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), id)) {
             return vehicleService.getVehicleDataById(id);
         } else throw new PermissionDeniedException();
     }
+
     @PutMapping
-    public Vehicle updateVehicle(@RequestBody @Valid VehicleDTO vehicleDTO, Authentication authentication){
-       UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-       return vehicleService.save(vehicleDTO, userDetails.getUsername());
+    public Vehicle updateVehicle(@RequestBody @Valid VehicleDTO vehicleDTO, Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        return vehicleService.save(vehicleDTO, userDetails.getUsername());
     }
+
     @DeleteMapping("/{id}")
-    public void deleteVehicle(Authentication authentication, @PathVariable Long id){
+    public void deleteVehicle(Authentication authentication, @PathVariable Long id) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), id)) {
             vehicleService.deleteVehicleById(id);
         } else throw new PermissionDeniedException();
     }
+
     @GetMapping("/make")
-    public Iterable<VehicleMake> getMake(){
-       return vehicleMakeRepository.findAll();
+    public Iterable<VehicleMake> getMake() {
+        return vehicleMakeRepository.findAll();
     }
+
     @GetMapping("/fuelType")
-    public Iterable<FuelType> getFuelType(){
+    public Iterable<FuelType> getFuelType() {
         return fuelTypeRepository.findAll();
     }
 

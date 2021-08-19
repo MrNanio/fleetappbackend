@@ -11,8 +11,9 @@ import java.util.Date;
 
 @Component
 public class JWTokenUtility {
-    private final String jwtSecret="secret";
+    private final String jwtSecret = "secret";
     private static final Logger logger = LoggerFactory.getLogger(JWTokenUtility.class);
+
     public String generateJwtToken(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         int jwtExpirationMs = 86400000;
@@ -23,9 +24,11 @@ public class JWTokenUtility {
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
+
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
+
     public boolean validateJwtToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);

@@ -15,20 +15,24 @@ import javax.validation.Valid;
 @RequestMapping("/admin")
 public class AdminController {
     private final AccountService accountService;
+
     @Autowired
     public AdminController(AccountService accountService) {
         this.accountService = accountService;
     }
+
     @GetMapping
     public Iterable<UserDTO> getAllUser() {
         return accountService.getAllUser();
     }
+
     @GetMapping("user/{id}")
     public UserDTO getUserById(@PathVariable Long id) {
         return accountService.getUserById(id);
     }
+
     @PostMapping("/status")
     public void blockOrUnblockUserById(@RequestBody @Valid BlockOrUnblock blockOrUnblock) {
-       accountService.blockOrUnblockUser(blockOrUnblock);
+        accountService.blockOrUnblockUser(blockOrUnblock);
     }
 }

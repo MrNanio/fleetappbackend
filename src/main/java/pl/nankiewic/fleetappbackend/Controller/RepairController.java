@@ -20,61 +20,53 @@ public class RepairController {
 
     private final CheckService checkService;
     private final RepairService repairService;
+
     @Autowired
     public RepairController(CheckService checkService, RepairService repairService) {
         this.checkService = checkService;
         this.repairService = repairService;
     }
-    /*
-     add repair
-    */
-   @PostMapping
+
+    @PostMapping
     public void addRepair(Authentication authentication, @RequestBody @Valid RepairDTO repairDTO) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), repairDTO.getVehicleId())) {
             repairService.save(repairDTO);
         } else throw new PermissionDeniedException();
     }
-    /*
-    get by user
-    */
+
     @GetMapping
-    public Iterable<RepairDTO> getRepairsByUser(Authentication authentication){
+    public Iterable<RepairDTO> getRepairsByUser(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return repairService.getRepairsByUser(userDetails.getUsername());
     }
-    /*
-    get by vehicle id
-     */
+
     @GetMapping("/v/{id}")
-    public Iterable<RepairDTO> getRepairsByVehicle(@PathVariable Long id, Authentication authentication){
+    public Iterable<RepairDTO> getRepairsByVehicle(@PathVariable Long id, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), id)) {
             return repairService.getRepairsByVehicle(id);
         } else throw new PermissionDeniedException();
     }
-    /*
-    get by repair id
-    */
+
     @GetMapping("/{id}")
-    public RepairDTO getRepairById(@PathVariable Long id, Authentication authentication){
+    public RepairDTO getRepairById(@PathVariable Long id, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToRepair(userDetails.getUsername(), id)) {
             return repairService.getRepairById(id);
         } else throw new PermissionDeniedException();
     }
-    /*
-    repair update
-     */
+
     @PutMapping
-    public void updateRepair(Authentication authentication, @RequestBody @Valid RepairDTO repairDTO){
+    public void updateRepair(Authentication authentication, @RequestBody @Valid RepairDTO repairDTO) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToRepair(userDetails.getUsername(), repairDTO.getId())) {
             repairService.save(repairDTO);
         } else throw new PermissionDeniedException();
     }
+
     @DeleteMapping("/{id}")
-    public void deleteRepair(Authentication authentication, @PathVariable Long id){
+    public void deleteRepair(Authentication authentication, @PathVariable Long id) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToRepair(userDetails.getUsername(), id)) {
             repairService.deleteRepairById(id);

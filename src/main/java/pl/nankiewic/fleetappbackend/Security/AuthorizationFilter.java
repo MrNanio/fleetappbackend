@@ -18,10 +18,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class AuthorizationFilter extends OncePerRequestFilter {
+
     @Autowired
     private JWTokenUtility tokenUtility;
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
+
     public AuthorizationFilter() {
     }
 
@@ -33,10 +35,12 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         try {
             String jwt = parseJwt(request);
             if (jwt != null && tokenUtility.validateJwtToken(jwt)) {
-                String username =tokenUtility.getUserNameFromJwtToken(jwt);
+                String username = tokenUtility.getUserNameFromJwtToken(jwt);
                 UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
