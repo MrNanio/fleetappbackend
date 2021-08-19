@@ -17,6 +17,7 @@ public class InspectionService {
     private final VehicleRepository vehicleRepository;
     private final UserRepository userRepository;
     private final InspectionMapper mapper;
+
     @Autowired
     public InspectionService(VehicleInspectionRepository vehicleInspectionRepository,
                              VehicleRepository vehicleRepository,
@@ -28,23 +29,26 @@ public class InspectionService {
         this.mapper = mapper;
     }
 
-    public void saveInspection(InspectionDTO inspectionDTO){
+    public void saveInspection(InspectionDTO inspectionDTO) {
         VehicleInspection vehicleInspection = mapper.inspectionDTOtoVehicleInspection(inspectionDTO);
         vehicleInspection.setVehicle(vehicleRepository.findById(inspectionDTO.getVehicleId()).orElseThrow(
                 () -> new RuntimeException("Bład przetwarzania")));
         vehicleInspectionRepository.save(vehicleInspection);
     }
+
     public Iterable<InspectionDTO> getInspectionByVehicle(Long id) {
         Vehicle vehicle = vehicleRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Bład przetwarzania"));
         return mapper.vehicleInspectionsToInspectionsDTO(vehicleInspectionRepository.findAllByVehicle(vehicle));
     }
+
     public InspectionDTO getInspectionById(Long id) {
         return mapper.vehicleInspectionToInspectionDTO(vehicleInspectionRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Bład przetwarzania")));
     }
-    public Iterable <InspectionDTO> getInspectionsByUser(String email) {
-        User user=userRepository.findUserByEmail(email);
+
+    public Iterable<InspectionDTO> getInspectionsByUser(String email) {
+        User user = userRepository.findUserByEmail(email);
         Iterable<Vehicle> vehicles = vehicleRepository.findVehiclesByUser(user);
         return mapper.vehicleInspectionsToInspectionsDTO(vehicleInspectionRepository.findAllByVehicleIn(vehicles));
     }

@@ -19,30 +19,35 @@ public class ShareController {
 
     private final ShareService shareService;
     private final CheckService checkService;
+
     @Autowired
     public ShareController(ShareService shareService, CheckService checkService) {
         this.shareService = shareService;
         this.checkService = checkService;
     }
+
     @PostMapping("/share")
-    public void addShare(Authentication authentication, @RequestBody @Valid ShareDTO shareDTO){
+    public void addShare(Authentication authentication, @RequestBody @Valid ShareDTO shareDTO) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         shareService.setCurrentVehicleUserToVehicle(shareDTO, userDetails.getUsername());
     }
+
     @GetMapping("/share/user/{id}")
-    public Iterable<VehicleDTO> getShareVehicleByIdUser(@PathVariable Long id, Authentication authentication){
+    public Iterable<VehicleDTO> getShareVehicleByIdUser(@PathVariable Long id, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return shareService.getShareVehicleListByUserId(id, userDetails.getUsername());
     }
+
     @GetMapping("/share/vehicles")
-    public Iterable<VehicleDTO> getPossibleVehicleListToShare(Authentication authentication){
+    public Iterable<VehicleDTO> getPossibleVehicleListToShare(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return shareService.getPossibleVehiclesList(userDetails.getUsername());
     }
+
     @DeleteMapping("/share/vehicle/{id}")
-    public void deleteShareVehicleByIdVehicle(@PathVariable Long id, Authentication authentication){
+    public void deleteShareVehicleByIdVehicle(@PathVariable Long id, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if(checkService.accessToVehicle(userDetails.getUsername(), id)){
+        if (checkService.accessToVehicle(userDetails.getUsername(), id)) {
             shareService.deleteShareVehicleListByVehicleId(id);
         } else throw new PermissionDeniedException();
     }

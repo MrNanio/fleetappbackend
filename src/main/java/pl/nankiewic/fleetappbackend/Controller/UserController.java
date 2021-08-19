@@ -5,20 +5,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import pl.nankiewic.fleetappbackend.DTO.*;
 import pl.nankiewic.fleetappbackend.Mapper.UserMapper;
 import pl.nankiewic.fleetappbackend.Repository.UserRepository;
-import pl.nankiewic.fleetappbackend.Repository.VerificationTokenRepository;
 import pl.nankiewic.fleetappbackend.Service.AccountService;
 import pl.nankiewic.fleetappbackend.Service.CustomUserDetailsService;
-import pl.nankiewic.fleetappbackend.Service.MailService;
-/*
-id user dostaje maila
-share
 
- */
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 
@@ -26,43 +19,28 @@ import java.time.LocalDateTime;
 @RequestMapping("/user")
 @CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
+    private final CustomUserDetailsService customUserDetailsService;
     private final AccountService accountService;
     private final UserRepository userRepository;
-    private final MailService mailService;
-    private final PasswordEncoder passwordEncoder;
-    private final CustomUserDetailsService customUserDetailsService;
-    private final VerificationTokenRepository verificationTokenRepository;
     private final UserMapper userMapper;
+
     @Autowired
-    public UserController(AccountService accountService, UserRepository userRepository, MailService mailService,
-                          PasswordEncoder passwordEncoder, CustomUserDetailsService customUserDetailsService,
-                          VerificationTokenRepository verificationTokenRepository, UserMapper userMapper) {
+    public UserController(CustomUserDetailsService customUserDetailsService,
+                          AccountService accountService,
+                          UserRepository userRepository,
+                          UserMapper userMapper) {
+        this.customUserDetailsService = customUserDetailsService;
         this.accountService = accountService;
         this.userRepository = userRepository;
-        this.mailService = mailService;
-        this.passwordEncoder = passwordEncoder;
-        this.customUserDetailsService = customUserDetailsService;
-        this.verificationTokenRepository = verificationTokenRepository;
         this.userMapper = userMapper;
     }
 
-    /*
-    ACTIVATION ACCOUNT
-    */
     @GetMapping("/activation-account")
     public @ResponseBody
-    void activationAccount(@RequestParam String activation_token){
+    void activationAccount(@RequestParam String activation_token) {
         accountService.getAccountActivation(activation_token);
     }
-/*
-    @PostMapping("/activation")
-    public String activationAccountTokenRequest(EmailDTO emailDTO) {
-        return "";
-    }
-*/
-    /*
-    RESET PASSWORD
-     */
+
     @PostMapping("/reset-password")
     public void resetPasswordEmailRequest(@RequestBody @Valid EmailDTO emailDTO) {
         accountService.postResetPassword(emailDTO);
@@ -78,18 +56,13 @@ public class UserController {
     public void createNewPassword(@RequestBody @Valid ResetChangePasswordDTO resetChangePasswordDTO) {
         accountService.postNewPassword(resetChangePasswordDTO);
     }
-    /*
-    CHANGE PASSWORD
-     */
+
     @PostMapping("/change-password")
     public void changePassword(@RequestBody @Valid PasswordDTO passwordDTO, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         accountService.changePassword(passwordDTO, userDetails.getUsername());
     }
 
-    /*
-    USERDATA
-     */
     @GetMapping("/userdata/{id}")
     public ResponseEntity<UserDataDTO> getUserData(@PathVariable Long id, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -103,13 +76,15 @@ public class UserController {
         accountService.saveUserData(userDataDTO, userDetails.getUsername());
         return ResponseEntity.ok().body(new MessageResponse("ok", LocalDateTime.now()));
     }
+
     @PutMapping("/userdata")
     public ResponseEntity<MessageResponse> updateUserData(@RequestBody @Valid UserDataDTO userDataDTO,
                                                           Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        accountService.updateUserData(userDataDTO,userDetails.getUsername());
-        return ResponseEntity.ok().body(new MessageResponse("ok",LocalDateTime.now()));
+        accountService.updateUserData(userDataDTO, userDetails.getUsername());
+        return ResponseEntity.ok().body(new MessageResponse("ok", LocalDateTime.now()));
     }
+
     @DeleteMapping("/userdata")
     public ResponseEntity<MessageResponse> deleteUserData(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -117,9 +92,6 @@ public class UserController {
         return ResponseEntity.ok().body(new MessageResponse("ok", LocalDateTime.now()));
     }
 
-    /*
-    ADD NEW USER
-     */
     @PreAuthorize("hasRole('SUPERUSER')")
     @PostMapping("/new-account")
     public void postInviteToNewUser(@RequestBody @Valid EmailDTO emailDTO, Authentication authentication) {
@@ -143,10 +115,11 @@ public class UserController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return userMapper.userToUserDTOs(accountService.getUserByManager(userDetails.getUsername()));
     }
+
     @PreAuthorize("hasRole('SUPERUSER')")
     @GetMapping("/get-user-by-id/{id}")
     EmailDTO getUserEmail(@PathVariable Long id) {
-        EmailDTO emailDTO= new EmailDTO();
+        EmailDTO emailDTO = new EmailDTO();
         emailDTO.setEmail(userRepository.findUserById(id).getEmail());
         return emailDTO;
     }

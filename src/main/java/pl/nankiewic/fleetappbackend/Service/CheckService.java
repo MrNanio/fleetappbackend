@@ -17,6 +17,7 @@ public class CheckService {
     private final VehicleUseRepository vehicleUseRepository;
     private final VehicleRepository vehicleRepository;
     private final UserRepository userRepository;
+
     @Autowired
     public CheckService(CurrentVehicleUserRepository currentVehicleUserRepository,
                         VehicleInspectionRepository vehicleInspectionRepository,
@@ -35,19 +36,21 @@ public class CheckService {
         this.userRepository = userRepository;
     }
 
-    public boolean isMyVehicle(User user, Vehicle vehicle){
+    public boolean isMyVehicle(User user, Vehicle vehicle) {
         return vehicle.getUser().getId().equals(user.getId());
     }
-    public boolean isMyVehicleNow(User user, Vehicle vehicle){
-        Iterable <CurrentVehicleUser> users=currentVehicleUserRepository.findCurrentVehicleUsersByVehicleIs(vehicle);
+
+    public boolean isMyVehicleNow(User user, Vehicle vehicle) {
+        Iterable<CurrentVehicleUser> users = currentVehicleUserRepository.findCurrentVehicleUsersByVehicleIs(vehicle);
         for (CurrentVehicleUser x : users) {
             return x.getUser() == user;
         }
         return false;
     }
-    public boolean accessToVehicle(String email, Long vehicleId){
-        User user=userRepository.findUserByEmail(email);
-        if(vehicleRepository.existsById(vehicleId)) {
+
+    public boolean accessToVehicle(String email, Long vehicleId) {
+        User user = userRepository.findUserByEmail(email);
+        if (vehicleRepository.existsById(vehicleId)) {
             Optional<Vehicle> vehicle = vehicleRepository.findById(vehicleId);
             if (vehicle.isPresent()) {
                 Vehicle vehicle1 = vehicle.get();
@@ -55,9 +58,10 @@ public class CheckService {
             } else throw new EntityNotFoundException("Zasób nie istnieje: pojazd");
         } else throw new EntityNotFoundException("Zasób nie istnieje: pojazd");
     }
-    public boolean accessToInspection(String email, Long inspectionId){
-        User user=userRepository.findUserByEmail(email);
-        if(vehicleInspectionRepository.existsById(inspectionId)) {
+
+    public boolean accessToInspection(String email, Long inspectionId) {
+        User user = userRepository.findUserByEmail(email);
+        if (vehicleInspectionRepository.existsById(inspectionId)) {
             Optional<VehicleInspection> vehicleInspection = vehicleInspectionRepository.findById(inspectionId);
             if (vehicleInspection.isPresent()) {
                 Vehicle vehicle = vehicleInspection.get().getVehicle();
@@ -65,9 +69,10 @@ public class CheckService {
             } else throw new EntityNotFoundException("Zasób nie istnieje: inspekcja");
         } else throw new EntityNotFoundException("Zasób nie istnieje: inspekcja");
     }
-    public boolean accessToRepair(String email, Long repairId){
-        User user=userRepository.findUserByEmail(email);
-        if(vehicleRepairRepository.existsById(repairId)) {
+
+    public boolean accessToRepair(String email, Long repairId) {
+        User user = userRepository.findUserByEmail(email);
+        if (vehicleRepairRepository.existsById(repairId)) {
             Optional<VehicleRepair> vehicleRepair = vehicleRepairRepository.findById(repairId);
             if (vehicleRepair.isPresent()) {
                 Vehicle vehicle = vehicleRepair.get().getVehicle();
@@ -75,9 +80,10 @@ public class CheckService {
             } else throw new EntityNotFoundException("Zasób nie istnieje: naprawa");
         } else throw new EntityNotFoundException("Zasób nie istnieje: naprawa");
     }
-    public boolean accessToInsurance(String email, Long insuranceId){
-        User user=userRepository.findUserByEmail(email);
-        if(vehicleInsuranceRepository.existsById(insuranceId)) {
+
+    public boolean accessToInsurance(String email, Long insuranceId) {
+        User user = userRepository.findUserByEmail(email);
+        if (vehicleInsuranceRepository.existsById(insuranceId)) {
             Optional<VehicleInsurance> vehicleInsurance = vehicleInsuranceRepository.findById(insuranceId);
             if (vehicleInsurance.isPresent()) {
                 Vehicle vehicle = vehicleInsurance.get().getVehicle();
@@ -85,9 +91,10 @@ public class CheckService {
             } else throw new EntityNotFoundException("Zasób nie istnieje: ubezpiecznie");
         } else throw new EntityNotFoundException("Zasób nie istnieje: ubezpiecznie");
     }
-    public boolean accessToRefueling(String email, Long refuelingId){
-        User user=userRepository.findUserByEmail(email);
-        if(vehicleRefuelingRepository.existsById(refuelingId)) {
+
+    public boolean accessToRefueling(String email, Long refuelingId) {
+        User user = userRepository.findUserByEmail(email);
+        if (vehicleRefuelingRepository.existsById(refuelingId)) {
             Optional<VehicleRefueling> refueling = vehicleRefuelingRepository.findById(refuelingId);
             if (refueling.isPresent()) {
                 Vehicle vehicle = refueling.get().getVehicle();
@@ -95,9 +102,10 @@ public class CheckService {
             } else throw new EntityNotFoundException("Zasób nie istnieje: tankowanie");
         } else throw new EntityNotFoundException("Zasób nie istnieje: tankowanie");
     }
-    public boolean accessToUse(String email, Long useId){
-        User user=userRepository.findUserByEmail(email);
-        if(vehicleUseRepository.existsById(useId)){
+
+    public boolean accessToUse(String email, Long useId) {
+        User user = userRepository.findUserByEmail(email);
+        if (vehicleUseRepository.existsById(useId)) {
             Optional<VehicleUse> vehicleUse = vehicleUseRepository.findById(useId);
             if (vehicleUse.isPresent()) {
                 Vehicle vehicle = vehicleUse.get().getVehicle();

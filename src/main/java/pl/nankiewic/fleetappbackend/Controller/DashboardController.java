@@ -9,8 +9,6 @@ import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.DashboardService;
 
-import java.time.LocalDate;
-
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/dashboard")
@@ -25,44 +23,39 @@ public class DashboardController {
         }
 
         @GetMapping("/cost_by_category")
-        public Iterable<ChartDataRespondDTO> costByCategories(@RequestParam(name = "b") String beginS,
-                                                              @RequestParam(name = "e") String endS,
-                                                              Authentication authentication) {
-                LocalDate begin = LocalDate.parse(beginS);
-                LocalDate end = LocalDate.parse(endS);
+        public Iterable<ChartDataRespondDTO> getCostByCategories(@RequestParam(name = "b") String beginS,
+                                                                 @RequestParam(name = "e") String endS,
+                                                                 Authentication authentication) {
+
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                return dashboardService.fleetCostByCategory(userDetails.getUsername(), begin, end);
+                return dashboardService.getFleetCostByCategory(userDetails.getUsername(), beginS, endS);
         }
 
         @GetMapping("/fuel_cost_by_vehicle")
-        public Iterable<ChartDataRespondDTO> fuelCostByVehicle(@RequestParam(name = "b") String beginS,
-                                                               @RequestParam(name = "e") String endS,
-                                                               Authentication authentication) {
-                LocalDate begin = LocalDate.parse(beginS);
-                LocalDate end = LocalDate.parse(endS);
-                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                return dashboardService.sumRefuelingByVehicle(userDetails.getUsername(), begin, end);
+        public Iterable<ChartDataRespondDTO> getFuelCostByVehicle(@RequestParam(name = "b") String beginS,
+                                                                  @RequestParam(name = "e") String endS,
+                                                                  Authentication authentication) {
 
+                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+                return dashboardService.getSummaryRefuelingByVehicle(userDetails.getUsername(), beginS, endS);
         }
 
         @GetMapping("/use_cost_by_vehicle")
-        public Iterable<ChartDataRespondDTO> useCostByVehicle(@RequestParam(name = "b") String beginS,
-                                                              @RequestParam(name = "e") String endS,
-                                                              Authentication authentication) {
-                LocalDate begin = LocalDate.parse(beginS);
-                LocalDate end = LocalDate.parse(endS);
+        public Iterable<ChartDataRespondDTO> getUseCostByVehicle(@RequestParam(name = "b") String beginS,
+                                                                 @RequestParam(name = "e") String endS,
+                                                                 Authentication authentication) {
+
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                return dashboardService.sumUseByVehicle(userDetails.getUsername(), begin, end);
+                return dashboardService.getSummaryUseByVehicle(userDetails.getUsername(), beginS, endS);
         }
 
-        @GetMapping("/use_number_by_vehicle")//new
-        public Iterable<ChartDataRespondDTO> useByVehicle(@RequestParam(name = "b") String beginS,
-                                                          @RequestParam(name = "e") String endS,
-                                                          Authentication authentication) {
-                LocalDate begin = LocalDate.parse(beginS);
-                LocalDate end = LocalDate.parse(endS);
+        @GetMapping("/use_number_by_vehicle")
+        public Iterable<ChartDataRespondDTO> getUseByVehicle(@RequestParam(name = "b") String beginS,
+                                                             @RequestParam(name = "e") String endS,
+                                                             Authentication authentication) {
+
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                return dashboardService.numberOfUsesByVehicle(userDetails.getUsername(), begin, end);
+                return dashboardService.getNumberOfUsesByVehicle(userDetails.getUsername(), beginS, endS);
         }
 
         @GetMapping("/cost_fuel_by_vehicle")
@@ -70,94 +63,82 @@ public class DashboardController {
                                                                @RequestParam(name = "b") String beginS,
                                                                @RequestParam(name = "e") String endS,
                                                                Authentication authentication) {
-                LocalDate begin = LocalDate.parse(beginS);
-                LocalDate end = LocalDate.parse(endS);
+
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 if (checkService.accessToVehicle(userDetails.getUsername(), Long.parseLong(vehicle))) {
-                        return dashboardService.fuelCostByVehicleAndData(begin, end, vehicle);
+                        return dashboardService.getFuelCostByVehicleAndData(vehicle, beginS, endS);
                 } else throw new PermissionDeniedException("Odmowa dostępu");
 
         }
 
         @GetMapping("/trip_by_vehicle")
-        public Iterable<ChartDataRespondDTO> distanceByVehicle(@RequestParam(name = "v") String vehicle,
-                                                               @RequestParam(name = "b") String beginS,
-                                                               @RequestParam(name = "e") String endS,
-                                                               Authentication authentication) {
+        public Iterable<ChartDataRespondDTO> getDistanceByVehicle(@RequestParam(name = "v") String vehicle,
+                                                                  @RequestParam(name = "b") String beginS,
+                                                                  @RequestParam(name = "e") String endS,
+                                                                  Authentication authentication) {
 
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 if (checkService.accessToVehicle(userDetails.getUsername(), Long.parseLong(vehicle))) {
-                        return dashboardService.distanceByVehicleAndData(beginS, endS, vehicle);
+                        return dashboardService.getDistanceByVehicleAndData(beginS, endS, vehicle);
                 } else throw new PermissionDeniedException("Odmowa dostępu");
-
         }
 
         @GetMapping("/vehicle_cost_by_category")
-        public Iterable<ChartDataRespondDTO> vehicleCostByCategory(@RequestParam(name = "v") String vehicle,
-                                                                   @RequestParam(name = "b") String beginS,
-                                                                   @RequestParam(name = "e") String endS,
-                                                                   Authentication authentication) {
-                LocalDate begin = LocalDate.parse(beginS);
-                LocalDate end = LocalDate.parse(endS);
+        public Iterable<ChartDataRespondDTO> getVehicleCostByCategory(@RequestParam(name = "v") String vehicle,
+                                                                      @RequestParam(name = "b") String beginS,
+                                                                      @RequestParam(name = "e") String endS,
+                                                                      Authentication authentication) {
+
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 if (checkService.accessToVehicle(userDetails.getUsername(), Long.parseLong(vehicle))) {
-                        return dashboardService.vehicleCostByCategory(vehicle, begin, end);
+                        return dashboardService.getVehicleCostByCategory(vehicle, beginS, endS);
                 } else throw new PermissionDeniedException("Odmowa dostępu");
         }
 
         @GetMapping("/vehicle_trip_by_trip_type")
-        public Iterable<ChartDataRespondDTO> vehicleTripByTripType(@RequestParam(name = "v") String vehicle,
-                                                                   @RequestParam(name = "b") String beginS,
-                                                                   @RequestParam(name = "e") String endS,
-                                                                   Authentication authentication) {
-                LocalDate begin = LocalDate.parse(beginS);
-                LocalDate end = LocalDate.parse(endS);
+        public Iterable<ChartDataRespondDTO> getVehicleTripByTripType(@RequestParam(name = "v") String vehicle,
+                                                                      @RequestParam(name = "b") String beginS,
+                                                                      @RequestParam(name = "e") String endS,
+                                                                      Authentication authentication) {
+
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 if (checkService.accessToVehicle(userDetails.getUsername(), Long.parseLong(vehicle))) {
-                        return dashboardService.distanceByVehicleAndDataAndUseType(begin, end, vehicle);
+                        return dashboardService.getDistanceByVehicleAndDataAndUseType(vehicle, beginS, endS);
                 } else throw new PermissionDeniedException("Odmowa dostępu");
 
         }
 
         @GetMapping("trip_by_user")
-        public Iterable<ChartDataRespondDTO> vehicleTripByUser(@RequestParam(name = "u") String user,
-                                                               @RequestParam(name = "b") String beginS,
-                                                               @RequestParam(name = "e") String endS) {
-                LocalDate begin = LocalDate.parse(beginS);
-                LocalDate end = LocalDate.parse(endS);
-                return dashboardService.distanceByVehicleAndDataAndUser(begin, end, user);
+        public Iterable<ChartDataRespondDTO> getVehicleTripByUser(@RequestParam(name = "u") String user,
+                                                                  @RequestParam(name = "b") String beginS,
+                                                                  @RequestParam(name = "e") String endS) {
+
+                return dashboardService.getDistanceByVehicleAndDataAndUser(user, beginS, endS);
         }
 
         @GetMapping("fuel_cost_by_user")//new
-        public Iterable<ChartDataRespondDTO> fuelCostByUser(@RequestParam(name = "u") String user,
-                                                            @RequestParam(name = "b") String beginS,
-                                                            @RequestParam(name = "e") String endS) {
-                LocalDate begin = LocalDate.parse(beginS);
-                LocalDate end = LocalDate.parse(endS);
-                return dashboardService.fuelCostByVehicleAndDataAndUser(begin, end, user);
+        public Iterable<ChartDataRespondDTO> getFuelCostByUser(@RequestParam(name = "u") String user,
+                                                               @RequestParam(name = "b") String beginS,
+                                                               @RequestParam(name = "e") String endS) {
+
+                return dashboardService.getFuelCostByVehicleAndDataAndUser(user, beginS, endS);
         }
 
         @GetMapping("trip_by_login_user")
-        public Iterable<ChartDataRespondDTO> vehicleTripBySuperUser(@RequestParam(name = "b") String beginS,
-                                                                    @RequestParam(name = "e") String endS,
-                                                                    Authentication authentication) {
-                LocalDate begin = LocalDate.parse(beginS);
-                LocalDate end = LocalDate.parse(endS);
+        public Iterable<ChartDataRespondDTO> getVehicleTripBySuperUser(@RequestParam(name = "b") String beginS,
+                                                                       @RequestParam(name = "e") String endS,
+                                                                       Authentication authentication) {
+
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                return dashboardService.distanceByVehicleAndDataByLoginUser(userDetails.getUsername(), begin, end);
+                return dashboardService.getDistanceByVehicleAndDataByLoginUser(userDetails.getUsername(), beginS, endS);
         }
 
-        /*
-        name: model | numer rejestracyjny
-        value koszty paliwa dodane prez tego menagera do danego pojazdu
-         */
         @GetMapping("fuel_cost_by_login_user")
-        public Iterable<ChartDataRespondDTO> fuelCostBySuperUser(@RequestParam(name = "b") String beginS,
-                                                                 @RequestParam(name = "e") String endS,
-                                                                 Authentication authentication) {
-                LocalDate begin = LocalDate.parse(beginS);
-                LocalDate end = LocalDate.parse(endS);
+        public Iterable<ChartDataRespondDTO> getFuelCostBySuperUser(@RequestParam(name = "b") String beginS,
+                                                                    @RequestParam(name = "e") String endS,
+                                                                    Authentication authentication) {
+
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                return dashboardService.fuelCostByVehicleAndDataByLoginUser(userDetails.getUsername(), begin, end);
+                return dashboardService.getFuelCostByVehicleAndDataByLoginUser(userDetails.getUsername(), beginS, endS);
         }
 }

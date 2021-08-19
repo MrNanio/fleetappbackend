@@ -19,6 +19,7 @@ public class UseService {
     private final VehicleRepository vehicleRepository;
     private final UserRepository userRepository;
     private final UseMapper useMapper;
+
     @Autowired
     public UseService(VehicleUseRepository vehicleUseRepository,
                       VehicleRepository vehicleRepository,
@@ -30,54 +31,48 @@ public class UseService {
         this.useMapper = useMapper;
     }
 
-    public void save(UseDTO use, String email){
+    public void save(UseDTO use, String email) {
         VehicleUse vehicleUse = useMapper.useDTOtoVehicleUse(use);
-        Vehicle vehicle=vehicleRepository.findById(use.getVehicleId()).orElseThrow(
+        Vehicle vehicle = vehicleRepository.findById(use.getVehicleId()).orElseThrow(
                 () -> new RuntimeException("Bład przetwarzania"));
         vehicleUse.setVehicle(vehicle);
         vehicleUse.setUser(userRepository.findUserByEmail(email));
 
-        int mil=Integer.parseInt(vehicle.getMileage())+use.getTrip();
+        int mil = Integer.parseInt(vehicle.getMileage()) + use.getTrip();
         vehicle.setMileage(Integer.toString(mil));
         vehicleUseRepository.save(vehicleUse);
         vehicleRepository.save(vehicle);
     }
-    /*
-    get by vehicle
-    only for vehicle owner
-     */
+
     public Iterable<UseDTO> getUseByVehicle(Long id) {
-        if(vehicleRepository.existsById(id)) {
+        if (vehicleRepository.existsById(id)) {
             return useMapper.vehicleUseToUseDTO(vehicleUseRepository.findAllByVehicle(
                     vehicleRepository.findById(id).orElseThrow(
                             () -> new RuntimeException("Bład przetwarzania"))));
         } else throw new EntityNotFoundException();
     }
-    /*
-    get by author of use
-    for all
-     */
-    public Iterable <UseDTO> getUseByUser(String email){
+
+    public Iterable<UseDTO> getUseByUser(String email) {
         return useMapper.vehicleUseToUseDTO(vehicleUseRepository.findAllByUser(userRepository.findUserByEmail(email)));
     }
-    /*
-    get by use id
-     */
-    public UseDTO getUseById(Long id){
-        if(vehicleUseRepository.existsById(id)) {
+
+    public UseDTO getUseById(Long id) {
+        if (vehicleUseRepository.existsById(id)) {
             return useMapper.vehicleUseToUseDTO(vehicleUseRepository.findById(id).orElseThrow(
                     () -> new RuntimeException("Bład przetwarzania")));
         } else throw new EntityNotFoundException();
     }
-    public void deleteUseById(Long id){
-        VehicleUse use=vehicleUseRepository.findById(id).orElseThrow(
+
+    public void deleteUseById(Long id) {
+        VehicleUse use = vehicleUseRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Bład przetwarzania"));
-        Vehicle vehicle=use.getVehicle();
-        int mil=Integer.parseInt(vehicle.getMileage())-use.getTrip();
+        Vehicle vehicle = use.getVehicle();
+        int mil = Integer.parseInt(vehicle.getMileage()) - use.getTrip();
         vehicle.setMileage(Integer.toString(mil));
         vehicleRepository.save(vehicle);
         vehicleUseRepository.deleteById(id);
     }
+
     public Iterable<UseDTO> getUseByUserAndVehicle(Long userId, Long vehicleId) {
         if (userRepository.existsById(userId) && vehicleRepository.existsById(vehicleId)) {
             Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(

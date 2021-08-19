@@ -21,6 +21,7 @@ public class RefuelingService {
     private final VehicleRefuelingRepository refuelingRepository;
     private final UserRepository userRepository;
     private final RefuelingMapper mapper;
+
     @Autowired
     public RefuelingService(VehicleRepository vehicleRepository, VehicleRefuelingRepository vehicleRefuelingRepository,
                             UserRepository userRepository, RefuelingMapper mapper) {
@@ -30,54 +31,43 @@ public class RefuelingService {
         this.mapper = mapper;
     }
 
-    /*
-        add refueling
-         */
     public void save(RefuelingDTO refuelingDTO, String email) {
         VehicleRefueling refueling = mapper.refuelingDTOToRefueling(refuelingDTO);
-        Vehicle vehicle=vehicleRepository.findById(refuelingDTO.getVehicleId()).orElseThrow(
+        Vehicle vehicle = vehicleRepository.findById(refuelingDTO.getVehicleId()).orElseThrow(
                 () -> new RuntimeException("Bład przetwarzania"));
         refueling.setVehicle(vehicle);
         refueling.setUser(userRepository.findUserByEmail(email));
         refuelingRepository.save(refueling);
     }
-    /*
-    get by refueling id
-     */
+
     public RefuelingDTO getRefuelingById(Long id) {
         return mapper.refuelingToRefuelingDTO(refuelingRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Bład przetwarzania")));
     }
-    /*
-    get by vehicle
-     */
-    public Iterable <RefuelingDTO> getRefuelingByVehicle(Long id) {
+
+    public Iterable<RefuelingDTO> getRefuelingByVehicle(Long id) {
         Optional<Vehicle> vehicle = vehicleRepository.findById(id);
         if (vehicle.isPresent()) {
             return mapper.refuelingToRefuelingDTO(refuelingRepository.findRefuelingsByVehicle(vehicle.get()));
         }
         throw new RuntimeException("Bład przetwarzania");
     }
-    /*
-    get by vehicle owner
-    for superuser
-     */
-    public Iterable <RefuelingDTO> getRefuelingByUser(String email){
-        User user=userRepository.findUserByEmail(email);
+
+    public Iterable<RefuelingDTO> getRefuelingByUser(String email) {
+        User user = userRepository.findUserByEmail(email);
         Iterable<Vehicle> vehicles = vehicleRepository.findVehiclesByUser(user);
         return mapper.refuelingToRefuelingDTO(refuelingRepository.findRefuelingsByVehicleIn(vehicles));
     }
-    /*
-   get by author of item
-   for user
-    */
-    public Iterable <RefuelingDTO> getRefuelingByAuthor(String email){
-        User user=userRepository.findUserByEmail(email);
+
+    public Iterable<RefuelingDTO> getRefuelingByAuthor(String email) {
+        User user = userRepository.findUserByEmail(email);
         return mapper.refuelingToRefuelingDTO(refuelingRepository.findRefuelingsByUser(user));
     }
+
     public void deleteRefuelingById(Long id) {
         refuelingRepository.deleteById(id);
     }
+
     public Iterable<RefuelingDTO> getRefuelingByUserAndVehicle(Long userId, Long vehicleId) {
         if (userRepository.existsById(userId) && vehicleRepository.existsById(vehicleId)) {
             Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(

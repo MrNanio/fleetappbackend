@@ -23,6 +23,7 @@ public class InsuranceService {
     private final UserRepository userRepository;
     private final InsuranceMapper mapper;
     private final InsuranceTypeMapper insuranceTypeMapper;
+
     @Autowired
     public InsuranceService(VehicleInsuranceRepository vehicleInsuranceRepository,
                             InsuranceTypeRepository insuranceType, VehicleRepository vehicleRepository,
@@ -44,17 +45,20 @@ public class InsuranceService {
         vehicleInsurance.setInsuranceType(insuranceType.findByName(insuranceDTO.getInsuranceType()));
         return vehicleInsuranceRepository.save(vehicleInsurance);
     }
-    public Iterable<InsuranceDTO> getInsurancesByVehicle(Long id){
+
+    public Iterable<InsuranceDTO> getInsurancesByVehicle(Long id) {
         return mapper.vehicleInsurancesToInsurancesDTO(vehicleInsuranceRepository
                 .findAllByVehicle((vehicleRepository.findById(id)).orElseThrow(
                         () -> new RuntimeException("Bład przetwarzania"))));
     }
-    public Iterable<InsuranceDTO> getInsurancesByUser(String email){
-        User user=userRepository.findUserByEmail(email);
-        Iterable <Vehicle> vehicle = vehicleRepository.findVehiclesByUser(user);
+
+    public Iterable<InsuranceDTO> getInsurancesByUser(String email) {
+        User user = userRepository.findUserByEmail(email);
+        Iterable<Vehicle> vehicle = vehicleRepository.findVehiclesByUser(user);
         return mapper.vehicleInsurancesToInsurancesDTO(vehicleInsuranceRepository.findAllByVehicleIn(vehicle));
     }
-    public InsuranceDTO getInsuranceById(Long id){
+
+    public InsuranceDTO getInsuranceById(Long id) {
         return mapper.vehicleInsuranceToInsuranceDTO(vehicleInsuranceRepository.findById(id).orElse(null));
     }
 

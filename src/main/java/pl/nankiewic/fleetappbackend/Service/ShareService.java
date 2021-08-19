@@ -22,6 +22,7 @@ public class ShareService {
     private final UserRepository userRepository;
     private final CurrentVehicleUserRepository currentVehicleUserRepository;
     private final VehicleMapper vehicleMapper;
+
     @Autowired
     public ShareService(VehicleRepository vehicleRepository, UserRepository userRepository,
                         CurrentVehicleUserRepository currentVehicleUserRepository, VehicleMapper vehicleMapper) {
@@ -32,21 +33,21 @@ public class ShareService {
     }
 
     public void setCurrentVehicleUserToVehicle(ShareDTO shareDTO, String email) {
-       if(userRepository.existsByEmail(email) && userRepository.existsById(shareDTO.getUserId())){
-           User user = userRepository.findUserById(shareDTO.getUserId());
-           for (String vId : shareDTO.getVehicleId()) {
-               if(vehicleRepository.existsById(Long.valueOf(vId))){
-                   Vehicle vehicle = vehicleRepository.findById(Long.valueOf(vId)).orElseThrow(
-                           () -> new RuntimeException("Bład przetwarzania"));
-                   CurrentVehicleUser currentVehicleUser = new CurrentVehicleUser(user, vehicle);
-                   currentVehicleUserRepository.save(currentVehicleUser);
-               } else throw new EntityNotFoundException("nie znaleziono zasobu: pojazd");
-           }
-       } else throw new EntityNotFoundException("nie znaleziono zasobu: użytkownik");
+        if (userRepository.existsByEmail(email) && userRepository.existsById(shareDTO.getUserId())) {
+            User user = userRepository.findUserById(shareDTO.getUserId());
+            for (String vId : shareDTO.getVehicleId()) {
+                if (vehicleRepository.existsById(Long.valueOf(vId))) {
+                    Vehicle vehicle = vehicleRepository.findById(Long.valueOf(vId)).orElseThrow(
+                            () -> new RuntimeException("Bład przetwarzania"));
+                    CurrentVehicleUser currentVehicleUser = new CurrentVehicleUser(user, vehicle);
+                    currentVehicleUserRepository.save(currentVehicleUser);
+                } else throw new EntityNotFoundException("nie znaleziono zasobu: pojazd");
+            }
+        } else throw new EntityNotFoundException("nie znaleziono zasobu: użytkownik");
     }
 
     public Iterable<VehicleDTO> getShareVehicleListByUserId(Long id, String username) {
-        if(userRepository.existsByEmail(username) && userRepository.existsById(id)){
+        if (userRepository.existsByEmail(username) && userRepository.existsById(id)) {
             //User manager =userRepository.findUserByEmail(username);
             User user = userRepository.findUserById(id);
             List<Vehicle> myShare = new ArrayList<>();
@@ -59,12 +60,12 @@ public class ShareService {
     }
 
     public Iterable<VehicleDTO> getPossibleVehiclesList(String username) {
-        if(userRepository.existsByEmail(username)){
-            User user =userRepository.findUserByEmail(username);
+        if (userRepository.existsByEmail(username)) {
+            User user = userRepository.findUserByEmail(username);
             List<Vehicle> myAll = new ArrayList<>();
-            Iterable<Vehicle> myByOwn =vehicleRepository.findVehiclesByUser(user);
+            Iterable<Vehicle> myByOwn = vehicleRepository.findVehiclesByUser(user);
             for (Vehicle vehicle : myByOwn) {
-                if(!currentVehicleUserRepository.existsByVehicle(vehicle)){
+                if (!currentVehicleUserRepository.existsByVehicle(vehicle)) {
                     myAll.add(vehicle);
                 }
             }
@@ -73,13 +74,13 @@ public class ShareService {
     }
 
     public void deleteShareVehicleListByVehicleId(Long id) {
-        if(vehicleRepository.existsById(id)){
-            Vehicle vehicle=vehicleRepository.findById(id).orElseThrow(
+        if (vehicleRepository.existsById(id)) {
+            Vehicle vehicle = vehicleRepository.findById(id).orElseThrow(
                     () -> new RuntimeException("Bład przetwarzania"));
-            if(currentVehicleUserRepository.existsByVehicle(vehicle)){
-                CurrentVehicleUser currentVehicleUser=currentVehicleUserRepository.findByVehicle(vehicle);
+            if (currentVehicleUserRepository.existsByVehicle(vehicle)) {
+                CurrentVehicleUser currentVehicleUser = currentVehicleUserRepository.findByVehicle(vehicle);
                 currentVehicleUserRepository.deleteById(currentVehicleUser.getId());
-            }else throw new EntityNotFoundException("błąd zasobu: share");
-        }else throw new EntityNotFoundException("błąd zasobu: pojazd");
+            } else throw new EntityNotFoundException("błąd zasobu: share");
+        } else throw new EntityNotFoundException("błąd zasobu: pojazd");
     }
 }

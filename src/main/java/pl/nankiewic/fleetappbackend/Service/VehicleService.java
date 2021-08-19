@@ -8,7 +8,6 @@ import pl.nankiewic.fleetappbackend.Mapper.VehicleMapper;
 import pl.nankiewic.fleetappbackend.Repository.*;
 import javax.persistence.EntityNotFoundException;
 
-
 @Service
 public class VehicleService {
 
