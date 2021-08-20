@@ -7,6 +7,7 @@ import pl.nankiewic.fleetappbackend.Entity.User;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Repository.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -198,7 +199,8 @@ public class DashboardService {
 
         LocalDate beginDate = LocalDate.parse(begin);
         LocalDate endDate = LocalDate.parse(end);
-        User user = userRepository.findUserById(Long.parseLong(userId));
+        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow(
+                () -> new EntityNotFoundException("Nie znaleziono użytkownika"));
         List<ChartDataRespondDTO> summary = new ArrayList<>();
         Iterable<DataTripUserDTO> list = vehicleUseRepository.tripByVehicleAndDataAndUser(user, beginDate, endDate);
 
@@ -214,7 +216,8 @@ public class DashboardService {
     public Iterable<ChartDataRespondDTO> getFuelCostByVehicleAndDataAndUser(String userId, String begin, String end) {
         LocalDate beginDate = LocalDate.parse(begin);
         LocalDate endDate = LocalDate.parse(end);
-        User user = userRepository.findUserById(Long.parseLong(userId));
+        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow(
+                () -> new EntityNotFoundException("Nie znaleziono użytkownika"));
         List<ChartDataRespondDTO> summary = new ArrayList<>();
         Iterable<DataFuelCostUserDTO> list = vehicleRefuelingRepository.fuelCostByVehicleAndUser(user, beginDate, endDate);
         for (DataFuelCostUserDTO dataDTO : list) {
