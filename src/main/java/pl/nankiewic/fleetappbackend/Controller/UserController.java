@@ -7,10 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import pl.nankiewic.fleetappbackend.DTO.*;
-import pl.nankiewic.fleetappbackend.Mapper.UserMapper;
-import pl.nankiewic.fleetappbackend.Repository.UserRepository;
 import pl.nankiewic.fleetappbackend.Service.AccountService;
-import pl.nankiewic.fleetappbackend.Service.CustomUserDetailsService;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -19,20 +16,12 @@ import java.time.LocalDateTime;
 @RequestMapping("/user")
 @CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
-    private final CustomUserDetailsService customUserDetailsService;
+
     private final AccountService accountService;
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
 
     @Autowired
-    public UserController(CustomUserDetailsService customUserDetailsService,
-                          AccountService accountService,
-                          UserRepository userRepository,
-                          UserMapper userMapper) {
-        this.customUserDetailsService = customUserDetailsService;
+    public UserController(AccountService accountService) {
         this.accountService = accountService;
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
     }
 
     @GetMapping("/activation-account")
@@ -96,7 +85,7 @@ public class UserController {
     @PostMapping("/new-account")
     public void postInviteToNewUser(@RequestBody @Valid EmailDTO emailDTO, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        customUserDetailsService.addNewUser(emailDTO, userDetails.getUsername());
+        accountService.addNewUser(emailDTO, userDetails.getUsername());
     }
 
     @GetMapping("/new-account")
@@ -113,15 +102,13 @@ public class UserController {
     @GetMapping("/show-all-account")
     Iterable<UserDTO> getAllUser(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return userMapper.userToUserDTOs(accountService.getUserByManager(userDetails.getUsername()));
+        return accountService.getUserByManager(userDetails.getUsername());
     }
 
     @PreAuthorize("hasRole('SUPERUSER')")
     @GetMapping("/get-user-by-id/{id}")
     EmailDTO getUserEmail(@PathVariable Long id) {
-        EmailDTO emailDTO = new EmailDTO();
-        emailDTO.setEmail(userRepository.findUserById(id).getEmail());
-        return emailDTO;
+        return accountService.getUserEmail(id);
     }
 }
 

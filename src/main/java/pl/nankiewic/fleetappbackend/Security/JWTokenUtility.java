@@ -14,8 +14,8 @@ public class JWTokenUtility {
     private final String jwtSecret = "secret";
     private static final Logger logger = LoggerFactory.getLogger(JWTokenUtility.class);
 
-    public String generateJwtToken(Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+    public String generateJwtToken(UserDetails userDetails) {
+        //UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         int jwtExpirationMs = 86400000;
         return Jwts.builder()
                 .setSubject((userDetails.getUsername()))

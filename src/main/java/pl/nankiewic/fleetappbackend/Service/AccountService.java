@@ -1,8 +1,6 @@
 package pl.nankiewic.fleetappbackend.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,12 +11,11 @@ import pl.nankiewic.fleetappbackend.Entity.UserData;
 import pl.nankiewic.fleetappbackend.Entity.VerificationToken;
 import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.Exception.TokenException;
+import pl.nankiewic.fleetappbackend.Exception.UsernameAlreadyTakenException;
 import pl.nankiewic.fleetappbackend.Exception.WrongOldPasswordException;
 import pl.nankiewic.fleetappbackend.Mapper.UserDataMapper;
 import pl.nankiewic.fleetappbackend.Mapper.UserMapper;
 import pl.nankiewic.fleetappbackend.Repository.*;
-import pl.nankiewic.fleetappbackend.Security.AuthenticationResponse;
-import pl.nankiewic.fleetappbackend.Security.JWTokenUtility;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
@@ -32,7 +29,6 @@ public class AccountService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final JWTokenUtility tokenUtility;
     private final UserDataMapper userDataMapper;
     private final UserMapper userMapper;
     private final MailService mailService;
@@ -44,7 +40,6 @@ public class AccountService {
                           PasswordEncoder passwordEncoder,
                           UserRepository userRepository,
                           RoleRepository roleRepository,
-                          JWTokenUtility tokenUtility,
                           UserDataMapper userDataMapper,
                           UserMapper userMapper,
                           MailService mailService) {
@@ -54,19 +49,9 @@ public class AccountService {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.tokenUtility = tokenUtility;
         this.userDataMapper = userDataMapper;
         this.userMapper = userMapper;
         this.mailService = mailService;
-    }
-
-    public AuthenticationResponse login(Authentication authentication) {
-        String jwt = tokenUtility.generateJwtToken(authentication);
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User user = userRepository.findUserByEmail(userDetails.getUsername());
-        user.setLastLoginAt(LocalDateTime.now());
-        userRepository.save(user);
-        return new AuthenticationResponse(jwt, userDetails.getUsername(), user.getId(), user.getRole().getName());
     }
 
     public void saveUserData(UserDataDTO userDataDTO, String email) {
@@ -130,23 +115,11 @@ public class AccountService {
         userRepository.save(user);
     }
 
-    public String createResetCode() {
-        int leftLimit = 97; // letter 'a'
-        int rightLimit = 122; // letter 'z'
-        int targetStringLength = 10;
-        Random random = new Random();
-        StringBuilder buffer = new StringBuilder(targetStringLength);
-        for (int i = 0; i < targetStringLength; i++) {
-            int randomLimitedInt = leftLimit + (int) (random.nextFloat() * (rightLimit - leftLimit + 1));
-            buffer.append((char) randomLimitedInt);
-        }
-        return buffer.toString();
-    }
 
     public void postResetPassword(EmailDTO emailDTO) {
         if (userRepository.existsByEmail(emailDTO.getEmail()) && emailDTO.getEmail() != null) {
             User user = userRepository.findUserByEmail(emailDTO.getEmail());
-            user.setResetCode(createResetCode());
+            user.setResetCode(createMultitaskingCode());
             user.setResetAt(LocalDateTime.now());
             VerificationToken verificationToken = verificationTokenRepository.findByUser(user);
             verificationToken.setExpiryDate(LocalDateTime.now().plusMinutes(120));
@@ -194,7 +167,6 @@ public class AccountService {
         } else throw new TokenException("nie nadałeś nowego hasła lub twoja tożsamość nie została potwierdzona ");
     }
 
-    //zmiana hasła
     public void changePassword(PasswordDTO passwordDTO, String email) {
         User user = userRepository.findUserByEmail(email);
         if (passwordEncoder.matches(passwordDTO.getOldPassword(), user.getPassword())) {
@@ -204,7 +176,6 @@ public class AccountService {
         } else throw new WrongOldPasswordException();
     }
 
-    //dodanie konta usera i show
     public IdDTO getUserInvite(String userToken) {
         if (userToken != null) {
             if (verificationTokenRepository.existsVerificationTokenByTokenIs(userToken)) {
@@ -240,9 +211,9 @@ public class AccountService {
         } else throw new TokenException("twoja tożsamość nie została potwierdzona ");
     }
 
-    public Iterable<User> getUserByManager(String email) {
+    public Iterable<UserDTO> getUserByManager(String email) {
         User manager = userRepository.findUserByEmail(email);
-        return userRepository.findByUser(manager);
+        return userMapper.userToUserDTOs(userRepository.findByUser(manager));
     }
 
     public Iterable<UserDTO> getAllUser() {
@@ -271,4 +242,58 @@ public class AccountService {
     public UserDTO getUserById(Long id) {
         return userMapper.userToUserDTO(userRepository.findUserById(id));
     }
+
+    public void addNewUser(EmailDTO emailDTO, String email) {
+        if (userRepository.existsByEmail(emailDTO.getEmail())) {
+            User user = userRepository.findUserByEmail(emailDTO.getEmail());
+            if (!user.isEnabled() && user.getVerificationToken().getExpiryDate().isAfter(LocalDateTime.now())) {
+                // mailService.sendInviteMail(emailDTO.getEmail(), user.getVerificationToken().getToken());
+            } else if (!user.isEnabled() && user.getVerificationToken().getExpiryDate().isBefore(LocalDateTime.now())) {
+                VerificationToken verificationToken = verificationTokenRepository.findByUser(user);
+                VerificationToken verificationTokenv2 = new VerificationToken(user);
+                verificationToken.setToken(verificationTokenv2.getToken());
+                verificationToken.setExpiryDate(LocalDateTime.now().plusMinutes(120));
+                verificationTokenRepository.save(verificationToken);
+            } else throw new UsernameAlreadyTakenException("mail już ma aktywne konto");
+        } else if (userRepository.existsByEmail(email) && !userRepository.existsByEmail(emailDTO.getEmail())) {
+            User manager = userRepository.findUserByEmail(email);
+            User user = new User();
+            user.setUser(manager);
+            user.setPassword(passwordEncoder.encode(createMultitaskingCode()));
+            user.setEmail(emailDTO.getEmail());
+            userRegister(user);
+            VerificationToken verificationToken = new VerificationToken(user);
+            verificationTokenRepository.save(verificationToken);
+            //mailService.sendInviteMail(emailDTO.getEmail(), verificationToken.getToken());
+        }
+
+    }
+
+    public EmailDTO getUserEmail(Long id) {
+        EmailDTO emailDTO = new EmailDTO();
+        emailDTO.setEmail(userRepository.findUserById(id).getEmail());
+        return emailDTO;
+    }
+
+    private void userRegister(User user) {
+        user.setCreatedAt(LocalDateTime.now());
+        user.setRole(roleRepository.findRoleByName("ROLE_USER"));
+        user.setUserAccountStatus(userAccountStatusRepository.findByName("INACTIVE"));
+        user.setEnabled(false);
+        userRepository.save(user);
+    }
+
+    private String createMultitaskingCode() {
+        int leftLimit = 97; // letter 'a'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 10;
+        Random random = new Random();
+        StringBuilder buffer = new StringBuilder(targetStringLength);
+        for (int i = 0; i < targetStringLength; i++) {
+            int randomLimitedInt = leftLimit + (int) (random.nextFloat() * (rightLimit - leftLimit + 1));
+            buffer.append((char) randomLimitedInt);
+        }
+        return buffer.toString();
+    }
+
 }
