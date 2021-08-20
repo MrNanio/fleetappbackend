@@ -14,6 +14,25 @@ public class UserDTO {
     private String userStatus;
     private boolean isEnabled;
 
+    public UserDTO(String email,
+                   String roles,
+                   Long id,
+                   LocalDateTime createdAt,
+                   LocalDateTime lastLoginAt,
+                   String userStatus,
+                   boolean isEnabled) {
+        this.email = email;
+        this.roles = roles;
+        this.id = id;
+        this.createdAt = createdAt;
+        this.lastLoginAt = lastLoginAt;
+        this.userStatus = userStatus;
+        this.isEnabled = isEnabled;
+    }
+
+    public UserDTO() {
+    }
+
     public String getEmail() {
         return email;
     }

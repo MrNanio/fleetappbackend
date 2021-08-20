@@ -6,11 +6,13 @@ import pl.nankiewic.fleetappbackend.Entity.CurrentVehicleUser;
 import pl.nankiewic.fleetappbackend.Entity.User;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 
+import java.util.List;
+
 @Repository
 public interface CurrentVehicleUserRepository extends JpaRepository<CurrentVehicleUser, Long> {
     Iterable<CurrentVehicleUser> findCurrentVehicleUsersByVehicleIs(Vehicle vehicle);
 
-    Iterable<CurrentVehicleUser> findCurrentVehicleUsersByUserIs(User user);
+    List<CurrentVehicleUser> findCurrentVehicleUsersByUserIs(User user);
 
     CurrentVehicleUser findByVehicle(Vehicle vehicle);
 

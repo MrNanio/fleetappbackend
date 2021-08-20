@@ -72,7 +72,8 @@ public class RefuelingService {
         if (userRepository.existsById(userId) && vehicleRepository.existsById(vehicleId)) {
             Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(
                     () -> new RuntimeException("Bład przetwarzania"));
-            User user = userRepository.findUserById(userId);
+            User user = userRepository.findById(userId).orElseThrow(
+                    ()-> new EntityNotFoundException("Nie znaleziono użytkownika"));
             return mapper.refuelingToRefuelingDTO(refuelingRepository.findAllByVehicleAndUser(vehicle, user));
         } else throw new EntityNotFoundException("Nie znaleziono zasobu pojazd lub użytkownik");
     }

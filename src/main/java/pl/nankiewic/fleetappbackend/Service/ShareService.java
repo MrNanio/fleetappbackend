@@ -15,6 +15,7 @@ import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ShareService {
@@ -34,7 +35,8 @@ public class ShareService {
 
     public void setCurrentVehicleUserToVehicle(ShareDTO shareDTO, String email) {
         if (userRepository.existsByEmail(email) && userRepository.existsById(shareDTO.getUserId())) {
-            User user = userRepository.findUserById(shareDTO.getUserId());
+            User user = userRepository.findById(shareDTO.getUserId()).orElseThrow(
+                    () -> new EntityNotFoundException("Nie znaleziono użytkownika"));
             for (String vId : shareDTO.getVehicleId()) {
                 if (vehicleRepository.existsById(Long.valueOf(vId))) {
                     Vehicle vehicle = vehicleRepository.findById(Long.valueOf(vId)).orElseThrow(
@@ -49,12 +51,10 @@ public class ShareService {
     public Iterable<VehicleDTO> getShareVehicleListByUserId(Long id, String username) {
         if (userRepository.existsByEmail(username) && userRepository.existsById(id)) {
             //User manager =userRepository.findUserByEmail(username);
-            User user = userRepository.findUserById(id);
-            List<Vehicle> myShare = new ArrayList<>();
-            Iterable<CurrentVehicleUser> myByShare = currentVehicleUserRepository.findCurrentVehicleUsersByUserIs(user);
-            for (CurrentVehicleUser currentVehicleUser : myByShare) {
-                myShare.add(currentVehicleUser.getVehicle());
-            }
+            User user = userRepository.findById(id).orElseThrow(
+                    () -> new EntityNotFoundException("Nie znaleziono użytkownika"));
+            List<CurrentVehicleUser> myByShare = currentVehicleUserRepository.findCurrentVehicleUsersByUserIs(user);
+            List<Vehicle> myShare = myByShare.stream().map(CurrentVehicleUser::getVehicle).collect(Collectors.toList());
             return vehicleMapper.map(myShare);
         } else throw new EntityNotFoundException("błąd zasobu: użytkownik");
     }

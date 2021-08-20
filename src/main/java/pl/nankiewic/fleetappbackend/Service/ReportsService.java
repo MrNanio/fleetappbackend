@@ -172,17 +172,15 @@ public class ReportsService {
     }
 
     private Iterable<VehicleUse> getUseByUserAndDate(Long id, LocalDate begin, LocalDate end) {
-        if (userRepository.existsById(id)) {
-            User user = userRepository.findUserById(id);
-            return vehicleUseRepository.findAllByUserIsAndTripDateBetween(user, begin, end);
-        } else throw new EntityNotFoundException("not found");
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Nie znaleziono użytkownika"));
+        return vehicleUseRepository.findAllByUserIsAndTripDateBetween(user, begin, end);
     }
 
     private Iterable<VehicleRefueling> getRefuelingByUserAndDate(Long id, LocalDate begin, LocalDate end) {
-        if (userRepository.existsById(id)) {
-            User user = userRepository.findUserById(id);
-            return vehicleRefuelingRepository.findAllByUserIsAndRefuelingDateIsBetween(user, begin, end);
-        } else throw new EntityNotFoundException("not found");
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Nie znaleziono użytkownika"));
+        return vehicleRefuelingRepository.findAllByUserIsAndRefuelingDateIsBetween(user, begin, end);
     }
 
     private Iterable<Vehicle> getVehicleByUser(String email) {

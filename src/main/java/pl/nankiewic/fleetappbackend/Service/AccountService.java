@@ -14,11 +14,11 @@ import pl.nankiewic.fleetappbackend.Exception.TokenException;
 import pl.nankiewic.fleetappbackend.Exception.UsernameAlreadyTakenException;
 import pl.nankiewic.fleetappbackend.Exception.WrongOldPasswordException;
 import pl.nankiewic.fleetappbackend.Mapper.UserDataMapper;
-import pl.nankiewic.fleetappbackend.Mapper.UserMapper;
 import pl.nankiewic.fleetappbackend.Repository.*;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -30,7 +30,6 @@ public class AccountService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserDataMapper userDataMapper;
-    private final UserMapper userMapper;
     private final MailService mailService;
 
     @Autowired
@@ -41,7 +40,6 @@ public class AccountService {
                           UserRepository userRepository,
                           RoleRepository roleRepository,
                           UserDataMapper userDataMapper,
-                          UserMapper userMapper,
                           MailService mailService) {
         this.userAccountStatusRepository = userAccountStatusRepository;
         this.verificationTokenRepository = verificationTokenRepository;
@@ -50,7 +48,6 @@ public class AccountService {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userDataMapper = userDataMapper;
-        this.userMapper = userMapper;
         this.mailService = mailService;
     }
 
@@ -78,7 +75,8 @@ public class AccountService {
     public UserDataDTO getUserData(String email, Long id) {
         if (userRepository.existsByEmail(email) && userRepository.existsById(id)) {
             User user = userRepository.findUserByEmail(email);
-            User user1 = userRepository.findUserById(id);
+            User user1 = userRepository.findById(id).orElseThrow(
+                    () -> new EntityNotFoundException("Nie znaleziono użytkownika"));
             if ((user1.getUser() != null && user1.getUser() == user) || user.getEmail().equals(user1.getEmail())) {
                 if (userDataRepository.existsByUser(user1)) {
                     return userDataMapper.userDataToUserDataDTO(userDataRepository.findByUser(user1));
@@ -211,36 +209,39 @@ public class AccountService {
         } else throw new TokenException("twoja tożsamość nie została potwierdzona ");
     }
 
-    public Iterable<UserDTO> getUserByManager(String email) {
-        User manager = userRepository.findUserByEmail(email);
-        return userMapper.userToUserDTOs(userRepository.findByUser(manager));
+    public List<UserDTO> getUserByManager(String email) {
+        return userRepository.getUserByManagerEmail(email);
     }
 
     public Iterable<UserDTO> getAllUser() {
-        return userMapper.userToUserDTOs(userRepository.findAllByRoleIsNot(roleRepository.findRoleByName("ROLE_ADMIN")));
+        return userRepository.findUsersWithoutRoleAdmin();
     }
 
     public void blockOrUnblockUser(BlockOrUnblock blockOrUnblock) {
-        if (userRepository.existsById(blockOrUnblock.getId())) {
-            User user = userRepository.findUserById(blockOrUnblock.getId());
-            UserAccountStatus userAccountStatus = userAccountStatusRepository.findByName(blockOrUnblock.getUserStatus());
-            switch (userAccountStatus.getName()) {
-                case "ACTIVE":
-                case "INACTIVE":
-                    user.setEnabled(true);
-                    user.setUserAccountStatus(userAccountStatus);
-                    break;
-                case "BLOCKED":
-                    user.setEnabled(false);
-                    user.setUserAccountStatus(userAccountStatus);
-                    break;
-            }
-            userRepository.save(user);
+
+        User user = userRepository.findById(blockOrUnblock.getId()).orElseThrow(
+                () -> new EntityNotFoundException("Nie znaleziono użytkownika"));
+
+        UserAccountStatus userAccountStatus = userAccountStatusRepository.findByName(blockOrUnblock.getUserStatus());
+        switch (userAccountStatus.getName()) {
+            case "ACTIVE":
+            case "INACTIVE":
+                user.setEnabled(true);
+                user.setUserAccountStatus(userAccountStatus);
+                break;
+            case "BLOCKED":
+                user.setEnabled(false);
+                user.setUserAccountStatus(userAccountStatus);
+                break;
         }
+        userRepository.save(user);
+
     }
 
     public UserDTO getUserById(Long id) {
-        return userMapper.userToUserDTO(userRepository.findUserById(id));
+
+        return userRepository.findUserByUserId(id);
+        // return userMapper.userToUserDTO(userRepository.findUserById(id));
     }
 
     public void addNewUser(EmailDTO emailDTO, String email) {
@@ -270,9 +271,8 @@ public class AccountService {
     }
 
     public EmailDTO getUserEmail(Long id) {
-        EmailDTO emailDTO = new EmailDTO();
-        emailDTO.setEmail(userRepository.findUserById(id).getEmail());
-        return emailDTO;
+
+        return userRepository.findUserEmailByUserId(id);
     }
 
     private void userRegister(User user) {
