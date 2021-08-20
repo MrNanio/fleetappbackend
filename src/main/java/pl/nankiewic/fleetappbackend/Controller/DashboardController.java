@@ -13,6 +13,7 @@ import pl.nankiewic.fleetappbackend.Service.DashboardService;
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/dashboard")
 public class DashboardController {
+
         private final DashboardService dashboardService;
         private final CheckService checkService;
 

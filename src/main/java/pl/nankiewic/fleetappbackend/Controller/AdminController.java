@@ -14,6 +14,7 @@ import javax.validation.Valid;
 @PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/admin")
 public class AdminController {
+
     private final AccountService accountService;
 
     @Autowired

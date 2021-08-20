@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.Entity.User;
 import pl.nankiewic.fleetappbackend.Entity.VerificationToken;
 import pl.nankiewic.fleetappbackend.Exception.UserAccountEnabledException;
+import pl.nankiewic.fleetappbackend.Exception.UsernameAlreadyTakenException;
 import pl.nankiewic.fleetappbackend.Repository.RoleRepository;
 import pl.nankiewic.fleetappbackend.Repository.UserAccountStatusRepository;
 import pl.nankiewic.fleetappbackend.Repository.UserRepository;
@@ -73,6 +74,11 @@ public class AuthenticationService {
     }
 
     public void save(AuthenticationRequest authenticationRequest) {
+
+        if (userRepository.existsByEmail(authenticationRequest.getEmail())) {
+            throw new UsernameAlreadyTakenException("Użytkownik istnieje " + authenticationRequest.getEmail());
+        }
+
         User user = new User();
         user.setEmail(authenticationRequest.getEmail());
         user.setPassword(passwordEncoder.encode(authenticationRequest.getPassword()));

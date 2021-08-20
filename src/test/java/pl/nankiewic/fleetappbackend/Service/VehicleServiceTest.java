@@ -1,21 +1,14 @@
 package pl.nankiewic.fleetappbackend.Service;
 
-
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import pl.nankiewic.fleetappbackend.DTO.VehicleDTO;
 import pl.nankiewic.fleetappbackend.Mapper.VehicleMapper;
 import pl.nankiewic.fleetappbackend.Repository.*;
-import pl.nankiewic.fleetappbackend.Security.CustomUserDetails;
-
 
 import java.util.*;
 
@@ -34,26 +27,16 @@ class VehicleServiceTest {
     UserRepository userRepository;
     @Mock
     VehicleMapper vehicleMapper;
+
     VehicleService vehicleService;
+
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
-
-        Authentication authentication =mock(Authentication.class);
-        SecurityContext securityContext = mock(SecurityContext.class);
-
-        SecurityContextHolder.setContext(securityContext);
-
-        List<String> role = Lists.newArrayList("ROLE_USER");
-        CustomUserDetails userDetails = new CustomUserDetails(1L, "jan@han.pl", extractRoles(role));
-
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(userDetails);
-
-
-        vehicleService=new VehicleService(vehicleRepository, vehicleStatusRepository,
+        vehicleService = new VehicleService(vehicleRepository, vehicleStatusRepository,
                 vehicleMakeRepository, fuelTypeRepository, userRepository, vehicleMapper);
     }
+
     @Test
     void should_select_vehicles_by_user() {
         when(userRepository.existsByEmail(any())).thenReturn(true);

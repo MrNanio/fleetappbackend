@@ -10,8 +10,6 @@ import pl.nankiewic.fleetappbackend.Entity.FuelType;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleMake;
 import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
-import pl.nankiewic.fleetappbackend.Repository.FuelTypeRepository;
-import pl.nankiewic.fleetappbackend.Repository.VehicleMakeRepository;
 import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.VehicleService;
 
@@ -24,16 +22,11 @@ public class VehicleController {
 
     private final VehicleService vehicleService;
     private final CheckService checkService;
-    private final VehicleMakeRepository vehicleMakeRepository;
-    private final FuelTypeRepository fuelTypeRepository;
 
     @Autowired
-    public VehicleController(VehicleService vehicleService, CheckService checkService,
-                             VehicleMakeRepository vehicleMakeRepository, FuelTypeRepository fuelTypeRepository) {
+    public VehicleController(VehicleService vehicleService, CheckService checkService) {
         this.vehicleService = vehicleService;
         this.checkService = checkService;
-        this.vehicleMakeRepository = vehicleMakeRepository;
-        this.fuelTypeRepository = fuelTypeRepository;
     }
 
     @PreAuthorize("hasRole('SUPERUSER')")
@@ -74,12 +67,12 @@ public class VehicleController {
 
     @GetMapping("/make")
     public Iterable<VehicleMake> getMake() {
-        return vehicleMakeRepository.findAll();
+        return vehicleService.getMake();
     }
 
     @GetMapping("/fuelType")
     public Iterable<FuelType> getFuelType() {
-        return fuelTypeRepository.findAll();
+        return vehicleService.getFuelType();
     }
 
 }

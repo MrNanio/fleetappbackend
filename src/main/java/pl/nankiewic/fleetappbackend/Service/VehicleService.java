@@ -2,8 +2,11 @@ package pl.nankiewic.fleetappbackend.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 import pl.nankiewic.fleetappbackend.DTO.VehicleDTO;
+import pl.nankiewic.fleetappbackend.Entity.FuelType;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
+import pl.nankiewic.fleetappbackend.Entity.VehicleMake;
 import pl.nankiewic.fleetappbackend.Mapper.VehicleMapper;
 import pl.nankiewic.fleetappbackend.Repository.*;
 import javax.persistence.EntityNotFoundException;
@@ -56,5 +59,14 @@ public class VehicleService {
 
     public void deleteVehicleById(Long id) {
         vehicleRepository.deleteById(id);
+    }
+
+
+    public Iterable<VehicleMake> getMake() {
+        return vehicleMakeRepository.findAll();
+    }
+
+    public Iterable<FuelType> getFuelType() {
+        return fuelTypeRepository.findAll();
     }
 }
