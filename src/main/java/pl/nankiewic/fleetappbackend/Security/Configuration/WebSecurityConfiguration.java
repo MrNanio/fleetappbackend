@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pl.nankiewic.fleetappbackend.Security.AuthorizationFilter;
 import pl.nankiewic.fleetappbackend.Security.JWTAuthenticationEntryPoint;
-import pl.nankiewic.fleetappbackend.Service.CustomUserDetailsService;
+import pl.nankiewic.fleetappbackend.Security.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
