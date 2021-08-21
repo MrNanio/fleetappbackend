@@ -19,21 +19,25 @@ public class VehicleService {
     private final VehicleMakeRepository vehicleMakeRepository;
     private final FuelTypeRepository fuelTypeRepository;
     private final UserRepository userRepository;
-    private final VehicleMapper mapper;
+    private final VehicleMapper vehicleMapper;
 
     @Autowired
-    public VehicleService(VehicleRepository vehicleRepository, VehicleStatusRepository vehicleStatusRepository,
-                          VehicleMakeRepository vehicleMakeRepository, FuelTypeRepository fuelTypeRepository,
-                          UserRepository userRepository, VehicleMapper mapper) {
+    public VehicleService(VehicleRepository vehicleRepository,
+                          VehicleStatusRepository vehicleStatusRepository,
+                          VehicleMakeRepository vehicleMakeRepository,
+                          FuelTypeRepository fuelTypeRepository,
+                          UserRepository userRepository,
+                          VehicleMapper vehicleMapper) {
         this.vehicleRepository = vehicleRepository;
         this.vehicleStatusRepository = vehicleStatusRepository;
         this.vehicleMakeRepository = vehicleMakeRepository;
         this.fuelTypeRepository = fuelTypeRepository;
         this.userRepository = userRepository;
-        this.mapper = mapper;
+        this.vehicleMapper = vehicleMapper;
     }
 
     public Iterable<VehicleDTO> getVehiclesDataByUser(String email) {
+
         if (vehicleRepository.existsByUser(userRepository.findUserByEmail(email))) {
             if (userRepository.existsByEmail(email)) {
                 return vehicleRepository.selectVehiclesDataByUser(userRepository.findUserByEmail(email));
@@ -49,7 +53,7 @@ public class VehicleService {
 
 
     public Vehicle save(VehicleDTO vehicleDTO, String email) {
-        Vehicle vehicle = mapper.vehicleDTOtoVehicle(vehicleDTO);
+        Vehicle vehicle = vehicleMapper.vehicleDTOtoVehicle(vehicleDTO);
         vehicle.setFuelType(fuelTypeRepository.findByName(vehicleDTO.getFuelType()));
         vehicle.setVehicleStatus(vehicleStatusRepository.findByName(vehicleDTO.getVehicleStatus()));
         vehicle.setVehicleMake(vehicleMakeRepository.findByName(vehicleDTO.getMake()));
@@ -60,7 +64,6 @@ public class VehicleService {
     public void deleteVehicleById(Long id) {
         vehicleRepository.deleteById(id);
     }
-
 
     public Iterable<VehicleMake> getMake() {
         return vehicleMakeRepository.findAll();

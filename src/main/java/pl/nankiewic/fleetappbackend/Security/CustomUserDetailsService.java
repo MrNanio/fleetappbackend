@@ -1,4 +1,4 @@
-package pl.nankiewic.fleetappbackend.Service;
+package pl.nankiewic.fleetappbackend.Security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.Entity.Role;
 import pl.nankiewic.fleetappbackend.Entity.User;
 import pl.nankiewic.fleetappbackend.Repository.UserRepository;
-import pl.nankiewic.fleetappbackend.Security.CustomUserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
         if (!userRepository.existsByEmail(email)) {
-            throw new UsernameNotFoundException("Użytkownik nie istnieje:");
+            throw new UsernameNotFoundException("Użytkownik nie istnieje");
         }
         User user = userRepository.findUserByEmail((email));
         return new CustomUserDetails(user.getId(), user.getEmail(), getAuthorities(user.getRole()));

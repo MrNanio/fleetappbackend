@@ -18,6 +18,7 @@ import pl.nankiewic.fleetappbackend.Repository.UserRepository;
 import pl.nankiewic.fleetappbackend.Repository.VerificationTokenRepository;
 import pl.nankiewic.fleetappbackend.Security.AuthenticationRequest;
 import pl.nankiewic.fleetappbackend.Security.AuthenticationResponse;
+import pl.nankiewic.fleetappbackend.Security.CustomUserDetailsService;
 import pl.nankiewic.fleetappbackend.Security.JWTokenUtility;
 
 import java.time.LocalDateTime;
