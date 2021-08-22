@@ -5,6 +5,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.DTO.*;
+import pl.nankiewic.fleetappbackend.Entity.Enum.EnumRole;
+import pl.nankiewic.fleetappbackend.Entity.Enum.EnumUserAccountStatus;
 import pl.nankiewic.fleetappbackend.Entity.User;
 import pl.nankiewic.fleetappbackend.Entity.UserAccountStatus;
 import pl.nankiewic.fleetappbackend.Entity.UserData;
@@ -109,7 +111,7 @@ public class AccountService {
     }
 
     public void activation(User user) {
-        user.setUserAccountStatus(userAccountStatusRepository.findByName("ACTIVE"));
+        user.setUserAccountStatus(userAccountStatusRepository.findByEnumName(EnumUserAccountStatus.ACTIVE));
         userRepository.save(user);
     }
 
@@ -201,7 +203,7 @@ public class AccountService {
                 if (user1.getEmail().equals(user.getEmail())) {
                     user.setPassword(passwordEncoder.encode(idDTO.getNewPassword()));
                     user.setEnabled(true);
-                    user.setUserAccountStatus(userAccountStatusRepository.findByName("ACTIVE"));
+                    user.setUserAccountStatus(userAccountStatusRepository.findByEnumName(EnumUserAccountStatus.ACTIVE));
                     userRepository.save(user);
                     //mailService.sendSuccessInfo(user.getEmail());
                 } else throw new TokenException("błąd danych autoryzacyjnych: email");
@@ -214,7 +216,7 @@ public class AccountService {
     }
 
     public Iterable<UserDTO> getAllUser() {
-        return userRepository.findUsersWithoutRoleAdmin();
+        return userRepository.findUsersWithoutRole(EnumRole.ADMIN.name());
     }
 
     public void blockOrUnblockUser(BlockOrUnblock blockOrUnblock) {
@@ -222,8 +224,8 @@ public class AccountService {
         User user = userRepository.findById(blockOrUnblock.getId()).orElseThrow(
                 () -> new EntityNotFoundException("Nie znaleziono użytkownika"));
 
-        UserAccountStatus userAccountStatus = userAccountStatusRepository.findByName(blockOrUnblock.getUserStatus());
-        switch (userAccountStatus.getName()) {
+        UserAccountStatus userAccountStatus = userAccountStatusRepository.findByEnumName(parseStringToEnum(blockOrUnblock.getUserStatus()));
+        switch (userAccountStatus.getUserAccountStatus().name()) {
             case "ACTIVE":
             case "INACTIVE":
                 user.setEnabled(true);
@@ -277,8 +279,8 @@ public class AccountService {
 
     private void userRegister(User user) {
         user.setCreatedAt(LocalDateTime.now());
-        user.setRole(roleRepository.findRoleByName("ROLE_USER"));
-        user.setUserAccountStatus(userAccountStatusRepository.findByName("INACTIVE"));
+        user.setRole(roleRepository.findRoleByEnumName(EnumRole.USER));
+        user.setUserAccountStatus(userAccountStatusRepository.findByEnumName(EnumUserAccountStatus.INACTIVE));
         user.setEnabled(false);
         userRepository.save(user);
     }
@@ -294,6 +296,17 @@ public class AccountService {
             buffer.append((char) randomLimitedInt);
         }
         return buffer.toString();
+    }
+
+    private EnumUserAccountStatus parseStringToEnum(String status) {
+
+        if (EnumUserAccountStatus.ACTIVE.name().equals(status)) {
+            return EnumUserAccountStatus.ACTIVE;
+        } else if (EnumUserAccountStatus.INACTIVE.name().equals(status)) {
+            return EnumUserAccountStatus.INACTIVE;
+        } else if (EnumUserAccountStatus.BLOCKED.name().equals(status)) {
+            return EnumUserAccountStatus.BLOCKED;
+        } else throw new EntityNotFoundException("nie znaleziono parsowanej wartości");
     }
 
 }

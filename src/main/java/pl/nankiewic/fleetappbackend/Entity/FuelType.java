@@ -1,6 +1,7 @@
 package pl.nankiewic.fleetappbackend.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import pl.nankiewic.fleetappbackend.Entity.Enum.EnumFuelType;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -13,8 +14,8 @@ public class FuelType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "fuel_type")
+    private EnumFuelType fuelType;
 
     @JsonIgnore
     @OneToMany(mappedBy = "fuelType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -39,11 +40,11 @@ public class FuelType {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public EnumFuelType getFuelType() {
+        return fuelType;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFuelType(EnumFuelType fuelType) {
+        this.fuelType = fuelType;
     }
 }

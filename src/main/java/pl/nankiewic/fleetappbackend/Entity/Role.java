@@ -1,6 +1,7 @@
 package pl.nankiewic.fleetappbackend.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import pl.nankiewic.fleetappbackend.Entity.Enum.EnumRole;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -14,8 +15,8 @@ public class Role {
     @JsonIgnore
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "role")
+    private EnumRole role;
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
@@ -32,12 +33,12 @@ public class Role {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public EnumRole getRole() {
+        return role;
     }
 
-    public void setName(String roleName) {
-        this.name = roleName;
+    public void setRole(EnumRole role) {
+        this.role = role;
     }
 
     public Set<User> getUsers() {

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.DTO.InsuranceDTO;
 import pl.nankiewic.fleetappbackend.DTO.InsuranceTypeDTO;
+import pl.nankiewic.fleetappbackend.Entity.Enum.EnumInsuranceType;
 import pl.nankiewic.fleetappbackend.Entity.User;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleInsurance;
@@ -13,6 +14,8 @@ import pl.nankiewic.fleetappbackend.Repository.InsuranceTypeRepository;
 import pl.nankiewic.fleetappbackend.Repository.UserRepository;
 import pl.nankiewic.fleetappbackend.Repository.VehicleInsuranceRepository;
 import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
+
+import javax.persistence.EntityNotFoundException;
 
 @Service
 public class InsuranceService {
@@ -37,12 +40,11 @@ public class InsuranceService {
         this.insuranceTypeMapper = insuranceTypeMapper;
     }
 
-
     public VehicleInsurance save(InsuranceDTO insuranceDTO) {
         VehicleInsurance vehicleInsurance = mapper.insuranceDTOtoVehicleInsurance(insuranceDTO);
         vehicleInsurance.setVehicle(vehicleRepository.findById(insuranceDTO.getVehicleId()).orElseThrow(
                 () -> new RuntimeException("Bład przetwarzania")));
-        vehicleInsurance.setInsuranceType(insuranceType.findByName(insuranceDTO.getInsuranceType()));
+        vehicleInsurance.setInsuranceType(insuranceType.findByEnumName(parseStingToEnum(insuranceDTO.getInsuranceType())));
         return vehicleInsuranceRepository.save(vehicleInsurance);
     }
 
@@ -70,5 +72,14 @@ public class InsuranceService {
         vehicleInsuranceRepository.deleteById(id);
     }
 
+    private EnumInsuranceType parseStingToEnum(String insuranceType) {
+        if (EnumInsuranceType.AC.name().equals(insuranceType)) {
+            return EnumInsuranceType.AC;
+        } else if (EnumInsuranceType.NNW.name().equals(insuranceType)) {
+            return EnumInsuranceType.NNW;
+        } else if (EnumInsuranceType.OC.name().equals(insuranceType)) {
+            return EnumInsuranceType.OC;
+        } else throw new EntityNotFoundException("nie znaleziono parsowanych danych");
+    }
 
 }

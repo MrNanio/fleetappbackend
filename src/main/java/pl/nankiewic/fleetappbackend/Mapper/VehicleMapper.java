@@ -26,14 +26,14 @@ public interface VehicleMapper {
         if (fuelType == null) {
             return null;
         }
-        return fuelType.getName();
+        return fuelType.getFuelType().name();
     }
 
     default String vehicleStatusToString(VehicleStatus vehicleStatus) {
         if (vehicleStatus == null) {
             return null;
         }
-        return vehicleStatus.getName();
+        return vehicleStatus.getVehicleStatus().name();
     }
 
     @Mappings({

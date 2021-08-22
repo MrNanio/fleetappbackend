@@ -12,7 +12,9 @@ import java.util.Optional;
 
 @Repository
 public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
+
     Iterable<Vehicle> findVehiclesByUser(User user);
+
     Optional<Vehicle> findById(Long id);
 
     @Query(value = "SELECT new pl.nankiewic.fleetappbackend.DTO.VehicleDTO(" +
@@ -24,11 +26,11 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
             "v.mileage, " +
             "v.vinNumber, " +
             "v.vehicleRegistrationNumber, " +
-            "v.fuelType.name, " +
+            "v.fuelType.fuelType, " +
             "v.cityFuelConsumption, " +
             "v.countryFuelConsumption, " +
             "v.averageFuelConsumption, " +
-            "v.vehicleStatus.name) " +
+            "v.vehicleStatus.vehicleStatus) " +
             "FROM Vehicle v " +
             "WHERE v.id=?1")
     VehicleDTO selectVehicleDetailsById(Long id);
@@ -42,11 +44,11 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
             "v.mileage, " +
             "v.vinNumber, " +
             "v.vehicleRegistrationNumber, " +
-            "v.fuelType.name, " +
+            "v.fuelType.fuelType, " +
             "v.cityFuelConsumption, " +
             "v.countryFuelConsumption, " +
             "v.averageFuelConsumption, " +
-            "v.vehicleStatus.name) " +
+            "v.vehicleStatus.vehicleStatus) " +
             "FROM Vehicle v " +
             "WHERE v.user=?1")
     List<VehicleDTO> selectVehiclesDataByUser(User user);

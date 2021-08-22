@@ -25,7 +25,7 @@ public interface InsuranceMapper {
         if (insuranceType == null) {
             return null;
         }
-        return insuranceType.getName();
+        return insuranceType.getInsuranceType().name();
     }
 
     @Mapping(target = "vehicle", ignore = true)

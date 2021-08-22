@@ -1,5 +1,8 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
+import pl.nankiewic.fleetappbackend.Entity.Enum.EnumRole;
+import pl.nankiewic.fleetappbackend.Entity.Enum.EnumUserAccountStatus;
+
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -7,19 +10,19 @@ public class UserDTO {
     @NotNull
     private String email;
     @NotNull
-    private String roles;
+    private EnumRole roles;
     private Long id;
     private LocalDateTime createdAt;
     private LocalDateTime lastLoginAt;
-    private String userStatus;
+    private EnumUserAccountStatus userStatus;
     private boolean isEnabled;
 
     public UserDTO(String email,
-                   String roles,
+                   EnumRole roles,
                    Long id,
                    LocalDateTime createdAt,
                    LocalDateTime lastLoginAt,
-                   String userStatus,
+                   EnumUserAccountStatus userStatus,
                    boolean isEnabled) {
         this.email = email;
         this.roles = roles;
@@ -41,11 +44,11 @@ public class UserDTO {
         this.email = email;
     }
 
-    public String getRoles() {
+    public EnumRole getRoles() {
         return roles;
     }
 
-    public void setRoles(String roles) {
+    public void setRoles(EnumRole roles) {
         this.roles = roles;
     }
 
@@ -73,11 +76,11 @@ public class UserDTO {
         this.lastLoginAt = lastLoginAt;
     }
 
-    public String getUserStatus() {
+    public EnumUserAccountStatus getUserStatus() {
         return userStatus;
     }
 
-    public void setUserStatus(String userStatus) {
+    public void setUserStatus(EnumUserAccountStatus userStatus) {
         this.userStatus = userStatus;
     }
 
