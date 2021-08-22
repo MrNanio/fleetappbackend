@@ -1,5 +1,7 @@
 package pl.nankiewic.fleetappbackend.Entity;
 
+import pl.nankiewic.fleetappbackend.Entity.Enum.EnumVehicleStatus;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,8 +14,8 @@ public class VehicleStatus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", length = 15, nullable = false)
-    private String name;
+    @Column(name = "vehicle_status", length = 15, nullable = false)
+    private EnumVehicleStatus vehicleStatus;
 
     @OneToMany(mappedBy = "vehicleStatus", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Vehicle> vehicles = new HashSet<>();
@@ -26,12 +28,12 @@ public class VehicleStatus {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public EnumVehicleStatus getVehicleStatus() {
+        return vehicleStatus;
     }
 
-    public void setName(String statusName) {
-        this.name = statusName;
+    public void setVehicleStatus(EnumVehicleStatus vehicleStatus) {
+        this.vehicleStatus = vehicleStatus;
     }
 
     public Set<Vehicle> getVehicles() {

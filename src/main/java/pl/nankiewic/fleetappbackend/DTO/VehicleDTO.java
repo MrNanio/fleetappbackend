@@ -1,5 +1,8 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
+import pl.nankiewic.fleetappbackend.Entity.Enum.EnumFuelType;
+import pl.nankiewic.fleetappbackend.Entity.Enum.EnumVehicleStatus;
+
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
@@ -22,7 +25,7 @@ public class VehicleDTO {
     @NotNull
     private String vehicleRegistrationNumber;
     @NotNull
-    private String fuelType;
+    private EnumFuelType fuelType;
     @NotNull
     private BigDecimal cityFuelConsumption;
     @NotNull
@@ -30,11 +33,21 @@ public class VehicleDTO {
     @NotNull
     private BigDecimal averageFuelConsumption;
     @NotNull
-    private String vehicleStatus;
+    private EnumVehicleStatus vehicleStatus;
 
-    public VehicleDTO(Long id, String make, String model, String year, String color, String mileage, String vinNumber,
-                      String vehicleRegistrationNumber, String fuelType, BigDecimal cityFuelConsumption,
-                      BigDecimal countryFuelConsumption, BigDecimal averageFuelConsumption, String vehicleStatus) {
+    public VehicleDTO(Long id,
+                      String make,
+                      String model,
+                      String year,
+                      String color,
+                      String mileage,
+                      String vinNumber,
+                      String vehicleRegistrationNumber,
+                      EnumFuelType fuelType,
+                      BigDecimal cityFuelConsumption,
+                      BigDecimal countryFuelConsumption,
+                      BigDecimal averageFuelConsumption,
+                      EnumVehicleStatus vehicleStatus) {
         this.id = id;
         this.make = make;
         this.model = model;
@@ -118,11 +131,11 @@ public class VehicleDTO {
         this.vehicleRegistrationNumber = vehicleRegistrationNumber;
     }
 
-    public String getFuelType() {
+    public EnumFuelType getFuelType() {
         return fuelType;
     }
 
-    public void setFuelType(String fuelType) {
+    public void setFuelType(EnumFuelType fuelType) {
         this.fuelType = fuelType;
     }
 
@@ -150,11 +163,11 @@ public class VehicleDTO {
         this.averageFuelConsumption = averageFuelConsumption;
     }
 
-    public String getVehicleStatus() {
+    public EnumVehicleStatus getVehicleStatus() {
         return vehicleStatus;
     }
 
-    public void setVehicleStatus(String vehicleStatus) {
+    public void setVehicleStatus(EnumVehicleStatus vehicleStatus) {
         this.vehicleStatus = vehicleStatus;
     }
 }

@@ -1,5 +1,7 @@
 package pl.nankiewic.fleetappbackend.Entity;
 
+import pl.nankiewic.fleetappbackend.Entity.Enum.EnumInsuranceType;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,8 +14,8 @@ public class InsuranceType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", length = 45, nullable = false)
-    private String name;
+    @Column(name = "insurance_type", length = 45, nullable = false)
+    private EnumInsuranceType insuranceType;
 
     @OneToMany(mappedBy = "insuranceType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<VehicleInsurance> vehicleInsurances = new HashSet<>();
@@ -26,12 +28,12 @@ public class InsuranceType {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public EnumInsuranceType getInsuranceType() {
+        return insuranceType;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setInsuranceType(EnumInsuranceType insuranceType) {
+        this.insuranceType = insuranceType;
     }
 
     public Set<VehicleInsurance> getVehicleInsurances() {

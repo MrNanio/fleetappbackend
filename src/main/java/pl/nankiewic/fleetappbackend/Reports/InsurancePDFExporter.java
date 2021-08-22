@@ -50,7 +50,7 @@ public class InsurancePDFExporter {
         for (VehicleInsurance vehicleInsurance : vehicleInsuranceList) {
             table.addCell(vehicleInsurance.getEffectiveDate().toString());
             table.addCell(vehicleInsurance.getExpirationDate().toString());
-            table.addCell(vehicleInsurance.getInsuranceType().getName());
+            table.addCell(vehicleInsurance.getInsuranceType().getInsuranceType().name());
             table.addCell(vehicleInsurance.getPolicyNumber());
             table.addCell(vehicleInsurance.getCost().toString());
         }

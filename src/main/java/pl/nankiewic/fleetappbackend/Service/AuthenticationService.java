@@ -8,6 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.nankiewic.fleetappbackend.Entity.Enum.EnumRole;
+import pl.nankiewic.fleetappbackend.Entity.Enum.EnumUserAccountStatus;
 import pl.nankiewic.fleetappbackend.Entity.User;
 import pl.nankiewic.fleetappbackend.Entity.VerificationToken;
 import pl.nankiewic.fleetappbackend.Exception.UserAccountEnabledException;
@@ -71,7 +73,7 @@ public class AuthenticationService {
         user.setLastLoginAt(LocalDateTime.now());
         userRepository.save(user);
 
-        return new AuthenticationResponse(jwtToken, userDetails.getUsername(), user.getId(), user.getRole().getName());
+        return new AuthenticationResponse(jwtToken, userDetails.getUsername(), user.getId(), user.getRole().getRole().name());
     }
 
     public void save(AuthenticationRequest authenticationRequest) {
@@ -88,8 +90,8 @@ public class AuthenticationService {
 
     private void superuserRegister(User user) {
         user.setCreatedAt(LocalDateTime.now());
-        user.setRole(roleRepository.findRoleByName("ROLE_SUPERUSER"));
-        user.setUserAccountStatus(userAccountStatusRepository.findByName("INACTIVE"));
+        user.setRole(roleRepository.findRoleByEnumName(EnumRole.SUPERUSER));
+        user.setUserAccountStatus(userAccountStatusRepository.findByEnumName(EnumUserAccountStatus.INACTIVE));
         user.setEnabled(true);
         userRepository.save(user);
         activationToken(userRepository.findUserByEmail(user.getEmail()));
