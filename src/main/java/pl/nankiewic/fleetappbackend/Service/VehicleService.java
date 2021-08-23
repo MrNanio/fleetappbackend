@@ -2,8 +2,8 @@ package pl.nankiewic.fleetappbackend.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.nankiewic.fleetappbackend.DTO.VehicleDTO;
-import pl.nankiewic.fleetappbackend.Entity.Enum.EnumVehicleStatus;
+import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleDTO;
+import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
 import pl.nankiewic.fleetappbackend.Entity.FuelType;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleMake;
@@ -52,20 +52,10 @@ public class VehicleService {
     }
 
 
-    public Vehicle save(VehicleDTO vehicleDTO, String email) {
-        Vehicle vehicle = vehicleMapper.vehicleDTOtoVehicle(vehicleDTO);
-        vehicle.setFuelType(fuelTypeRepository.findByEnumName(vehicleDTO.getFuelType()));
-        vehicle.setVehicleStatus(vehicleStatusRepository.findByEnumName(parseStringToEnum(vehicleDTO.getVehicleStatus().name())));
-        vehicle.setVehicleMake(vehicleMakeRepository.findByName(vehicleDTO.getMake()));
+    public Vehicle save(VehicleRequestResponseDTO vehicleRequestResponseDTO, String email) {
+        Vehicle vehicle = vehicleMapper.vehicleDTOtoVehicle(vehicleRequestResponseDTO);
         vehicle.setUser(userRepository.findUserByEmail(email));
         return vehicleRepository.save(vehicle);
-    }
-    private EnumVehicleStatus parseStringToEnum(String status){
-        if(EnumVehicleStatus.ACTIVE.name().equals(status)){
-            return EnumVehicleStatus.ACTIVE;
-        } else if (EnumVehicleStatus.REPAIR.name().equals(status)){
-            return EnumVehicleStatus.REPAIR;
-        } else throw new EntityNotFoundException("nie znaleziono parsowanego elementu");
     }
 
     public void deleteVehicleById(Long id) {
