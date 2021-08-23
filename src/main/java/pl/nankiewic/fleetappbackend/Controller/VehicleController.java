@@ -5,7 +5,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import pl.nankiewic.fleetappbackend.DTO.VehicleDTO;
+import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleDTO;
+import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
 import pl.nankiewic.fleetappbackend.Entity.FuelType;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleMake;
@@ -31,9 +32,10 @@ public class VehicleController {
 
     @PreAuthorize("hasRole('SUPERUSER')")
     @PostMapping()
-    public Vehicle addVehicle(@RequestBody @Valid VehicleDTO vehicleDTO, Authentication authentication) {
+    public Vehicle addVehicle(@RequestBody @Valid VehicleRequestResponseDTO vehicleRequestResponseDTO,
+                              Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return vehicleService.save(vehicleDTO, userDetails.getUsername());
+        return vehicleService.save(vehicleRequestResponseDTO, userDetails.getUsername());
     }
 
     @PreAuthorize("hasRole('SUPERUSER')")
@@ -52,9 +54,10 @@ public class VehicleController {
     }
 
     @PutMapping
-    public Vehicle updateVehicle(@RequestBody @Valid VehicleDTO vehicleDTO, Authentication authentication) {
+    public Vehicle updateVehicle(@RequestBody @Valid VehicleRequestResponseDTO vehicleRequestResponseDTO,
+                                 Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return vehicleService.save(vehicleDTO, userDetails.getUsername());
+        return vehicleService.save(vehicleRequestResponseDTO, userDetails.getUsername());
     }
 
     @DeleteMapping("/{id}")

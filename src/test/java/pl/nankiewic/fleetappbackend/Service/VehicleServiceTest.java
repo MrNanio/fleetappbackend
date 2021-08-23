@@ -6,7 +6,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import pl.nankiewic.fleetappbackend.DTO.VehicleDTO;
+import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleDTO;
 import pl.nankiewic.fleetappbackend.Mapper.VehicleMapper;
 import pl.nankiewic.fleetappbackend.Repository.*;
 

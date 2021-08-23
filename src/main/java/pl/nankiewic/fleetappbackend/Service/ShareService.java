@@ -3,7 +3,8 @@ package pl.nankiewic.fleetappbackend.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.DTO.ShareDTO;
-import pl.nankiewic.fleetappbackend.DTO.VehicleDTO;
+import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleDTO;
+import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
 import pl.nankiewic.fleetappbackend.Entity.CurrentVehicleUser;
 import pl.nankiewic.fleetappbackend.Entity.User;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
@@ -15,7 +16,6 @@ import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ShareService {
@@ -48,28 +48,28 @@ public class ShareService {
         } else throw new EntityNotFoundException("nie znaleziono zasobu: użytkownik");
     }
 
-    public Iterable<VehicleDTO> getShareVehicleListByUserId(Long id, String username) {
-        if (userRepository.existsByEmail(username) && userRepository.existsById(id)) {
-            //User manager =userRepository.findUserByEmail(username);
-            User user = userRepository.findById(id).orElseThrow(
-                    () -> new EntityNotFoundException("Nie znaleziono użytkownika"));
-            List<CurrentVehicleUser> myByShare = currentVehicleUserRepository.findCurrentVehicleUsersByUserIs(user);
-            List<Vehicle> myShare = myByShare.stream().map(CurrentVehicleUser::getVehicle).collect(Collectors.toList());
-            return vehicleMapper.map(myShare);
-        } else throw new EntityNotFoundException("błąd zasobu: użytkownik");
-    }
+//    public Iterable<VehicleRequestResponseDTO> getShareVehicleListByUserId(Long id, String username) {
+//        if (userRepository.existsByEmail(username) && userRepository.existsById(id)) {
+//            //User manager =userRepository.findUserByEmail(username);
+//            User user = userRepository.findById(id).orElseThrow(
+//                    () -> new EntityNotFoundException("Nie znaleziono użytkownika"));
+//            List<CurrentVehicleUser> myByShare = currentVehicleUserRepository.findCurrentVehicleUsersByUserIs(user);
+//            List<VehicleDTO> myShare = myByShare.stream().map(CurrentVehicleUser::getVehicle).collect(Collectors.toList());
+//            return vehicleMapper.map(myShare);
+//        } else throw new EntityNotFoundException("błąd zasobu: użytkownik");
+//    }
 
-    public Iterable<VehicleDTO> getPossibleVehiclesList(String username) {
+    public Iterable<VehicleRequestResponseDTO> getPossibleVehiclesList(String username) {
         if (userRepository.existsByEmail(username)) {
             User user = userRepository.findUserByEmail(username);
-            List<Vehicle> myAll = new ArrayList<>();
-            Iterable<Vehicle> myByOwn = vehicleRepository.findVehiclesByUser(user);
-            for (Vehicle vehicle : myByOwn) {
-                if (!currentVehicleUserRepository.existsByVehicle(vehicle)) {
+            List<VehicleDTO> myAll = new ArrayList<>();
+            Iterable<VehicleDTO> myByOwn = vehicleRepository.selectVehiclesDataByUser(user);
+            for (VehicleDTO vehicle : myByOwn) {
+                if (!currentVehicleUserRepository.existsByVehicle_Id(vehicle.getId())) {
                     myAll.add(vehicle);
                 }
             }
-            return vehicleMapper.map(myAll);
+            return vehicleMapper.vehiclesDTOtoVehiclesResponseDTO(myAll);
         } else throw new EntityNotFoundException("błąd zasobu: użytkownik");
     }
 
@@ -77,7 +77,7 @@ public class ShareService {
         if (vehicleRepository.existsById(id)) {
             Vehicle vehicle = vehicleRepository.findById(id).orElseThrow(
                     () -> new RuntimeException("Bład przetwarzania"));
-            if (currentVehicleUserRepository.existsByVehicle(vehicle)) {
+            if (currentVehicleUserRepository.existsByVehicle_Id(vehicle.getId())) {
                 CurrentVehicleUser currentVehicleUser = currentVehicleUserRepository.findByVehicle(vehicle);
                 currentVehicleUserRepository.deleteById(currentVehicleUser.getId());
             } else throw new EntityNotFoundException("błąd zasobu: share");

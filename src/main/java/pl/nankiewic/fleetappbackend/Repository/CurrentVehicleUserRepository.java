@@ -16,5 +16,5 @@ public interface CurrentVehicleUserRepository extends JpaRepository<CurrentVehic
 
     CurrentVehicleUser findByVehicle(Vehicle vehicle);
 
-    boolean existsByVehicle(Vehicle vehicle);
+    boolean existsByVehicle_Id(Long id);
 }

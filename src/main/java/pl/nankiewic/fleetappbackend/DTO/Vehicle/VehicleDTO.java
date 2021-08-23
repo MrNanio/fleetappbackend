@@ -1,4 +1,4 @@
-package pl.nankiewic.fleetappbackend.DTO;
+package pl.nankiewic.fleetappbackend.DTO.Vehicle;
 
 import pl.nankiewic.fleetappbackend.Entity.Enum.EnumFuelType;
 import pl.nankiewic.fleetappbackend.Entity.Enum.EnumVehicleStatus;
