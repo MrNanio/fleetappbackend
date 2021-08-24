@@ -5,12 +5,9 @@ import org.mapstruct.factory.Mappers;
 import pl.nankiewic.fleetappbackend.DTO.AddressDTO;
 import pl.nankiewic.fleetappbackend.Entity.Address;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-//import static pl.nankiewic.fleetappbackend.factories.AddressFactory;
 
 class AddressMapperTest {
     private final AddressMapper addressMapper= Mappers.getMapper(AddressMapper.class);
-    //private final String addressClassName = Address.class.getSimpleName();
     @Test
     void should_map_address_to_address_dto(){
         //given
@@ -40,8 +37,6 @@ class AddressMapperTest {
         Address address = addressMapper.addressDTOtoAddress(addressDTO);
         //then
         assertThat(addressDTO.getCity()).isEqualTo("Kraków");
-        //assertEquals(addressDTO.getCity(), address.getCity(), buildMessage(addressClassName, "city"));
-
     }
 
 }

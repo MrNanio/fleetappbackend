@@ -16,6 +16,7 @@ public class Role {
     private Long id;
 
     @Column(name = "role")
+    @Enumerated(EnumType.STRING)
     private EnumRole role;
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

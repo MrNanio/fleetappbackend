@@ -279,7 +279,7 @@ public class AccountService {
 
     private void userRegister(User user) {
         user.setCreatedAt(LocalDateTime.now());
-        user.setRole(roleRepository.findRoleByEnumName(EnumRole.USER));
+        user.setRole(roleRepository.findRoleByEnumName(EnumRole.USER.name()));
         user.setUserAccountStatus(userAccountStatusRepository.findByEnumName(EnumUserAccountStatus.INACTIVE));
         user.setEnabled(false);
         userRepository.save(user);

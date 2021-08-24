@@ -15,10 +15,19 @@ public class VehicleStatus {
     private Long id;
 
     @Column(name = "vehicle_status", length = 15, nullable = false)
+    @Enumerated(EnumType.STRING)
     private EnumVehicleStatus vehicleStatus;
 
     @OneToMany(mappedBy = "vehicleStatus", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Vehicle> vehicles = new HashSet<>();
+
+    public VehicleStatus(Long id, EnumVehicleStatus vehicleStatus) {
+        this.id = id;
+        this.vehicleStatus = vehicleStatus;
+    }
+
+    public VehicleStatus() {
+    }
 
     public Long getId() {
         return id;
