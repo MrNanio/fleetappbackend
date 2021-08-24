@@ -15,6 +15,7 @@ public class InsuranceType {
     private Long id;
 
     @Column(name = "insurance_type", length = 45, nullable = false)
+    @Enumerated(EnumType.STRING)
     private EnumInsuranceType insuranceType;
 
     @OneToMany(mappedBy = "insuranceType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

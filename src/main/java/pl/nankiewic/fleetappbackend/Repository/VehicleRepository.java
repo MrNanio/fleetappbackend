@@ -17,7 +17,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 
     Optional<Vehicle> findById(Long id);
 
-    @Query(value = "SELECT new pl.nankiewic.fleetappbackend.DTO.VehicleDTO(" +
+    @Query(value = "SELECT new pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleDTO(" +
             "v.id, " +
             "v.vehicleMake.name, " +
             "v.model, " +
@@ -35,7 +35,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
             "WHERE v.id=?1")
     VehicleDTO selectVehicleDetailsById(Long id);
 
-    @Query(value = "SELECT new pl.nankiewic.fleetappbackend.DTO.VehicleDTO(" +
+    @Query(value = "SELECT new pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleDTO(" +
             "v.id, " +
             "v.vehicleMake.name, " +
             "v.model, " +

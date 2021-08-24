@@ -14,6 +14,7 @@ public class UserAccountStatus {
     private Long id;
 
     @Column(name = "account_status", length = 15, nullable = false)
+    @Enumerated(EnumType.STRING)
     private EnumUserAccountStatus userAccountStatus;
 
     @OneToMany(mappedBy = "userAccountStatus", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

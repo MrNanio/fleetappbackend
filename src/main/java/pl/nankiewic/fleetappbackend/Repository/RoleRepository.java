@@ -10,6 +10,8 @@ import pl.nankiewic.fleetappbackend.Entity.Role;
 public interface RoleRepository extends JpaRepository<Role, Long> {
 
     @Query(value = "SELECT r FROM Role r WHERE r.role = ?1")
-    Role findRoleByEnumName(EnumRole enumRole);
+    Role findRoleByEnumName(String enumRole);
+
+    Role findRoleByRole(EnumRole enumRole);
 
 }

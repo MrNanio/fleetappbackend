@@ -24,6 +24,14 @@ public class FuelType {
     public FuelType() {
     }
 
+    public FuelType(long l, EnumFuelType pb95) {
+    }
+
+    public FuelType(Long id, EnumFuelType fuelType) {
+        this.id = id;
+        this.fuelType = fuelType;
+    }
+
     public Set<Vehicle> getVehicle() {
         return vehicle;
     }
