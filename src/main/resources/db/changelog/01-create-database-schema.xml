@@ -77,7 +77,7 @@
                              references="roles(id)"/>
             </column>
             <column name="manager_id" type="bigint">
-                <constraints nullable="false"
+                <constraints nullable="true"
                              foreignKeyName="fk_users_user"
                              references="users(id)"/>
             </column>
