@@ -6,14 +6,15 @@
     <changeSet id="1" author="nankiewic">
 
         <createTable tableName="fuel_types">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
+
             </column>
             <column name="fuel_type" type="enum('PB98', 'PB95', 'LBG', 'ON')"/>
         </createTable>
 
         <createTable tableName="vehicle_makes">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
             <column name="name" type="varchar(45)">
@@ -22,35 +23,35 @@
         </createTable>
 
         <createTable tableName="insurance_types">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
             <column name="insurance_type" type="enum('OC', 'AC', 'NNW')"/>
         </createTable>
 
         <createTable tableName="roles">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
             <column name="role" type="enum('USER', 'SUPERUSER', 'ADMIN')"/>
         </createTable>
 
         <createTable tableName="user_account_status">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
             <column name="account_status" type="enum('ACTIVE', 'INACTIVE', 'BLOCKED')"/>
         </createTable>
 
         <createTable tableName="vehicle_status">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
             <column name="vehicle_status" type="enum('ACTIVE', 'REPAIR')"/>
         </createTable>
 
         <createTable tableName="users">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
             <column name="email" type="varchar(45)">
@@ -83,7 +84,7 @@
         </createTable>
 
         <createTable tableName="verification_token">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
             <column name="token" type="varchar(255)">
@@ -100,7 +101,7 @@
         </createTable>
 
         <createTable tableName="address">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
             <column name="city" type="varchar(45)">
@@ -117,7 +118,7 @@
         </createTable>
 
         <createTable tableName="user_data">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
             <column name="name" type="varchar(45)">
@@ -142,7 +143,7 @@
         </createTable>
 
         <createTable tableName="vehicles">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
             <column name="vehicle_make_id" type="bigint">
@@ -196,7 +197,7 @@
         </createTable>
 
         <createTable tableName="current_vehicle_users">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
 
@@ -213,7 +214,7 @@
         </createTable>
 
         <createTable tableName="vehicle_inspections">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
             <column name="inspection_date" type="date">
@@ -228,7 +229,7 @@
             <column name="description" type="varchar(255)">
                 <constraints nullable="true"/>
             </column>
-            <column name="vehicle_id" type="bigint">
+            <column name="vehicle_id" type="bigint" >
                 <constraints nullable="false"
                              foreignKeyName="fk_vehicles_vehicle_inspections"
                              references="vehicles(id)"/>
@@ -236,7 +237,7 @@
         </createTable>
 
         <createTable tableName="vehicle_insurances">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
             <column name="effective_date" type="date">
@@ -267,7 +268,7 @@
         </createTable>
 
         <createTable tableName="vehicle_refueling">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
             <column name="refueling_date" type="date">
@@ -296,7 +297,7 @@
         </createTable>
 
         <createTable tableName="vehicle_repairs">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
             <column name="repair_date" type="date">
@@ -319,7 +320,7 @@
         </createTable>
 
         <createTable tableName="vehicle_use">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
             <column name="trip" type="smallint">
