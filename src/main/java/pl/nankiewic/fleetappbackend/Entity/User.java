@@ -1,5 +1,6 @@
 package pl.nankiewic.fleetappbackend.Entity;
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,15 +10,16 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "email")
+    @Column(name = "email", length = 45)
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password", length = 45)
     private String password;
 
-    @Column(name = "reset_code")
+    @Column(name = "reset_code", length = 45)
     private String resetCode;
 
     @Column(name = "reset_at")
