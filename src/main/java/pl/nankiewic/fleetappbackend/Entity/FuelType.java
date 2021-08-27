@@ -10,8 +10,10 @@ import java.util.Set;
 @Entity
 @Table(name = "fuel_types")
 public class FuelType {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "fuel_type")

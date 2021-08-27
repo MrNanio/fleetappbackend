@@ -12,6 +12,7 @@ public class VehicleInspection {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "inspection_date", nullable = false)
@@ -22,7 +23,7 @@ public class VehicleInspection {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate expirationDate;
 
-    @Column(name = "cost", precision=5, scale=2, nullable = false)
+    @Column(name = "cost", precision = 5, scale = 2, nullable = false)
     private BigDecimal cost;
 
     @Column(name = "description", length = 45)

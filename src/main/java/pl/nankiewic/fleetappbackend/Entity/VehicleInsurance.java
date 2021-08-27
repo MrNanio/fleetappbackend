@@ -10,8 +10,10 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "vehicle_insurances")
 public class VehicleInsurance {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "effective_date", nullable = false)
@@ -86,10 +88,12 @@ public class VehicleInsurance {
     public void setDescription(String description) {
         this.description = description;
     }
+
     @JsonIgnore
     public InsuranceType getInsuranceType() {
         return insuranceType;
     }
+
     @JsonIgnore
     public void setInsuranceType(InsuranceType insuranceType) {
         this.insuranceType = insuranceType;

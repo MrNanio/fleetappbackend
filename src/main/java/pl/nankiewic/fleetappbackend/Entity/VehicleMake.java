@@ -9,8 +9,10 @@ import java.util.Set;
 @Entity
 @Table(name = "vehicle_makes")
 public class VehicleMake {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "name")

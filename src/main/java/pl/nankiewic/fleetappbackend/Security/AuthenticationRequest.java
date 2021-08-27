@@ -1,11 +1,13 @@
 package pl.nankiewic.fleetappbackend.Security;
 
-public class AuthenticationRequest {
-    private String email;
-    private String password;
+import javax.validation.constraints.NotNull;
 
-    public AuthenticationRequest() {
-    }
+public class AuthenticationRequest {
+
+    @NotNull
+    private String email;
+    @NotNull
+    private String password;
 
     public AuthenticationRequest(String email, String password) {
         this.email = email;

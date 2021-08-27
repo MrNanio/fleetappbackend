@@ -21,9 +21,9 @@ import pl.nankiewic.fleetappbackend.Security.CustomUserDetailsService;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    CustomUserDetailsService userDetailsService;
-    JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    PasswordEncoder passwordEncoder;
+    private final CustomUserDetailsService userDetailsService;
+    private final JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final PasswordEncoder passwordEncoder;
     @Autowired
     public WebSecurityConfiguration(CustomUserDetailsService userDetailsService,
                                     JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint,
@@ -42,16 +42,20 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public AuthorizationFilter authenticationJwtTokenFilter() {
         return new AuthorizationFilter();
     }
+
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.headers().httpStrictTransportSecurity().disable().and().cors().and()
-                .csrf().disable()
-                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+        http
+                .headers().httpStrictTransportSecurity().disable()
+                .and().cors()
+                .and().csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .authorizeRequests()
                 .antMatchers("/api/**").permitAll()
                 .antMatchers("/api/test/**").permitAll()
@@ -61,7 +65,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/new-account").permitAll()
                 .antMatchers("/user/new-account/password").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated();
+                .anyRequest().authenticated()
+                .and()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }
