@@ -12,6 +12,7 @@ public class InsuranceType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "insurance_type", length = 45, nullable = false)

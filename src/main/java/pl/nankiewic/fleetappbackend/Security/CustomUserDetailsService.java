@@ -33,7 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("Użytkownik nie istnieje");
         }
         User user = userRepository.findUserByEmail((email));
-        return new CustomUserDetails(user.getId(), user.getEmail(), getAuthorities(user.getRole()));
+        return new CustomUserDetails(user.getId(), user.getEmail(), user.getPassword(), getAuthorities(user.getRole()));
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(Role roles) {

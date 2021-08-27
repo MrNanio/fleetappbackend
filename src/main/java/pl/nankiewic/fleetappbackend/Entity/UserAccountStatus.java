@@ -11,6 +11,7 @@ import java.util.Set;
 public class UserAccountStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "account_status", length = 15, nullable = false)

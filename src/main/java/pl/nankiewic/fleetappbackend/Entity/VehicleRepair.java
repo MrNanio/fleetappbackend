@@ -8,8 +8,10 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "vehicle_repairs")
 public class VehicleRepair {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "repair_date", nullable = false)
