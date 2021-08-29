@@ -11,9 +11,13 @@ import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class DashboardService {
+
+    private static final float FLOAT_VALUE_OF_ZERO = 0.0F;
+
     private final VehicleInspectionRepository vehicleInspectionRepository;
     private final VehicleInsuranceRepository vehicleInsuranceRepository;
     private final VehicleRefuelingRepository vehicleRefuelingRepository;
@@ -46,7 +50,7 @@ public class DashboardService {
         LocalDate endDate = LocalDate.parse(end);
 
         Vehicle vehicle = vehicleRepository.findById(Long.parseLong(vehicleId)).orElseThrow(
-                () -> new RuntimeException("Bład przetwarzania"));
+                () -> new EntityNotFoundException("Bład przetwarzania"));
         List<ChartDataRespondDTO> summary = new ArrayList<>();
         ChartDataRespondDTO chartDataRepair = new ChartDataRespondDTO(
                 vehicleCostByCategoriesRepair(vehicle, beginDate, endDate), "Naprawy");
@@ -68,7 +72,7 @@ public class DashboardService {
         LocalDate endDate = LocalDate.parse(end);
 
         Vehicle vehicle = vehicleRepository.findById(Long.parseLong(vehicleId)).orElseThrow(
-                () -> new RuntimeException("Bład przetwarzania"));
+                () -> new EntityNotFoundException("Bład przetwarzania"));
         List<ChartDataRespondDTO> summary = new ArrayList<>();
         Iterable<DataUseTypeDTO> list = vehicleUseRepository.tripByVehicleAndDataAndTripType(vehicle, beginDate, endDate);
 
@@ -96,7 +100,7 @@ public class DashboardService {
         LocalDate beginDate = LocalDate.parse(begin);
         LocalDate endDate = LocalDate.parse(end);
         Vehicle vehicle = vehicleRepository.findById(Long.parseLong(vehicleId)).orElseThrow(
-                () -> new RuntimeException("Bład przetwarzania"));
+                () -> new EntityNotFoundException("Bład przetwarzania"));
         List<ChartDataRespondDTO> summary = new ArrayList<>();
         Iterable<DataRefuelingDTO> list = vehicleRefuelingRepository.refuelingByVehicle(vehicle, beginDate, endDate);
         for (DataRefuelingDTO dataDTO : list) {
@@ -115,7 +119,7 @@ public class DashboardService {
         LocalDate end = LocalDate.parse(endDate);
 
         Vehicle vehicle = vehicleRepository.findById(Long.parseLong(vehicleId)).orElseThrow(
-                () -> new RuntimeException("Bład przetwarzania"));
+                () -> new EntityNotFoundException("Bład przetwarzania"));
         List<ChartDataRespondDTO> summary = new ArrayList<>();
         Iterable<DataTripDTO> list = vehicleUseRepository.tripByVehicleAndData(vehicle, begin, end);
 
@@ -260,52 +264,52 @@ public class DashboardService {
     }
 
     private Float fleetCostByCategoriesRepair(User user, LocalDate begin, LocalDate end) {
-        if (vehicleRepairRepository.sumOfRepair(user, begin, end) == null) {
-            return Float.valueOf("0");
+        if (Objects.isNull(vehicleRepairRepository.sumOfRepair(user, begin, end))) {
+            return FLOAT_VALUE_OF_ZERO;
         } else return vehicleRepairRepository.sumOfRepair(user, begin, end);
     }
 
     private Float fleetCostByCategoriesInsurance(User user, LocalDate begin, LocalDate end) {
-        if (vehicleInsuranceRepository.sumOfInsurance(user, begin, end) == null) {
-            return Float.valueOf("0");
+        if (Objects.isNull(vehicleInsuranceRepository.sumOfInsurance(user, begin, end))) {
+            return FLOAT_VALUE_OF_ZERO;
         } else return vehicleInsuranceRepository.sumOfInsurance(user, begin, end);
 
     }
 
     private Float fleetCostByCategoriesInspection(User user, LocalDate begin, LocalDate end) {
-        if (vehicleInspectionRepository.sumOfInspection(user, begin, end) == null) {
-            return Float.valueOf("0");
+        if (Objects.isNull(vehicleInspectionRepository.sumOfInspection(user, begin, end))) {
+            return FLOAT_VALUE_OF_ZERO;
         } else return vehicleInspectionRepository.sumOfInspection(user, begin, end);
     }
 
     private Float fleetCostByCategoriesRefueling(User user, LocalDate begin, LocalDate end) {
-        if (vehicleRefuelingRepository.sumOfRefueling(user, begin, end) == null) {
-            return Float.valueOf("0");
+        if (Objects.isNull(vehicleRefuelingRepository.sumOfRefueling(user, begin, end))) {
+            return FLOAT_VALUE_OF_ZERO;
         } else return vehicleRefuelingRepository.sumOfRefueling(user, begin, end);
     }
 
     private Float vehicleCostByCategoriesRepair(Vehicle vehicle, LocalDate begin, LocalDate end) {
-        if (vehicleRepairRepository.vehicleSumCostOfRepair(vehicle, begin, end) == null) {
-            return Float.valueOf("0");
+        if (Objects.isNull(vehicleRepairRepository.vehicleSumCostOfRepair(vehicle, begin, end))) {
+            return FLOAT_VALUE_OF_ZERO;
         } else return vehicleRepairRepository.vehicleSumCostOfRepair(vehicle, begin, end);
     }
 
     private Float vehicleCostByCategoriesInsurance(Vehicle vehicle, LocalDate begin, LocalDate end) {
-        if (vehicleInsuranceRepository.vehicleSumCostOfInsurance(vehicle, begin, end) == null) {
-            return Float.valueOf("0");
+        if (Objects.isNull(vehicleInsuranceRepository.vehicleSumCostOfInsurance(vehicle, begin, end))) {
+            return FLOAT_VALUE_OF_ZERO;
         } else return vehicleInsuranceRepository.vehicleSumCostOfInsurance(vehicle, begin, end);
 
     }
 
     private Float vehicleCostByCategoriesInspection(Vehicle vehicle, LocalDate begin, LocalDate end) {
-        if (vehicleInspectionRepository.vehicleSumCostOfInspection(vehicle, begin, end) == null) {
-            return Float.valueOf("0");
+        if (Objects.isNull(vehicleInspectionRepository.vehicleSumCostOfInspection(vehicle, begin, end))) {
+            return FLOAT_VALUE_OF_ZERO;
         } else return vehicleInspectionRepository.vehicleSumCostOfInspection(vehicle, begin, end);
     }
 
     private Float vehicleCostByCategoriesRefueling(Vehicle vehicle, LocalDate begin, LocalDate end) {
-        if (vehicleRefuelingRepository.vehicleSumCostOfRefueling(vehicle, begin, end) == null) {
-            return Float.valueOf("0");
+        if (Objects.isNull(vehicleRefuelingRepository.vehicleSumCostOfRefueling(vehicle, begin, end))) {
+            return FLOAT_VALUE_OF_ZERO;
         } else return vehicleRefuelingRepository.vehicleSumCostOfRefueling(vehicle, begin, end);
     }
 

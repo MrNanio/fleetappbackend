@@ -138,35 +138,35 @@ public class ReportsService {
 
     private Iterable<VehicleRefueling> getRefuelingByVehicleAndDate(Long id, LocalDate begin, LocalDate end) {
         if (vehicleRepository.existsById(id)) {
-            Vehicle vehicle = vehicleRepository.findById(id).orElseThrow(() -> new RuntimeException("Bład przetwarzania"));
+            Vehicle vehicle = vehicleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Bład przetwarzania"));
             return vehicleRefuelingRepository.findAllByVehicleIsAndRefuelingDateIsBetween(vehicle, begin, end);
         } else throw new EntityNotFoundException("not found");
     }
 
     private Iterable<VehicleInsurance> getInsuranceByVehicleAndDate(Long id, LocalDate begin, LocalDate end) {
         if (vehicleRepository.existsById(id)) {
-            Vehicle vehicle = vehicleRepository.findById(id).orElseThrow(() -> new RuntimeException("Bład przetwarzania"));
+            Vehicle vehicle = vehicleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Bład przetwarzania"));
             return vehicleInsuranceRepository.findAllByVehicleAndEffectiveDateBetween(vehicle, begin, end);
         } else throw new EntityNotFoundException("not found");
     }
 
     private Iterable<VehicleInspection> getInspectionByVehicleAndDate(Long id, LocalDate begin, LocalDate end) {
         if (vehicleRepository.existsById(id)) {
-            Vehicle vehicle = vehicleRepository.findById(id).orElseThrow(() -> new RuntimeException("Bład przetwarzania"));
+            Vehicle vehicle = vehicleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Bład przetwarzania"));
             return vehicleInspectionRepository.findAllByVehicleAndInspectionDateBetween(vehicle, begin, end);
         } else throw new EntityNotFoundException("not found");
     }
 
     private Iterable<VehicleRepair> getRepairByVehicleAndDate(Long id, LocalDate begin, LocalDate end) {
         if (vehicleRepository.existsById(id)) {
-            Vehicle vehicle = vehicleRepository.findById(id).orElseThrow(() -> new RuntimeException("Bład przetwarzania"));
+            Vehicle vehicle = vehicleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Bład przetwarzania"));
             return vehicleRepairRepository.findAllByVehicleAndRepairDateBetween(vehicle, begin, end);
         } else throw new EntityNotFoundException("not found");
     }
 
     private Iterable<VehicleUse> getUseByVehicleAndDate(Long id, LocalDate begin, LocalDate end) {
         if (vehicleRepository.existsById(id)) {
-            Vehicle vehicle = vehicleRepository.findById(id).orElseThrow(() -> new RuntimeException("Bład przetwarzania"));
+            Vehicle vehicle = vehicleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Bład przetwarzania"));
             return vehicleUseRepository.findAllByVehicleIsAndTripDateBetween(vehicle, begin, end);
         } else throw new EntityNotFoundException("not found");
     }
@@ -191,6 +191,6 @@ public class ReportsService {
     }
 
     private Vehicle getVehicleInfo(Long id) {
-        return vehicleRepository.findById(id).orElseThrow(() -> new RuntimeException("Bład przetwarzania"));
+        return vehicleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Bład przetwarzania"));
     }
 }

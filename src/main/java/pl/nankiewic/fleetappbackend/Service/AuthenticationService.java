@@ -38,6 +38,8 @@ public class AuthenticationService {
     private final CustomUserDetailsService userDetailsService;
     private final JWTokenUtility tokenUtility;
 
+
+
     @Autowired
     public AuthenticationService(UserAccountStatusRepository userAccountStatusRepository,
                                  VerificationTokenRepository verificationTokenRepository,

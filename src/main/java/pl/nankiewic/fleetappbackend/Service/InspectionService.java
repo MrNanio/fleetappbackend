@@ -11,6 +11,8 @@ import pl.nankiewic.fleetappbackend.Repository.UserRepository;
 import pl.nankiewic.fleetappbackend.Repository.VehicleInspectionRepository;
 import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 public class InspectionService {
     private final VehicleInspectionRepository vehicleInspectionRepository;
@@ -32,19 +34,19 @@ public class InspectionService {
     public void saveInspection(InspectionDTO inspectionDTO) {
         VehicleInspection vehicleInspection = inspectionMapper.inspectionDTOtoVehicleInspection(inspectionDTO);
         vehicleInspection.setVehicle(vehicleRepository.findById(inspectionDTO.getVehicleId()).orElseThrow(
-                () -> new RuntimeException("Bład przetwarzania")));
+                () -> new EntityNotFoundException("Bład przetwarzania")));
         vehicleInspectionRepository.save(vehicleInspection);
     }
 
     public Iterable<InspectionDTO> getInspectionByVehicle(Long id) {
         Vehicle vehicle = vehicleRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Bład przetwarzania"));
+                () -> new EntityNotFoundException("Bład przetwarzania"));
         return inspectionMapper.vehicleInspectionsToInspectionsDTO(vehicleInspectionRepository.findAllByVehicle(vehicle));
     }
 
     public InspectionDTO getInspectionById(Long id) {
         return inspectionMapper.vehicleInspectionToInspectionDTO(vehicleInspectionRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Bład przetwarzania")));
+                () -> new EntityNotFoundException("Bład przetwarzania")));
     }
 
     public Iterable<InspectionDTO> getInspectionsByUser(String email) {
