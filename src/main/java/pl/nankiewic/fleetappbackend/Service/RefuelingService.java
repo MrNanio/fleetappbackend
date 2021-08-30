@@ -34,7 +34,7 @@ public class RefuelingService {
     public void save(RefuelingDTO refuelingDTO, String email) {
         VehicleRefueling refueling = mapper.refuelingDTOToRefueling(refuelingDTO);
         Vehicle vehicle = vehicleRepository.findById(refuelingDTO.getVehicleId()).orElseThrow(
-                () -> new RuntimeException("Bład przetwarzania"));
+                () -> new EntityNotFoundException("Bład przetwarzania"));
         refueling.setVehicle(vehicle);
         refueling.setUser(userRepository.findUserByEmail(email));
         refuelingRepository.save(refueling);
@@ -42,7 +42,7 @@ public class RefuelingService {
 
     public RefuelingDTO getRefuelingById(Long id) {
         return mapper.refuelingToRefuelingDTO(refuelingRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Bład przetwarzania")));
+                () -> new EntityNotFoundException("Bład przetwarzania")));
     }
 
     public Iterable<RefuelingDTO> getRefuelingByVehicle(Long id) {
@@ -50,7 +50,7 @@ public class RefuelingService {
         if (vehicle.isPresent()) {
             return mapper.refuelingToRefuelingDTO(refuelingRepository.findRefuelingsByVehicle(vehicle.get()));
         }
-        throw new RuntimeException("Bład przetwarzania");
+        throw new EntityNotFoundException("Bład przetwarzania");
     }
 
     public Iterable<RefuelingDTO> getRefuelingByUser(String email) {
@@ -71,7 +71,7 @@ public class RefuelingService {
     public Iterable<RefuelingDTO> getRefuelingByUserAndVehicle(Long userId, Long vehicleId) {
         if (userRepository.existsById(userId) && vehicleRepository.existsById(vehicleId)) {
             Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(
-                    () -> new RuntimeException("Bład przetwarzania"));
+                    () -> new EntityNotFoundException("Bład przetwarzania"));
             User user = userRepository.findById(userId).orElseThrow(
                     ()-> new EntityNotFoundException("Nie znaleziono użytkownika"));
             return mapper.refuelingToRefuelingDTO(refuelingRepository.findAllByVehicleAndUser(vehicle, user));

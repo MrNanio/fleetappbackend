@@ -34,7 +34,7 @@ public class UseService {
     public void save(UseDTO use, String email) {
         VehicleUse vehicleUse = useMapper.useDTOtoVehicleUse(use);
         Vehicle vehicle = vehicleRepository.findById(use.getVehicleId()).orElseThrow(
-                () -> new RuntimeException("Bład przetwarzania"));
+                () -> new EntityNotFoundException("Bład przetwarzania"));
         vehicleUse.setVehicle(vehicle);
         vehicleUse.setUser(userRepository.findUserByEmail(email));
 
@@ -48,7 +48,7 @@ public class UseService {
         if (vehicleRepository.existsById(id)) {
             return useMapper.vehicleUseToUseDTO(vehicleUseRepository.findAllByVehicle(
                     vehicleRepository.findById(id).orElseThrow(
-                            () -> new RuntimeException("Bład przetwarzania"))));
+                            () -> new EntityNotFoundException("Bład przetwarzania"))));
         } else throw new EntityNotFoundException();
     }
 
@@ -59,13 +59,13 @@ public class UseService {
     public UseDTO getUseById(Long id) {
         if (vehicleUseRepository.existsById(id)) {
             return useMapper.vehicleUseToUseDTO(vehicleUseRepository.findById(id).orElseThrow(
-                    () -> new RuntimeException("Bład przetwarzania")));
+                    () -> new EntityNotFoundException("Bład przetwarzania")));
         } else throw new EntityNotFoundException();
     }
 
     public void deleteUseById(Long id) {
         VehicleUse use = vehicleUseRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Bład przetwarzania"));
+                () -> new EntityNotFoundException("Bład przetwarzania"));
         Vehicle vehicle = use.getVehicle();
         int mil = Integer.parseInt(vehicle.getMileage()) - use.getTrip();
         vehicle.setMileage(Integer.toString(mil));
@@ -76,7 +76,7 @@ public class UseService {
     public Iterable<UseDTO> getUseByUserAndVehicle(Long userId, Long vehicleId) {
         if (userRepository.existsById(userId) && vehicleRepository.existsById(vehicleId)) {
             Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(
-                    () -> new RuntimeException("Bład przetwarzania"));
+                    () -> new EntityNotFoundException("Bład przetwarzania"));
             User user = userRepository.findById(userId).orElseThrow(
                     () -> new EntityNotFoundException("Nie znaleziono użytkownika"));
             return useMapper.vehicleUseToUseDTO(vehicleUseRepository.findAllByVehicleAndUser(vehicle, user));
