@@ -43,7 +43,7 @@ public class InsuranceService {
     public VehicleInsurance save(InsuranceDTO insuranceDTO) {
         VehicleInsurance vehicleInsurance = mapper.insuranceDTOtoVehicleInsurance(insuranceDTO);
         vehicleInsurance.setVehicle(vehicleRepository.findById(insuranceDTO.getVehicleId()).orElseThrow(
-                () -> new RuntimeException("Bład przetwarzania")));
+                () -> new EntityNotFoundException("Bład przetwarzania")));
         vehicleInsurance.setInsuranceType(insuranceType.findByEnumName(parseStingToEnum(insuranceDTO.getInsuranceType())));
         return vehicleInsuranceRepository.save(vehicleInsurance);
     }
@@ -51,7 +51,7 @@ public class InsuranceService {
     public Iterable<InsuranceDTO> getInsurancesByVehicle(Long id) {
         return mapper.vehicleInsurancesToInsurancesDTO(vehicleInsuranceRepository
                 .findAllByVehicle((vehicleRepository.findById(id)).orElseThrow(
-                        () -> new RuntimeException("Bład przetwarzania"))));
+                        () -> new EntityNotFoundException("Bład przetwarzania"))));
     }
 
     public Iterable<InsuranceDTO> getInsurancesByUser(String email) {
