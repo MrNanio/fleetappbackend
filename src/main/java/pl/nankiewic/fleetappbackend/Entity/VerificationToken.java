@@ -1,9 +1,18 @@
 package pl.nankiewic.fleetappbackend.Entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "verification_token")
 public class VerificationToken {
@@ -30,48 +39,10 @@ public class VerificationToken {
         return localDateTime.plusMinutes(VerificationToken.EXPIRATION);
     }
 
-    public VerificationToken() {
-    }
-
     public VerificationToken(User user) {
         this.user = user;
         token = UUID.randomUUID().toString();
         expiryDate = calculateExpiryDate();
     }
 
-    public static int getEXPIRATION() {
-        return EXPIRATION;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public LocalDateTime getExpiryDate() {
-        return expiryDate;
-    }
-
-    public void setExpiryDate(LocalDateTime expiryDate) {
-        this.expiryDate = expiryDate;
-    }
 }

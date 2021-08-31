@@ -36,26 +36,25 @@ public class VehicleService {
         this.vehicleMapper = vehicleMapper;
     }
 
+    public void createVehicle(VehicleRequestResponseDTO vehicleRequestResponseDTO, String email) {
+        Vehicle vehicle = vehicleMapper.vehicleDTOtoVehicle(vehicleRequestResponseDTO);
+        vehicle.setUser(userRepository.findUserByEmail(email));
+        vehicleRepository.save(vehicle);
+    }
+
     public Iterable<VehicleDTO> getVehiclesDataByUser(String email) {
 
         if (vehicleRepository.existsByUser(userRepository.findUserByEmail(email))) {
             if (userRepository.existsByEmail(email)) {
-                return vehicleRepository.selectVehiclesDataByUser(userRepository.findUserByEmail(email));
+                return vehicleRepository.findVehiclesDataByUser(userRepository.findUserByEmail(email));
             } else throw new EntityNotFoundException("Nie znaleziono użytkownika");
         } else throw new EntityNotFoundException("Nie znaleziono pojazdów użytkownika");
     }
 
     public VehicleDTO getVehicleDataById(Long id) {
         if (vehicleRepository.existsById(id)) {
-            return vehicleRepository.selectVehicleDetailsById(id);
+            return vehicleRepository.findVehicleDetailsById(id);
         } else throw new EntityNotFoundException("Nie znaleziono pojazdu o danym id");
-    }
-
-
-    public Vehicle save(VehicleRequestResponseDTO vehicleRequestResponseDTO, String email) {
-        Vehicle vehicle = vehicleMapper.vehicleDTOtoVehicle(vehicleRequestResponseDTO);
-        vehicle.setUser(userRepository.findUserByEmail(email));
-        return vehicleRepository.save(vehicle);
     }
 
     public void deleteVehicleById(Long id) {

@@ -1,11 +1,19 @@
 package pl.nankiewic.fleetappbackend.Entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import pl.nankiewic.fleetappbackend.Entity.Enum.EnumVehicleStatus;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "vehicle_status")
 public class VehicleStatus {
@@ -27,30 +35,4 @@ public class VehicleStatus {
         this.vehicleStatus = vehicleStatus;
     }
 
-    public VehicleStatus() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public EnumVehicleStatus getVehicleStatus() {
-        return vehicleStatus;
-    }
-
-    public void setVehicleStatus(EnumVehicleStatus vehicleStatus) {
-        this.vehicleStatus = vehicleStatus;
-    }
-
-    public Set<Vehicle> getVehicles() {
-        return vehicles;
-    }
-
-    public void setVehicles(Set<Vehicle> vehicles) {
-        this.vehicles = vehicles;
-    }
 }

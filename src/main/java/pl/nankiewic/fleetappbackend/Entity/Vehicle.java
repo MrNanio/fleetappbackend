@@ -1,10 +1,17 @@
 package pl.nankiewic.fleetappbackend.Entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+@Data
+@Builder
+@AllArgsConstructor
 @Entity
 @Table(name = "vehicles")
 public class Vehicle {
@@ -98,163 +105,4 @@ public class Vehicle {
         this.user = user;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public VehicleMake getVehicleMake() {
-        return vehicleMake;
-    }
-
-    public void setVehicleMake(VehicleMake vehicleMake) {
-        this.vehicleMake = vehicleMake;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public String getYear() {
-        return year;
-    }
-
-    public void setYear(String year) {
-        this.year = year;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public String getMileage() {
-        return mileage;
-    }
-
-    public void setMileage(String mileage) {
-        this.mileage = mileage;
-    }
-
-    public String getVinNumber() {
-        return vinNumber;
-    }
-
-    public void setVinNumber(String vinNumber) {
-        this.vinNumber = vinNumber;
-    }
-
-    public String getVehicleRegistrationNumber() {
-        return vehicleRegistrationNumber;
-    }
-
-    public void setVehicleRegistrationNumber(String vehicleRegistrationNumber) {
-        this.vehicleRegistrationNumber = vehicleRegistrationNumber;
-    }
-
-    public FuelType getFuelType() {
-        return fuelType;
-    }
-
-    public void setFuelType(FuelType fuelType) {
-        this.fuelType = fuelType;
-    }
-
-    public BigDecimal getCityFuelConsumption() {
-        return cityFuelConsumption;
-    }
-
-    public void setCityFuelConsumption(BigDecimal cityFuelConsumption) {
-        this.cityFuelConsumption = cityFuelConsumption;
-    }
-
-    public BigDecimal getCountryFuelConsumption() {
-        return countryFuelConsumption;
-    }
-
-    public void setCountryFuelConsumption(BigDecimal countryFuelConsumption) {
-        this.countryFuelConsumption = countryFuelConsumption;
-    }
-
-    public BigDecimal getAverageFuelConsumption() {
-        return averageFuelConsumption;
-    }
-
-    public void setAverageFuelConsumption(BigDecimal averageFuelConsumption) {
-        this.averageFuelConsumption = averageFuelConsumption;
-    }
-
-    public VehicleStatus getVehicleStatus() {
-        return vehicleStatus;
-    }
-
-    public void setVehicleStatus(VehicleStatus vehicleStatus) {
-        this.vehicleStatus = vehicleStatus;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Set<VehicleInspection> getVehicleInspections() {
-        return vehicleInspections;
-    }
-
-    public void setVehicleInspections(Set<VehicleInspection> vehicleInspections) {
-        this.vehicleInspections = vehicleInspections;
-    }
-
-    public Set<VehicleRefueling> getRefuelings() {
-        return refuelings;
-    }
-
-    public void setRefuelings(Set<VehicleRefueling> refuelings) {
-        this.refuelings = refuelings;
-    }
-
-    public Set<VehicleInsurance> getVehicleInsurances() {
-        return vehicleInsurances;
-    }
-
-    public void setVehicleInsurances(Set<VehicleInsurance> vehicleInsurances) {
-        this.vehicleInsurances = vehicleInsurances;
-    }
-
-    public Set<VehicleRepair> getVehicleRepairs() {
-        return vehicleRepairs;
-    }
-
-    public void setVehicleRepairs(Set<VehicleRepair> vehicleRepairs) {
-        this.vehicleRepairs = vehicleRepairs;
-    }
-
-    public Set<VehicleUse> getVehicleUses() {
-        return vehicleUses;
-    }
-
-    public void setVehicleUses(Set<VehicleUse> vehicleUses) {
-        this.vehicleUses = vehicleUses;
-    }
-
-    public CurrentVehicleUser getCurrentVehicleUser() {
-        return currentVehicleUser;
-    }
-
-    public void setCurrentVehicleUser(CurrentVehicleUser currentVehicleUser) {
-        this.currentVehicleUser = currentVehicleUser;
-    }
 }
