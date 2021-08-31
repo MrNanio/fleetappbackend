@@ -1,9 +1,17 @@
 package pl.nankiewic.fleetappbackend.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "address")
 public class Address {
@@ -31,61 +39,5 @@ public class Address {
     @JsonIgnore
     @OneToOne(mappedBy = "address")
     private UserData userData;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getBuildingNumber() {
-        return buildingNumber;
-    }
-
-    public void setBuildingNumber(String buildingNumber) {
-        this.buildingNumber = buildingNumber;
-    }
-
-    public String getFlatNumber() {
-        return flatNumber;
-    }
-
-    public void setFlatNumber(String flatNumber) {
-        this.flatNumber = flatNumber;
-    }
-
-    public String getPostalCode() {
-        return postalCode;
-    }
-
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
-    }
-
-    public UserData getUserData() {
-        return userData;
-    }
-
-    public void setUserData(UserData userData) {
-        this.userData = userData;
-    }
 
 }

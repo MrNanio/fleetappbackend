@@ -1,7 +1,16 @@
 package pl.nankiewic.fleetappbackend.Entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "current_vehicle_users")
 public class CurrentVehicleUser {
@@ -19,35 +28,9 @@ public class CurrentVehicleUser {
     @JoinColumn(name = "vehicle_id", nullable = false, unique = true)
     private Vehicle vehicle;
 
-    public CurrentVehicleUser() {
-    }
-
     public CurrentVehicleUser(User user, Vehicle vehicle) {
         this.user = user;
         this.vehicle = vehicle;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Vehicle getVehicle() {
-        return vehicle;
-    }
-
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
-    }
 }

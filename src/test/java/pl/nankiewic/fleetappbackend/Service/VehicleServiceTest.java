@@ -6,10 +6,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleDTO;
+import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
+import pl.nankiewic.fleetappbackend.Entity.User;
+import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Mapper.VehicleMapper;
 import pl.nankiewic.fleetappbackend.Repository.*;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import static org.mockito.Mockito.*;
@@ -38,20 +41,57 @@ class VehicleServiceTest {
     }
 
     @Test
-    void should_select_vehicles_by_user() {
-        when(userRepository.existsByEmail(any())).thenReturn(true);
-        when(vehicleRepository.existsByUser(any())).thenReturn(true);
-        when(vehicleRepository.selectVehiclesDataByUser(any())).thenReturn(new ArrayList<>());
-        vehicleService.getVehiclesDataByUser("example@example.com");
-        verify(vehicleRepository, times(1)).selectVehiclesDataByUser(any());
+    void should_create_vehicle(){
+        //given
+        VehicleRequestResponseDTO vehicleRequestResponseDTO = VehicleRequestResponseDTO.builder()
+                .id(1L)
+                .make("SKODA")
+                .model("FABIA")
+                .year("2009")
+                .color("BIAŁY")
+                .mileage("209000")
+                .vinNumber("GTFRED4567DEY65TG")
+                .vehicleRegistrationNumber("LU7654D")
+                .fuelType("ON")
+                .cityFuelConsumption(BigDecimal.valueOf(5.6))
+                .countryFuelConsumption(BigDecimal.valueOf(3.6))
+                .averageFuelConsumption(BigDecimal.valueOf(4.6))
+                .vehicleStatus("ACTIVE")
+                .build();
+        Vehicle vehicle = Vehicle.builder()
+                .id(1L)
+                .build();
+
+        User user = User.builder().id(1L).build();
+
+        String email="emeila@hdh.pl";
+        when(vehicleMapper.vehicleDTOtoVehicle(any())).thenReturn(vehicle);
+        when(userRepository.findUserByEmail(any())).thenReturn(user);
+        //when
+        vehicleService.createVehicle(vehicleRequestResponseDTO, email);
+        //then
+        verify(userRepository, times(1)).findUserByEmail(any());
+
     }
 
     @Test
+    void should_select_vehicles_by_user() {
+        //given
+        when(userRepository.existsByEmail(any())).thenReturn(true);
+        when(vehicleRepository.existsByUser(any())).thenReturn(true);
+        when(vehicleRepository.findVehiclesDataByUser(any())).thenReturn(new ArrayList<>());
+        //when
+        vehicleService.getVehiclesDataByUser("example@example.com");
+        //then
+        verify(vehicleRepository, times(1)).findVehiclesDataByUser(any());
+    }
+
+  //  @Test
     void should_select_vehicle_by_id() {
         when(vehicleRepository.existsById(any())).thenReturn(true);
-        when(vehicleRepository.selectVehicleDetailsById(any())).thenReturn(new VehicleDTO());
+       // when(vehicleRepository.selectVehicleDetailsById(any())).thenReturn(new VehicleDTO());
         vehicleService.getVehicleDataById(1L);
-        verify(vehicleRepository, times(1)).selectVehicleDetailsById(any());
+        verify(vehicleRepository, times(1)).findVehicleDetailsById(any());
     }
 
     @Test

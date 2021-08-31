@@ -1,11 +1,19 @@
 package pl.nankiewic.fleetappbackend.Entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import pl.nankiewic.fleetappbackend.Entity.Enum.EnumInsuranceType;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "insurance_types")
 public class InsuranceType {
@@ -22,27 +30,4 @@ public class InsuranceType {
     @OneToMany(mappedBy = "insuranceType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<VehicleInsurance> vehicleInsurances = new HashSet<>();
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public EnumInsuranceType getInsuranceType() {
-        return insuranceType;
-    }
-
-    public void setInsuranceType(EnumInsuranceType insuranceType) {
-        this.insuranceType = insuranceType;
-    }
-
-    public Set<VehicleInsurance> getVehicleInsurances() {
-        return vehicleInsurances;
-    }
-
-    public void setVehicleInsurances(Set<VehicleInsurance> vehicleInsurances) {
-        this.vehicleInsurances = vehicleInsurances;
-    }
 }

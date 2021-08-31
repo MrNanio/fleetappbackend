@@ -1,11 +1,19 @@
 package pl.nankiewic.fleetappbackend.DTO.Vehicle;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import pl.nankiewic.fleetappbackend.Entity.Enum.EnumFuelType;
 import pl.nankiewic.fleetappbackend.Entity.Enum.EnumVehicleStatus;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@Builder
 public class VehicleDTO {
 
     @NotNull
@@ -35,139 +43,4 @@ public class VehicleDTO {
     @NotNull
     private EnumVehicleStatus vehicleStatus;
 
-    public VehicleDTO(Long id,
-                      String make,
-                      String model,
-                      String year,
-                      String color,
-                      String mileage,
-                      String vinNumber,
-                      String vehicleRegistrationNumber,
-                      EnumFuelType fuelType,
-                      BigDecimal cityFuelConsumption,
-                      BigDecimal countryFuelConsumption,
-                      BigDecimal averageFuelConsumption,
-                      EnumVehicleStatus vehicleStatus) {
-        this.id = id;
-        this.make = make;
-        this.model = model;
-        this.year = year;
-        this.color = color;
-        this.mileage = mileage;
-        this.vinNumber = vinNumber;
-        this.vehicleRegistrationNumber = vehicleRegistrationNumber;
-        this.fuelType = fuelType;
-        this.cityFuelConsumption = cityFuelConsumption;
-        this.countryFuelConsumption = countryFuelConsumption;
-        this.averageFuelConsumption = averageFuelConsumption;
-        this.vehicleStatus = vehicleStatus;
-    }
-
-    public VehicleDTO() {
-
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getMake() {
-        return make;
-    }
-
-    public void setMake(String make) {
-        this.make = make;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public String getYear() {
-        return year;
-    }
-
-    public void setYear(String year) {
-        this.year = year;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public String getMileage() {
-        return mileage;
-    }
-
-    public void setMileage(String mileage) {
-        this.mileage = mileage;
-    }
-
-    public String getVinNumber() {
-        return vinNumber;
-    }
-
-    public void setVinNumber(String vinNumber) {
-        this.vinNumber = vinNumber;
-    }
-
-    public String getVehicleRegistrationNumber() {
-        return vehicleRegistrationNumber;
-    }
-
-    public void setVehicleRegistrationNumber(String vehicleRegistrationNumber) {
-        this.vehicleRegistrationNumber = vehicleRegistrationNumber;
-    }
-
-    public EnumFuelType getFuelType() {
-        return fuelType;
-    }
-
-    public void setFuelType(EnumFuelType fuelType) {
-        this.fuelType = fuelType;
-    }
-
-    public BigDecimal getCityFuelConsumption() {
-        return cityFuelConsumption;
-    }
-
-    public void setCityFuelConsumption(BigDecimal cityFuelConsumption) {
-        this.cityFuelConsumption = cityFuelConsumption;
-    }
-
-    public BigDecimal getCountryFuelConsumption() {
-        return countryFuelConsumption;
-    }
-
-    public void setCountryFuelConsumption(BigDecimal countryFuelConsumption) {
-        this.countryFuelConsumption = countryFuelConsumption;
-    }
-
-    public BigDecimal getAverageFuelConsumption() {
-        return averageFuelConsumption;
-    }
-
-    public void setAverageFuelConsumption(BigDecimal averageFuelConsumption) {
-        this.averageFuelConsumption = averageFuelConsumption;
-    }
-
-    public EnumVehicleStatus getVehicleStatus() {
-        return vehicleStatus;
-    }
-
-    public void setVehicleStatus(EnumVehicleStatus vehicleStatus) {
-        this.vehicleStatus = vehicleStatus;
-    }
 }

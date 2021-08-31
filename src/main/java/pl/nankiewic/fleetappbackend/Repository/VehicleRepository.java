@@ -33,7 +33,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
             "v.vehicleStatus.vehicleStatus) " +
             "FROM Vehicle v " +
             "WHERE v.id=?1")
-    VehicleDTO selectVehicleDetailsById(Long id);
+    VehicleDTO findVehicleDetailsById(Long id);
 
     @Query(value = "SELECT new pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleDTO(" +
             "v.id, " +
@@ -51,7 +51,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
             "v.vehicleStatus.vehicleStatus) " +
             "FROM Vehicle v " +
             "WHERE v.user=?1")
-    List<VehicleDTO> selectVehiclesDataByUser(User user);
+    List<VehicleDTO> findVehiclesDataByUser(User user);
 
     boolean existsByUser(User user);
 

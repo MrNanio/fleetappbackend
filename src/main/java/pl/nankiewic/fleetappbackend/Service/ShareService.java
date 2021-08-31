@@ -63,7 +63,7 @@ public class ShareService {
         if (userRepository.existsByEmail(username)) {
             User user = userRepository.findUserByEmail(username);
             List<VehicleDTO> myAll = new ArrayList<>();
-            Iterable<VehicleDTO> myByOwn = vehicleRepository.selectVehiclesDataByUser(user);
+            Iterable<VehicleDTO> myByOwn = vehicleRepository.findVehiclesDataByUser(user);
             for (VehicleDTO vehicle : myByOwn) {
                 if (!currentVehicleUserRepository.existsByVehicle_Id(vehicle.getId())) {
                     myAll.add(vehicle);

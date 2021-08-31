@@ -1,10 +1,18 @@
 package pl.nankiewic.fleetappbackend.Entity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -68,155 +76,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<VehicleRefueling> refuelings = new HashSet<>();
 
-    public User() {
-    }
 
     public User(String email, String password) {
         this.email = email;
         this.password = password;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getResetCode() {
-        return resetCode;
-    }
-
-    public void setResetCode(String resetCode) {
-        this.resetCode = resetCode;
-    }
-
-    public LocalDateTime getResetAt() {
-        return resetAt;
-    }
-
-    public void setResetAt(LocalDateTime resetAt) {
-        this.resetAt = resetAt;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getLastLoginAt() {
-        return lastLoginAt;
-    }
-
-    public void setLastLoginAt(LocalDateTime lastLoginAt) {
-        this.lastLoginAt = lastLoginAt;
-    }
-
-    public boolean isEnabled() {
-        return isEnabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
-    }
-
-    public UserAccountStatus getUserAccountStatus() {
-        return userAccountStatus;
-    }
-
-    public void setUserAccountStatus(UserAccountStatus userAccountStatus) {
-        this.userAccountStatus = userAccountStatus;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
-
-    public UserData getUserData() {
-        return userData;
-    }
-
-    public void setUserData(UserData userData) {
-        this.userData = userData;
-    }
-
-    public Set<Vehicle> getVehicles() {
-        return vehicles;
-    }
-
-    public void setVehicles(Set<Vehicle> vehicles) {
-        this.vehicles = vehicles;
-    }
-
-    public Set<VehicleUse> getVehicleUses() {
-        return vehicleUses;
-    }
-
-    public void setVehicleUses(Set<VehicleUse> vehicleUses) {
-        this.vehicleUses = vehicleUses;
-    }
-
-    public Set<CurrentVehicleUser> getCurrentVehicleUsers() {
-        return currentVehicleUsers;
-    }
-
-    public void setCurrentVehicleUsers(Set<CurrentVehicleUser> currentVehicleUsers) {
-        this.currentVehicleUsers = currentVehicleUsers;
-    }
-
-    public VerificationToken getVerificationToken() {
-        return verificationToken;
-    }
-
-    public void setVerificationToken(VerificationToken verificationToken) {
-        this.verificationToken = verificationToken;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public Set<VehicleRefueling> getRefuelings() {
-        return refuelings;
-    }
-
-    public void setRefuelings(Set<VehicleRefueling> refuelings) {
-        this.refuelings = refuelings;
     }
 }

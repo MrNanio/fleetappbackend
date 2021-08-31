@@ -32,10 +32,10 @@ public class VehicleController {
 
     @PreAuthorize("hasRole('SUPERUSER')")
     @PostMapping()
-    public Vehicle addVehicle(@RequestBody @Valid VehicleRequestResponseDTO vehicleRequestResponseDTO,
-                              Authentication authentication) {
+    public void addVehicle(@RequestBody @Valid VehicleRequestResponseDTO vehicleRequestResponseDTO,
+                           Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return vehicleService.save(vehicleRequestResponseDTO, userDetails.getUsername());
+        vehicleService.createVehicle(vehicleRequestResponseDTO, userDetails.getUsername());
     }
 
     @PreAuthorize("hasRole('SUPERUSER')")
@@ -53,12 +53,12 @@ public class VehicleController {
         } else throw new PermissionDeniedException();
     }
 
-    @PutMapping
-    public Vehicle updateVehicle(@RequestBody @Valid VehicleRequestResponseDTO vehicleRequestResponseDTO,
-                                 Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return vehicleService.save(vehicleRequestResponseDTO, userDetails.getUsername());
-    }
+//    @PutMapping
+//    public Vehicle updateVehicle(@RequestBody @Valid VehicleRequestResponseDTO vehicleRequestResponseDTO,
+//                                 Authentication authentication) {
+//        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+//        return vehicleService.save(vehicleRequestResponseDTO, userDetails.getUsername());
+//    }
 
     @DeleteMapping("/{id}")
     public void deleteVehicle(Authentication authentication, @PathVariable Long id) {
