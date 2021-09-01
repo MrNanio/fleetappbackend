@@ -3,6 +3,7 @@ package pl.nankiewic.fleetappbackend.Security.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -10,27 +11,33 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pl.nankiewic.fleetappbackend.Security.AuthorizationFilter;
 import pl.nankiewic.fleetappbackend.Security.JWTAuthenticationEntryPoint;
-import pl.nankiewic.fleetappbackend.Security.CustomUserDetailsService;
+import pl.nankiewic.fleetappbackend.Security.JWTokenUtility;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
     private final JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final PasswordEncoder passwordEncoder;
+    private final JWTokenUtility jwTokenUtility;
+
     @Autowired
-    public WebSecurityConfiguration(CustomUserDetailsService userDetailsService,
+    public WebSecurityConfiguration(UserDetailsService userDetailsService,
                                     JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-                                    PasswordEncoder passwordEncoder) {
+                                    PasswordEncoder passwordEncoder,
+                                    JWTokenUtility jwTokenUtility) {
         this.userDetailsService = userDetailsService;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.passwordEncoder = passwordEncoder;
+        this.jwTokenUtility = jwTokenUtility;
     }
 
     @Bean
@@ -38,9 +45,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
     @Bean
-    public AuthorizationFilter authenticationJwtTokenFilter() {
-        return new AuthorizationFilter();
+    public AuthorizationFilter authenticationJwtTokenFilter(JWTokenUtility tokenUtility) {
+        return new AuthorizationFilter(tokenUtility);
     }
 
     @Override
@@ -68,6 +76,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
-        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(authenticationJwtTokenFilter(jwTokenUtility), UsernamePasswordAuthenticationFilter.class);
     }
 }

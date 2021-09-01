@@ -1,28 +1,14 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
+import lombok.*;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class DataUseTypeDTO {
     private String type;
     private Long cost;
 
-    public DataUseTypeDTO(String type, Long cost) {
-        this.type = type;
-        this.cost = cost;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Long getCost() {
-        return cost;
-    }
-
-    public void setCost(Long cost) {
-        this.cost = cost;
-    }
 }

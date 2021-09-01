@@ -1,9 +1,15 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class UseDTO {
     @NotNull
     private Long id;
@@ -19,62 +25,4 @@ public class UseDTO {
     private String tripType;
     private String description;
 
-    public UseDTO() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getVehicleId() {
-        return vehicleId;
-    }
-
-    public void setVehicleId(Long vehicleId) {
-        this.vehicleId = vehicleId;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Short getTrip() {
-        return trip;
-    }
-
-    public void setTrip(Short trip) {
-        this.trip = trip;
-    }
-
-    public LocalDate getTripDate() {
-        return tripDate;
-    }
-
-    public void setTripDate(LocalDate tripDate) {
-        this.tripDate = tripDate;
-    }
-
-    public String getTripType() {
-        return tripType;
-    }
-
-    public void setTripType(String tripType) {
-        this.tripType = tripType;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }

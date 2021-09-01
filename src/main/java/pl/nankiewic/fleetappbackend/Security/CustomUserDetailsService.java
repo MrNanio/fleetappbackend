@@ -12,9 +12,7 @@ import pl.nankiewic.fleetappbackend.Entity.Role;
 import pl.nankiewic.fleetappbackend.Entity.User;
 import pl.nankiewic.fleetappbackend.Repository.UserRepository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -28,18 +26,20 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
         if (!userRepository.existsByEmail(email)) {
             throw new UsernameNotFoundException("Użytkownik nie istnieje");
         }
         User user = userRepository.findUserByEmail((email));
-        return new CustomUserDetails(user.getId(), user.getEmail(), user.getPassword(), getAuthorities(user.getRole()));
+        return new CustomUserDetails(user.getId(),
+                user.getEmail(),
+                user.getPassword(),
+                getAuthorities(user.getRole()),
+                user.isEnabled());
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(Role roles) {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(roles.getRole().name()));
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + roles.getRole().name()));
         return authorities;
     }
-
 }

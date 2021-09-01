@@ -1,8 +1,7 @@
 package pl.nankiewic.fleetappbackend.Security;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,40 +14,34 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
+import java.util.Optional;
 
+@Slf4j
+@AllArgsConstructor
 public class AuthorizationFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JWTokenUtility tokenUtility;
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
-
-    public AuthorizationFilter() {
-    }
-
-    private static final Logger logger = LoggerFactory.getLogger(AuthorizationFilter.class);
+    private final JWTokenUtility tokenUtility;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
-                                    FilterChain filterChain)
-            throws ServletException, IOException {
-        try {
-            String jwt = parseJwt(request);
-            if (jwt != null && tokenUtility.validateJwtToken(jwt)) {
-                String username = tokenUtility.getUserNameFromJwtToken(jwt);
-                UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-        } catch (Exception e) {
-            logger.error("Cannot set user authentication: {}", e);
-        }
+                                    FilterChain filterChain) throws ServletException, IOException {
+        String jwt = parseJwt(request);
+        Optional.ofNullable(jwt).filter(uname -> Objects.isNull(SecurityContextHolder.getContext().getAuthentication()))
+                .filter(tokenUtility::validateJwtToken)
+                .map(tokenUtility::extractUser)
+                .ifPresent(userDetails -> setSecurityContextHolder(request, userDetails));
         filterChain.doFilter(request, response);
+    }
+
+    private void setSecurityContextHolder(HttpServletRequest request, UserDetails userDetails) {
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                null,
+                userDetails.getAuthorities());
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     private String parseJwt(HttpServletRequest request) {
@@ -56,6 +49,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
             return headerAuth.substring(7);
         }
+        log.info("niepoprawny format tokena");
         return null;
     }
 }

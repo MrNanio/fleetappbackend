@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
 import pl.nankiewic.fleetappbackend.Entity.User;
@@ -33,15 +32,22 @@ class VehicleServiceTest {
 
     VehicleService vehicleService;
 
+    private static final String EXAMPLE_EMAIL_ADDRESS = "example@example.com";
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        vehicleService = new VehicleService(vehicleRepository, vehicleStatusRepository,
-                vehicleMakeRepository, fuelTypeRepository, userRepository, vehicleMapper);
+        vehicleService = new VehicleService(
+                vehicleRepository,
+                vehicleStatusRepository,
+                vehicleMakeRepository,
+                fuelTypeRepository,
+                userRepository,
+                vehicleMapper);
     }
 
     @Test
-    void should_create_vehicle(){
+    void should_create_vehicle() {
         //given
         VehicleRequestResponseDTO vehicleRequestResponseDTO = VehicleRequestResponseDTO.builder()
                 .id(1L)
@@ -58,17 +64,17 @@ class VehicleServiceTest {
                 .averageFuelConsumption(BigDecimal.valueOf(4.6))
                 .vehicleStatus("ACTIVE")
                 .build();
+
         Vehicle vehicle = Vehicle.builder()
                 .id(1L)
                 .build();
 
         User user = User.builder().id(1L).build();
 
-        String email="emeila@hdh.pl";
         when(vehicleMapper.vehicleDTOtoVehicle(any())).thenReturn(vehicle);
         when(userRepository.findUserByEmail(any())).thenReturn(user);
         //when
-        vehicleService.createVehicle(vehicleRequestResponseDTO, email);
+        vehicleService.createVehicle(vehicleRequestResponseDTO, EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(userRepository, times(1)).findUserByEmail(any());
 
@@ -86,7 +92,7 @@ class VehicleServiceTest {
         verify(vehicleRepository, times(1)).findVehiclesDataByUser(any());
     }
 
-  //  @Test
+    @Test
     void should_select_vehicle_by_id() {
         when(vehicleRepository.existsById(any())).thenReturn(true);
        // when(vehicleRepository.selectVehicleDetailsById(any())).thenReturn(new VehicleDTO());
@@ -98,12 +104,6 @@ class VehicleServiceTest {
     void should_delete_vehicle_by_id() {
         vehicleService.deleteVehicleById(1L);
         verify(vehicleRepository, times(1)).deleteById(any());
-    }
-
-    private Collection<SimpleGrantedAuthority> extractRoles(List<String> roles) {
-        Set<SimpleGrantedAuthority> role = new HashSet<>();
-        roles.forEach(r -> role.add(new SimpleGrantedAuthority(r)));
-        return role;
     }
 
 }
