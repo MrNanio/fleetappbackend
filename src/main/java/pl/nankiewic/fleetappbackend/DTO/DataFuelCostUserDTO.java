@@ -1,31 +1,18 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
+import lombok.*;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 
 import java.math.BigDecimal;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class DataFuelCostUserDTO {
     private BigDecimal cost;
     private Vehicle vehicle;
 
-    public DataFuelCostUserDTO(BigDecimal cost, Vehicle vehicle) {
-        this.cost = cost;
-        this.vehicle = vehicle;
-    }
 
-    public BigDecimal getCost() {
-        return cost;
-    }
-
-    public void setCost(BigDecimal cost) {
-        this.cost = cost;
-    }
-
-    public Vehicle getVehicle() {
-        return vehicle;
-    }
-
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
-    }
 }
