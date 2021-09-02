@@ -25,14 +25,11 @@ public class FuelType {
     private Long id;
 
     @Column(name = "fuel_type")
+    @Enumerated(EnumType.STRING)
     private EnumFuelType fuelType;
 
     @JsonIgnore
     @OneToMany(mappedBy = "fuelType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Vehicle> vehicle = new HashSet<>();
 
-    public FuelType(Long id, EnumFuelType fuelType) {
-        this.id = id;
-        this.fuelType = fuelType;
-    }
 }

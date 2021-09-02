@@ -94,9 +94,11 @@ class VehicleServiceTest {
 
     @Test
     void should_select_vehicle_by_id() {
+        //given
         when(vehicleRepository.existsById(any())).thenReturn(true);
-       // when(vehicleRepository.selectVehicleDetailsById(any())).thenReturn(new VehicleDTO());
+        //when
         vehicleService.getVehicleDataById(1L);
+        //then
         verify(vehicleRepository, times(1)).findVehicleDetailsById(any());
     }
 

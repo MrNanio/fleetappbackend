@@ -1,6 +1,6 @@
 package pl.nankiewic.fleetappbackend.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleDTO;
 import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
@@ -11,6 +11,7 @@ import pl.nankiewic.fleetappbackend.Mapper.VehicleMapper;
 import pl.nankiewic.fleetappbackend.Repository.*;
 import javax.persistence.EntityNotFoundException;
 
+@AllArgsConstructor
 @Service
 public class VehicleService {
 
@@ -21,21 +22,6 @@ public class VehicleService {
     private final UserRepository userRepository;
     private final VehicleMapper vehicleMapper;
 
-    @Autowired
-    public VehicleService(VehicleRepository vehicleRepository,
-                          VehicleStatusRepository vehicleStatusRepository,
-                          VehicleMakeRepository vehicleMakeRepository,
-                          FuelTypeRepository fuelTypeRepository,
-                          UserRepository userRepository,
-                          VehicleMapper vehicleMapper) {
-        this.vehicleRepository = vehicleRepository;
-        this.vehicleStatusRepository = vehicleStatusRepository;
-        this.vehicleMakeRepository = vehicleMakeRepository;
-        this.fuelTypeRepository = fuelTypeRepository;
-        this.userRepository = userRepository;
-        this.vehicleMapper = vehicleMapper;
-    }
-
     public void createVehicle(VehicleRequestResponseDTO vehicleRequestResponseDTO, String email) {
         Vehicle vehicle = vehicleMapper.vehicleDTOtoVehicle(vehicleRequestResponseDTO);
         vehicle.setUser(userRepository.findUserByEmail(email));
@@ -43,7 +29,6 @@ public class VehicleService {
     }
 
     public Iterable<VehicleDTO> getVehiclesDataByUser(String email) {
-
         if (vehicleRepository.existsByUser(userRepository.findUserByEmail(email))) {
             if (userRepository.existsByEmail(email)) {
                 return vehicleRepository.findVehiclesDataByUser(userRepository.findUserByEmail(email));
