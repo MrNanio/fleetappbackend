@@ -10,7 +10,7 @@
                 <constraints primaryKey="true"/>
 
             </column>
-            <column name="fuel_type" type="enum('PB98', 'PB95', 'LBG', 'ON')"/>
+            <column name="fuel_type" type="enum('PB98', 'PB95', 'LPG', 'ON')"/>
         </createTable>
 
         <createTable tableName="vehicle_makes">

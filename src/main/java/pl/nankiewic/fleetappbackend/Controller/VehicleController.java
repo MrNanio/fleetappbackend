@@ -1,5 +1,6 @@
 package pl.nankiewic.fleetappbackend.Controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,7 @@ import pl.nankiewic.fleetappbackend.Service.VehicleService;
 
 import javax.validation.Valid;
 
+@AllArgsConstructor
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/vehicle")
@@ -23,12 +25,6 @@ public class VehicleController {
 
     private final VehicleService vehicleService;
     private final CheckService checkService;
-
-    @Autowired
-    public VehicleController(VehicleService vehicleService, CheckService checkService) {
-        this.vehicleService = vehicleService;
-        this.checkService = checkService;
-    }
 
     @PreAuthorize("hasRole('SUPERUSER')")
     @PostMapping()

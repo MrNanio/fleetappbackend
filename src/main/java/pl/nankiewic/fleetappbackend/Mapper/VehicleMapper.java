@@ -36,9 +36,9 @@ public abstract class VehicleMapper {
             @Mapping(target = "vehicleRepairs", ignore = true),
             @Mapping(target = "vehicleUses", ignore = true)
     })
-    public abstract Vehicle vehicleDTOtoVehicle(final VehicleRequestResponseDTO vehicleRequestResponseDTO);
+    public abstract Vehicle vehicleDTOtoVehicle(VehicleRequestResponseDTO vehicleRequestResponseDTO);
 
-    @Named("dtoToEntity")
+    @Named(value = "dtoToEntity")
     @AfterMapping
     public void vehicleValueMapToEnum(VehicleRequestResponseDTO vehicleRequestResponseDTO, @MappingTarget Vehicle vehicle) {
 
@@ -56,15 +56,14 @@ public abstract class VehicleMapper {
             vehicle.setFuelType(fuelTypeRepository.findByEnumName(EnumFuelType.PB95));
         } else if (EnumFuelType.PB98.name().equals(vehicleRequestResponseDTO.getFuelType())) {
             vehicle.setFuelType(fuelTypeRepository.findByEnumName(EnumFuelType.PB98));
-        } else throw new EntityNotFoundException("nie znaleziono parsowanego elementu");
-
+        }
         vehicle.setVehicleMake(vehicleMakeRepository.findByName(vehicleRequestResponseDTO.getMake()));
     }
 
     @BeanMapping(qualifiedByName = "dtoToResponseDto")
     @Mapping(target = "vehicleStatus", ignore = true)
     @Mapping(target = "fuelType", ignore = true)
-    public abstract VehicleRequestResponseDTO vehicleDTOtoVehicleResponseDTO(final VehicleDTO vehicleDTO);
+    public abstract VehicleRequestResponseDTO vehicleDTOtoVehicleResponseDTO(VehicleDTO vehicleDTO);
 
     public abstract Iterable<VehicleRequestResponseDTO> vehiclesDTOtoVehiclesResponseDTO(Iterable<VehicleDTO> vehiclesDTO);
 

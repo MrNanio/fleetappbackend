@@ -30,9 +30,4 @@ public class VehicleStatus {
     @OneToMany(mappedBy = "vehicleStatus", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Vehicle> vehicles = new HashSet<>();
 
-    public VehicleStatus(Long id, EnumVehicleStatus vehicleStatus) {
-        this.id = id;
-        this.vehicleStatus = vehicleStatus;
-    }
-
 }
