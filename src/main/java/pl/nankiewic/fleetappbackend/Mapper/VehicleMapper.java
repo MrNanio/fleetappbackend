@@ -74,4 +74,19 @@ public abstract class VehicleMapper {
         vehicleRequestResponseDTO.setFuelType(vehicleDTO.getFuelType().name());
     }
 
+    @BeanMapping(qualifiedByName = "dtoToEntity")
+    @Mappings({
+            @Mapping(target = "vehicleMake", ignore = true),
+            @Mapping(target = "vehicleStatus", ignore = true),
+            @Mapping(target = "fuelType", ignore = true),
+            @Mapping(target = "currentVehicleUser", ignore = true),
+            @Mapping(target = "refuelings", ignore = true),
+            @Mapping(target = "user", ignore = true),
+            @Mapping(target = "vehicleInspections", ignore = true),
+            @Mapping(target = "vehicleInsurances", ignore = true),
+            @Mapping(target = "vehicleRepairs", ignore = true),
+            @Mapping(target = "vehicleUses", ignore = true)
+    })
+    public abstract void updateVehicleFromRequest(@MappingTarget Vehicle vehicle, VehicleRequestResponseDTO vehicleRequestResponseDTO);
+
 }

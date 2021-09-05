@@ -1,11 +1,13 @@
 package pl.nankiewic.fleetappbackend.Service;
+
+import lombok.AllArgsConstructor;
 import pl.nankiewic.fleetappbackend.Entity.*;
 import pl.nankiewic.fleetappbackend.Repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 
+@AllArgsConstructor
 @Service
 public class CheckService {
 
@@ -17,24 +19,6 @@ public class CheckService {
     private final VehicleUseRepository vehicleUseRepository;
     private final VehicleRepository vehicleRepository;
     private final UserRepository userRepository;
-
-    @Autowired
-    public CheckService(CurrentVehicleUserRepository currentVehicleUserRepository,
-                        VehicleInspectionRepository vehicleInspectionRepository,
-                        VehicleRefuelingRepository vehicleRefuelingRepository,
-                        VehicleInsuranceRepository vehicleInsuranceRepository,
-                        VehicleRepairRepository vehicleRepairRepository,
-                        VehicleUseRepository vehicleUseRepository, VehicleRepository vehicleRepository,
-                        UserRepository userRepository) {
-        this.currentVehicleUserRepository = currentVehicleUserRepository;
-        this.vehicleInspectionRepository = vehicleInspectionRepository;
-        this.vehicleRefuelingRepository = vehicleRefuelingRepository;
-        this.vehicleInsuranceRepository = vehicleInsuranceRepository;
-        this.vehicleRepairRepository = vehicleRepairRepository;
-        this.vehicleUseRepository = vehicleUseRepository;
-        this.vehicleRepository = vehicleRepository;
-        this.userRepository = userRepository;
-    }
 
     public boolean accessToVehicle(String email, Long vehicleId) {
         User user = userRepository.findUserByEmail(email);

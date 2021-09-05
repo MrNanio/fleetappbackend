@@ -16,7 +16,6 @@ import javax.persistence.EntityNotFoundException;
 public class VehicleService {
 
     private final VehicleRepository vehicleRepository;
-    private final VehicleStatusRepository vehicleStatusRepository;
     private final VehicleMakeRepository vehicleMakeRepository;
     private final FuelTypeRepository fuelTypeRepository;
     private final UserRepository userRepository;
@@ -25,6 +24,13 @@ public class VehicleService {
     public void createVehicle(VehicleRequestResponseDTO vehicleRequestResponseDTO, String email) {
         Vehicle vehicle = vehicleMapper.vehicleDTOtoVehicle(vehicleRequestResponseDTO);
         vehicle.setUser(userRepository.findUserByEmail(email));
+        vehicleRepository.save(vehicle);
+    }
+
+    public void updateVehicle(VehicleRequestResponseDTO vehicleRequestResponseDTO) {
+        Vehicle vehicle = vehicleRepository.findById(vehicleRequestResponseDTO.getId()).orElseThrow(
+                () -> new EntityNotFoundException("Nie znaleziono zasobu: pojazd"));
+        vehicleMapper.updateVehicleFromRequest(vehicle, vehicleRequestResponseDTO);
         vehicleRepository.save(vehicle);
     }
 

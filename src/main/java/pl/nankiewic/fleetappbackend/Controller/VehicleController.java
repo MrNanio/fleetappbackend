@@ -1,7 +1,6 @@
 package pl.nankiewic.fleetappbackend.Controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleDTO;
 import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
 import pl.nankiewic.fleetappbackend.Entity.FuelType;
-import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleMake;
 import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.Service.CheckService;
@@ -35,6 +33,16 @@ public class VehicleController {
     }
 
     @PreAuthorize("hasRole('SUPERUSER')")
+    @PutMapping
+    public void updateVehicle(@RequestBody @Valid VehicleRequestResponseDTO vehicleRequestResponseDTO,
+                              Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        if (checkService.accessToVehicle(userDetails.getUsername(), vehicleRequestResponseDTO.getId())) {
+            vehicleService.updateVehicle(vehicleRequestResponseDTO);
+        } else throw new PermissionDeniedException();
+    }
+
+    @PreAuthorize("hasRole('SUPERUSER')")
     @GetMapping()
     public Iterable<VehicleDTO> getVehiclesByVehicleOwner(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -49,13 +57,7 @@ public class VehicleController {
         } else throw new PermissionDeniedException();
     }
 
-//    @PutMapping
-//    public Vehicle updateVehicle(@RequestBody @Valid VehicleRequestResponseDTO vehicleRequestResponseDTO,
-//                                 Authentication authentication) {
-//        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-//        return vehicleService.save(vehicleRequestResponseDTO, userDetails.getUsername());
-//    }
-
+    @PreAuthorize("hasRole('SUPERUSER')")
     @DeleteMapping("/{id}")
     public void deleteVehicle(Authentication authentication, @PathVariable Long id) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
