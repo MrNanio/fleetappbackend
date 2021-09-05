@@ -11,7 +11,6 @@ import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Mapper.VehicleMapper;
 import pl.nankiewic.fleetappbackend.Repository.*;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 import static org.mockito.Mockito.*;
@@ -19,8 +18,6 @@ import static org.mockito.Mockito.*;
 class VehicleServiceTest {
     @Mock
     VehicleRepository vehicleRepository;
-    @Mock
-    VehicleStatusRepository vehicleStatusRepository;
     @Mock
     VehicleMakeRepository vehicleMakeRepository;
     @Mock
@@ -39,7 +36,6 @@ class VehicleServiceTest {
         MockitoAnnotations.initMocks(this);
         vehicleService = new VehicleService(
                 vehicleRepository,
-                vehicleStatusRepository,
                 vehicleMakeRepository,
                 fuelTypeRepository,
                 userRepository,
@@ -49,39 +45,27 @@ class VehicleServiceTest {
     @Test
     void should_create_vehicle() {
         //given
-        VehicleRequestResponseDTO vehicleRequestResponseDTO = VehicleRequestResponseDTO.builder()
-                .id(1L)
-                .make("SKODA")
-                .model("FABIA")
-                .year("2009")
-                .color("BIAŁY")
-                .mileage("209000")
-                .vinNumber("GTFRED4567DEY65TG")
-                .vehicleRegistrationNumber("LU7654D")
-                .fuelType("ON")
-                .cityFuelConsumption(BigDecimal.valueOf(5.6))
-                .countryFuelConsumption(BigDecimal.valueOf(3.6))
-                .averageFuelConsumption(BigDecimal.valueOf(4.6))
-                .vehicleStatus("ACTIVE")
-                .build();
-
-        Vehicle vehicle = Vehicle.builder()
-                .id(1L)
-                .build();
-
-        User user = User.builder().id(1L).build();
-
-        when(vehicleMapper.vehicleDTOtoVehicle(any())).thenReturn(vehicle);
-        when(userRepository.findUserByEmail(any())).thenReturn(user);
+        when(vehicleMapper.vehicleDTOtoVehicle(any())).thenReturn(Vehicle.builder().build());
+        when(userRepository.findUserByEmail(any())).thenReturn(User.builder().build());
         //when
-        vehicleService.createVehicle(vehicleRequestResponseDTO, EXAMPLE_EMAIL_ADDRESS);
+        vehicleService.createVehicle(VehicleRequestResponseDTO.builder().build(), EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(userRepository, times(1)).findUserByEmail(any());
 
     }
 
     @Test
-    void should_select_vehicles_by_user() {
+    void should_update_vehicle() {
+        //given
+        when(vehicleRepository.findById(any())).thenReturn(Optional.of(Vehicle.builder().build()));
+        //when
+        vehicleService.updateVehicle(VehicleRequestResponseDTO.builder().build());
+        //then
+        verify(vehicleRepository, times(1)).findById(any());
+    }
+
+    @Test
+    void should_get_vehicles_by_user() {
         //given
         when(userRepository.existsByEmail(any())).thenReturn(true);
         when(vehicleRepository.existsByUser(any())).thenReturn(true);
@@ -93,7 +77,7 @@ class VehicleServiceTest {
     }
 
     @Test
-    void should_select_vehicle_by_id() {
+    void should_get_vehicle_by_id() {
         //given
         when(vehicleRepository.existsById(any())).thenReturn(true);
         //when
@@ -104,7 +88,9 @@ class VehicleServiceTest {
 
     @Test
     void should_delete_vehicle_by_id() {
+        //when
         vehicleService.deleteVehicleById(1L);
+        //then
         verify(vehicleRepository, times(1)).deleteById(any());
     }
 
