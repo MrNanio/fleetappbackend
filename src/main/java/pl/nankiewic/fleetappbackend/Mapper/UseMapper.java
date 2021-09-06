@@ -1,37 +1,34 @@
 package pl.nankiewic.fleetappbackend.Mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import pl.nankiewic.fleetappbackend.DTO.UseDTO;
-import pl.nankiewic.fleetappbackend.Entity.User;
-import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleUse;
+import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring", uses = {VehicleMapper.class})
-public interface UseMapper {
+import javax.persistence.EntityNotFoundException;
 
-    @Mapping(target = "vehicleId", source = "vehicle")
-    @Mapping(target = "userId", source = "user")
-    UseDTO vehicleUseToUseDTO(final VehicleUse vehicleUse);
+@Mapper(componentModel = "spring")
+public abstract class UseMapper {
 
-    default Long vehicleToId(Vehicle vehicle) {
-        if (vehicle == null) {
-            return null;
-        }
-        return vehicle.getId();
-    }
+    @Autowired
+    private VehicleRepository vehicleRepository;
 
-    default Long userToId(User user) {
-        if (user == null) {
-            return null;
-        }
-        return user.getId();
-    }
-
+    @BeanMapping(qualifiedByName = "dtoToEntity")
     @Mapping(target = "vehicle", ignore = true)
     @Mapping(target = "user", ignore = true)
-    VehicleUse useDTOtoVehicleUse(final UseDTO useDTO);
+    public abstract VehicleUse vehicleUseDtoToEntity(UseDTO useDTO);
 
-    Iterable<UseDTO> vehicleUseToUseDTO(Iterable<VehicleUse> vehicleUses);
+    @Named(value = "dtoToEntity")
+    @AfterMapping
+    public void vehicleUseAddAttribute(UseDTO useDTO, @MappingTarget VehicleUse vehicleUse) {
+        vehicleUse.setVehicle(vehicleRepository.findById(useDTO.getVehicleId()).orElseThrow(
+                () -> new EntityNotFoundException("Nie znaleziono zasobu: użycie")));
+    }
+
+    @BeanMapping(qualifiedByName = "dtoToEntity")
+    @Mapping(target = "vehicle", ignore = true)
+    @Mapping(target = "user", ignore = true)
+    public abstract void updateVehicleUseFromDto(@MappingTarget VehicleUse vehicleUse, UseDTO useDTO);
+
 }

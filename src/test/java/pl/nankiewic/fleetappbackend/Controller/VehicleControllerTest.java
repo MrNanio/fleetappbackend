@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -100,6 +101,8 @@ class VehicleControllerTest {
                 .averageFuelConsumption(BigDecimal.valueOf(4.6))
                 .vehicleStatus("ACTIVE")
                 .build();
+
+
 
         //when
         mockMvc.perform(MockMvcRequestBuilders.put("/vehicle")

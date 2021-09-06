@@ -1,6 +1,7 @@
 package pl.nankiewic.fleetappbackend.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -11,33 +12,50 @@ import pl.nankiewic.fleetappbackend.Service.UseService;
 
 import javax.validation.Valid;
 
+@AllArgsConstructor
 @RestController
-@RequestMapping("use")
+@RequestMapping("/use")
 @CrossOrigin(origins = "http://localhost:4200")
 public class UseController {
 
     private final CheckService checkService;
     private final UseService useService;
 
-    @Autowired
-    public UseController(CheckService checkService, UseService useService) {
-        this.checkService = checkService;
-        this.useService = useService;
+    @PostMapping
+    @PreAuthorize("hasAnyRole('SUPERUSER')")
+    public void createVehicleUse(Authentication authentication,
+                                 @RequestBody @Valid UseDTO useDTO) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        if (checkService.accessToVehicle(userDetails.getUsername(), useDTO.getVehicleId())) {
+            useService.createVehicleUse(useDTO, userDetails.getUsername());
+        } else throw new PermissionDeniedException();
     }
 
-    @PostMapping
-    public void addUse(Authentication authentication, @RequestBody @Valid UseDTO useDTO) {
+    @PutMapping
+    @PreAuthorize("hasAnyRole('SUPERUSER')")
+    public void updateVehicleUse(Authentication authentication,
+                                 @RequestBody @Valid UseDTO useDTO) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (useDTO.getVehicleId() != null && checkService.accessToVehicle(userDetails.getUsername(), useDTO.getVehicleId())) {
-            useService.save(useDTO, userDetails.getUsername());
+        if (checkService.accessToUse(userDetails.getUsername(), useDTO.getId())) {
+            useService.updateVehicleUse(useDTO);
         } else throw new PermissionDeniedException();
     }
 
     @GetMapping("/v/{id}")
-    public Iterable<UseDTO> getUseByVehicle(@PathVariable Long id, Authentication authentication) {
+    public Iterable<UseDTO> getUseByVehicleId(@PathVariable Long id,
+                                              Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), id)) {
             return useService.getUseByVehicle(id);
+        } else throw new PermissionDeniedException();
+    }
+
+    @GetMapping("/{id}")
+    public UseDTO getUseByUseId(@PathVariable Long id,
+                                Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        if (checkService.accessToUse(userDetails.getUsername(), id)) {
+            return useService.getUseByUseId(id);
         } else throw new PermissionDeniedException();
     }
 
@@ -47,19 +65,13 @@ public class UseController {
         return useService.getUseByUser(userDetails.getUsername());
     }
 
-    @GetMapping("/{id}")
-    public UseDTO getUseById(@PathVariable Long id, Authentication authentication) {
+    @GetMapping("/list")
+    public Iterable<UseDTO> getUseByUserIdAndVehicleId(@RequestParam(name = "u") Long userId,
+                                                       @RequestParam(name = "v") Long vehicleId,
+                                                       Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToUse(userDetails.getUsername(), id)) {
-            return useService.getUseById(id);
-        } else throw new PermissionDeniedException();
-    }
-
-    @PutMapping
-    public void updateUse(Authentication authentication, @RequestBody @Valid UseDTO useDTO) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToUse(userDetails.getUsername(), useDTO.getId())) {
-            useService.save(useDTO, userDetails.getUsername());
+        if (checkService.accessToVehicle(userDetails.getUsername(), vehicleId)) {
+            return useService.getUseByUserAndVehicle(userId, vehicleId);
         } else throw new PermissionDeniedException();
     }
 
@@ -68,16 +80,6 @@ public class UseController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToUse(userDetails.getUsername(), id)) {
             useService.deleteUseById(id);
-        } else throw new PermissionDeniedException();
-    }
-
-    @GetMapping("/list")
-    public Iterable<UseDTO> getUseByUserIdAndVehicleId(@RequestParam(name = "u") Long userId,
-                                                       @RequestParam(name = "v") Long vehicleId,
-                                                       Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToVehicle(userDetails.getUsername(), vehicleId)) {
-            return useService.getUseByUserAndVehicle(userId, vehicleId);
         } else throw new PermissionDeniedException();
     }
 }

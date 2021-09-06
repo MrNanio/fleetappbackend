@@ -51,6 +51,7 @@ class VehicleServiceTest {
         vehicleService.createVehicle(VehicleRequestResponseDTO.builder().build(), EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(userRepository, times(1)).findUserByEmail(any());
+        verify(vehicleMapper, times(1)).vehicleDTOtoVehicle(any());
 
     }
 
