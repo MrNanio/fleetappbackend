@@ -1,5 +1,6 @@
 package pl.nankiewic.fleetappbackend.Service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.DTO.InsuranceDTO;
@@ -17,6 +18,7 @@ import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
 
 import javax.persistence.EntityNotFoundException;
 
+@AllArgsConstructor
 @Service
 public class InsuranceService {
 
@@ -26,19 +28,6 @@ public class InsuranceService {
     private final UserRepository userRepository;
     private final InsuranceMapper mapper;
     private final InsuranceTypeMapper insuranceTypeMapper;
-
-    @Autowired
-    public InsuranceService(VehicleInsuranceRepository vehicleInsuranceRepository,
-                            InsuranceTypeRepository insuranceType, VehicleRepository vehicleRepository,
-                            UserRepository userRepository, InsuranceMapper mapper,
-                            InsuranceTypeMapper insuranceTypeMapper) {
-        this.vehicleInsuranceRepository = vehicleInsuranceRepository;
-        this.insuranceType = insuranceType;
-        this.vehicleRepository = vehicleRepository;
-        this.userRepository = userRepository;
-        this.mapper = mapper;
-        this.insuranceTypeMapper = insuranceTypeMapper;
-    }
 
     public VehicleInsurance save(InsuranceDTO insuranceDTO) {
         VehicleInsurance vehicleInsurance = mapper.insuranceDTOtoVehicleInsurance(insuranceDTO);

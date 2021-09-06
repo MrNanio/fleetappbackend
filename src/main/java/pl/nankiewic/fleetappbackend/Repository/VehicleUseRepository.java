@@ -12,11 +12,54 @@ import java.time.LocalDate;
 
 @Repository
 public interface VehicleUseRepository extends JpaRepository<VehicleUse, Long> {
-    Iterable<VehicleUse> findAllByVehicle(Vehicle vehicle);
 
-    Iterable<VehicleUse> findAllByUser(User user);
+    @Query(value = "SELECT new pl.nankiewic.fleetappbackend.DTO.UseDTO(" +
+            "u.id, " +
+            "u.vehicle.id," +
+            "u.user.id, " +
+            "u.trip, " +
+            "u.tripDate, " +
+            "u.tripType, " +
+            "u.description) " +
+            "FROM VehicleUse u " +
+            "WHERE u.vehicle.id = ?1")
+    Iterable<UseDTO> findAllByVehicleId(Long vehicleId);
 
-    Iterable<VehicleUse> findAllByVehicleAndUser(Vehicle vehicle, User user);
+    @Query(value = "SELECT new pl.nankiewic.fleetappbackend.DTO.UseDTO(" +
+            "u.id, " +
+            "u.vehicle.id," +
+            "u.user.id, " +
+            "u.trip, " +
+            "u.tripDate, " +
+            "u.tripType, " +
+            "u.description) " +
+            "FROM VehicleUse u " +
+            "WHERE u.user.id = ?1")
+    Iterable<UseDTO> findAllByUserId(Long userId);
+
+    @Query(value = "SELECT new pl.nankiewic.fleetappbackend.DTO.UseDTO(" +
+            "u.id, " +
+            "u.vehicle.id," +
+            "u.user.id, " +
+            "u.trip, " +
+            "u.tripDate, " +
+            "u.tripType, " +
+            "u.description) " +
+            "FROM VehicleUse u " +
+            "WHERE u.id = ?1")
+    UseDTO findByUseId(Long useId);
+
+    @Query(value = "SELECT new pl.nankiewic.fleetappbackend.DTO.UseDTO(" +
+            "u.id, " +
+            "u.vehicle.id," +
+            "u.user.id, " +
+            "u.trip, " +
+            "u.tripDate, " +
+            "u.tripType, " +
+            "u.description) " +
+            "FROM VehicleUse u " +
+            "WHERE u.vehicle.id = ?1 AND u.user.id = ?2")
+    Iterable<UseDTO> findAllByVehicleAndUser(Long vehicleId, Long userId);
 
     Iterable<VehicleUse> findAllByVehicleIsAndTripDateBetween(Vehicle vehicle, LocalDate begin, LocalDate end);
 

@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 public class UseDTO {
-    @NotNull
+
     private Long id;
     @NotNull
     private Long vehicleId;
