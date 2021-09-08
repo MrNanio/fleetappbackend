@@ -72,6 +72,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/reset-password/new").permitAll()
                 .antMatchers("/user/new-account").permitAll()
                 .antMatchers("/user/new-account/password").permitAll()
+                .antMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/v2/api-docs", "/webjars/**").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
