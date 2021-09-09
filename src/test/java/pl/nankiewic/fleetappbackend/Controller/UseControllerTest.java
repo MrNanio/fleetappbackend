@@ -67,8 +67,9 @@ class UseControllerTest {
 
         when(checkService.accessToVehicle(any(), any())).thenReturn(true);
         //then
+
         mockMvc.perform(MockMvcRequestBuilders.post("/use")
-                .content(asJsonString(useDTO))
+                .content(objectMapper.writeValueAsString(useDTO))
                 .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         //when
@@ -82,17 +83,17 @@ class UseControllerTest {
         UseDTO useDTO = UseDTO.builder()
                 .id(1L)
                 .userId(1L)
-                .vehicleId(1L)
+                .vehicleId(2L)
                 .trip(Short.parseShort("23"))
-                .tripType("tripppii")
-                .description("ghg")
-                .tripDate(LocalDate.now())
+                .tripType("miejski")
+                .description("ghghuhuhuhu")
+                .tripDate(LocalDate.of(2021, 12, 12))
                 .build();
 
-        when(checkService.accessToVehicle(any(), any())).thenReturn(true);
+        when(checkService.accessToUse(any(), any())).thenReturn(true);
         //then
         mockMvc.perform(MockMvcRequestBuilders.put("/use")
-                .content(asJsonString(useDTO))
+                .content(objectMapper.writeValueAsString(useDTO))
                 .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         //when
@@ -163,11 +164,4 @@ class UseControllerTest {
         verify(useService, times(1)).deleteUseById(any());
     }
 
-    private static String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

@@ -33,7 +33,7 @@ class VehicleServiceTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         vehicleService = new VehicleService(
                 vehicleRepository,
                 vehicleMakeRepository,
