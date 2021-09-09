@@ -10,7 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -74,7 +73,7 @@ class VehicleControllerTest {
                 .build();
         //then
         mockMvc.perform(MockMvcRequestBuilders.post("/vehicle")
-                .content(asJsonString(vehicleRequestResponseDTO))
+                .content(objectMapper.writeValueAsString(vehicleRequestResponseDTO))
                 .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         //when
@@ -106,7 +105,7 @@ class VehicleControllerTest {
 
         //when
         mockMvc.perform(MockMvcRequestBuilders.put("/vehicle")
-                .content(asJsonString(vehicleRequestResponseDTO))
+                .content(objectMapper.writeValueAsString(vehicleRequestResponseDTO))
                 .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         //then
@@ -164,14 +163,6 @@ class VehicleControllerTest {
                 .andReturn();
         //then
         verify(vehicleService, times(1)).deleteVehicleById(any());
-    }
-
-    private static String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }
