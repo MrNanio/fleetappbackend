@@ -24,7 +24,7 @@ public class UseController {
     @PostMapping
     @PreAuthorize("hasAnyRole('SUPERUSER')")
     public void createVehicleUse(Authentication authentication,
-                                 @RequestBody @Valid UseDTO useDTO) {
+                                 @RequestBody UseDTO useDTO) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), useDTO.getVehicleId())) {
             useService.createVehicleUse(useDTO, userDetails.getUsername());

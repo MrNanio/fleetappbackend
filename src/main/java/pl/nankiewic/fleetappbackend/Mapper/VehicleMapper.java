@@ -46,7 +46,7 @@ public abstract class VehicleMapper {
             vehicle.setVehicleStatus(vehicleStatusRepository.findByEnumName(EnumVehicleStatus.ACTIVE));
         } else if (EnumVehicleStatus.REPAIR.name().equals(vehicleRequestResponseDTO.getVehicleStatus())) {
             vehicle.setVehicleStatus(vehicleStatusRepository.findByEnumName(EnumVehicleStatus.ACTIVE));
-        } else throw new EntityNotFoundException("nie znaleziono parsowanego elementu");
+        } else throw new EntityNotFoundException("Vehicle Status not found");
 
         if (EnumFuelType.LPG.name().equals(vehicleRequestResponseDTO.getFuelType())) {
             vehicle.setFuelType(fuelTypeRepository.findByEnumName(EnumFuelType.LPG));

@@ -1,27 +1,31 @@
 package pl.nankiewic.fleetappbackend.Mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import pl.nankiewic.fleetappbackend.DTO.RepairDTO;
-import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleRepair;
+import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
-public interface RepairMapper {
+import javax.persistence.EntityNotFoundException;
 
-    @Mapping(target = "vehicleId", source = "vehicle")
-    RepairDTO vehicleRepairToRepairDTO(final VehicleRepair repair);
+@Mapper(componentModel = "spring")
+public abstract class RepairMapper {
+    @Autowired
+    private VehicleRepository vehicleRepository;
 
-    default Long vehicleToId(Vehicle vehicle) {
-        if (vehicle == null) {
-            return null;
-        }
-        return vehicle.getId();
+    @BeanMapping(qualifiedByName = "dtoToEntity")
+    @Mapping(target = "vehicle", ignore = true)
+    public abstract VehicleRepair repairDtoToVehicleRepairEntity(RepairDTO repairDTO);
+
+    @Named(value = "dtoToEntity")
+    @AfterMapping
+    public void vehicleRepairAddAttribute(RepairDTO repairDTO, @MappingTarget VehicleRepair vehicleRepair) {
+        vehicleRepair.setVehicle(vehicleRepository.findById(repairDTO.getVehicleId()).orElseThrow(
+                () -> new EntityNotFoundException("Vehicle not found")));
     }
 
+    @BeanMapping(qualifiedByName = "dtoToEntity")
     @Mapping(target = "vehicle", ignore = true)
-    VehicleRepair repairDTOtoVehicleRepair(final RepairDTO repairDTO);
+    public abstract void updateVehicleRepairFromDto(@MappingTarget VehicleRepair vehicleRepair, RepairDTO repairDTO);
 
-    Iterable<RepairDTO> vehicleRepairsToRepairsDTO(Iterable<VehicleRepair> vehicleRepairs);
 }
