@@ -3,6 +3,7 @@ package pl.nankiewic.fleetappbackend.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import pl.nankiewic.fleetappbackend.DTO.InsuranceDTO;
 import pl.nankiewic.fleetappbackend.Entity.User;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleInsurance;
@@ -11,9 +12,45 @@ import java.time.LocalDate;
 
 @Repository
 public interface VehicleInsuranceRepository extends JpaRepository<VehicleInsurance, Long> {
-    Iterable<VehicleInsurance> findAllByVehicleIn(Iterable<Vehicle> vehicle);
 
-    Iterable<VehicleInsurance> findAllByVehicle(Vehicle vehicle);
+    @Query(value = "SELECT new pl.nankiewic.fleetappbackend.DTO.InsuranceDTO(" +
+            "i.id, " +
+            "i.vehicle.id, " +
+            "i.effectiveDate, " +
+            "i.expirationDate, " +
+            "i.cost, " +
+            "i.policyNumber, " +
+            "i.insuranceType.insuranceType, " +
+            "i.description) " +
+            "FROM VehicleInsurance i " +
+            "WHERE i.id=?1")
+    InsuranceDTO findInsuranceById(Long id);
+
+    @Query(value = "SELECT new pl.nankiewic.fleetappbackend.DTO.InsuranceDTO(" +
+            "i.id, " +
+            "i.vehicle.id, " +
+            "i.effectiveDate, " +
+            "i.expirationDate, " +
+            "i.cost, " +
+            "i.policyNumber, " +
+            "i.insuranceType.insuranceType, " +
+            "i.description) " +
+            "FROM VehicleInsurance i " +
+            "WHERE i.vehicle.user.email=?1")
+    Iterable<InsuranceDTO> findAllInsuranceByUsersVehicle(String email);
+
+    @Query(value = "SELECT new pl.nankiewic.fleetappbackend.DTO.InsuranceDTO(" +
+            "i.id, " +
+            "i.vehicle.id, " +
+            "i.effectiveDate, " +
+            "i.expirationDate, " +
+            "i.cost, " +
+            "i.policyNumber, " +
+            "i.insuranceType.insuranceType, " +
+            "i.description) " +
+            "FROM VehicleInsurance i " +
+            "WHERE i.vehicle.id=?1")
+    Iterable<InsuranceDTO> findAllInsuranceByVehicle(Long vehicleId);
 
     Iterable<VehicleInsurance> findAllByVehicleAndEffectiveDateBetween(Vehicle vehicle, LocalDate begin, LocalDate end);
 

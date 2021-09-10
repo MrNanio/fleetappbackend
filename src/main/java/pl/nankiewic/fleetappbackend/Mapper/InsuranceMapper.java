@@ -1,36 +1,47 @@
 package pl.nankiewic.fleetappbackend.Mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
-import pl.nankiewic.fleetappbackend.DTO.InsuranceDTO;
-import pl.nankiewic.fleetappbackend.Entity.InsuranceType;
-import pl.nankiewic.fleetappbackend.Entity.Vehicle;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import pl.nankiewic.fleetappbackend.DTO.InsuranceRequestDTO;
+import pl.nankiewic.fleetappbackend.Entity.Enum.EnumInsuranceType;
 import pl.nankiewic.fleetappbackend.Entity.VehicleInsurance;
+import pl.nankiewic.fleetappbackend.Repository.InsuranceTypeRepository;
+import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
-public interface InsuranceMapper {
+import javax.persistence.EntityNotFoundException;
 
-    @Mapping(target = "vehicleId", source = "vehicle")
-    InsuranceDTO vehicleInsuranceToInsuranceDTO(final VehicleInsurance insurance);
+@Mapper(componentModel = "spring")
+public abstract class InsuranceMapper {
 
-    default Long vehicleToId(Vehicle vehicle) {
-        if (vehicle == null) {
-            return null;
-        }
-        return vehicle.getId();
-    }
+    @Autowired
+    private VehicleRepository vehicleRepository;
+    @Autowired
+    private InsuranceTypeRepository insuranceTypeRepository;
 
-    default String typeToName(InsuranceType insuranceType) {
-        if (insuranceType == null) {
-            return null;
-        }
-        return insuranceType.getInsuranceType().name();
-    }
-
+    @BeanMapping(qualifiedByName = "dtoToEntity")
     @Mapping(target = "vehicle", ignore = true)
     @Mapping(target = "insuranceType", ignore = true)
-    VehicleInsurance insuranceDTOtoVehicleInsurance(final InsuranceDTO insuranceDTO);
+    public abstract VehicleInsurance insuranceDtoToVehicleInsuranceEntity(InsuranceRequestDTO insuranceRequestDTO);
 
-    Iterable<InsuranceDTO> vehicleInsurancesToInsurancesDTO(Iterable<VehicleInsurance> vehicleInsurance);
+    @Named(value = "dtoToEntity")
+    @AfterMapping
+    public void vehicleInsuranceAddAttribute(InsuranceRequestDTO insuranceRequestDTO, @MappingTarget VehicleInsurance vehicleInsurance) {
+        vehicleInsurance.setVehicle(vehicleRepository.findById(insuranceRequestDTO.getVehicleId()).orElseThrow(
+                () -> new EntityNotFoundException("Vehicle not found")));
+
+        if (EnumInsuranceType.AC.name().equals(insuranceRequestDTO.getInsuranceType())) {
+            vehicleInsurance.setInsuranceType(insuranceTypeRepository.findByEnumName(EnumInsuranceType.AC));
+        } else if (EnumInsuranceType.OC.name().equals(insuranceRequestDTO.getInsuranceType())) {
+            vehicleInsurance.setInsuranceType(insuranceTypeRepository.findByEnumName(EnumInsuranceType.OC));
+        } else if (EnumInsuranceType.NNW.name().equals(insuranceRequestDTO.getInsuranceType())) {
+            vehicleInsurance.setInsuranceType(insuranceTypeRepository.findByEnumName(EnumInsuranceType.NNW));
+        } else throw new EntityNotFoundException("Insurance type not found");
+
+    }
+
+    @BeanMapping(qualifiedByName = "dtoToEntity")
+    @Mapping(target = "vehicle", ignore = true)
+    @Mapping(target = "insuranceType", ignore = true)
+    public abstract void updateVehicleInsuranceFromDto(@MappingTarget VehicleInsurance vehicleInsurance, InsuranceRequestDTO insuranceRequestDTO);
+
 }
