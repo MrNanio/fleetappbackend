@@ -4,7 +4,6 @@ import lombok.*;
 import pl.nankiewic.fleetappbackend.Entity.Enum.EnumInsuranceType;
 
 import java.math.BigDecimal;
-
 import java.time.LocalDate;
 
 @Getter
@@ -12,7 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class InsuranceDTO {
+public class InsuranceRequestDTO {
 
     private Long id;
     private Long vehicleId;
@@ -20,8 +19,6 @@ public class InsuranceDTO {
     private LocalDate expirationDate;
     private BigDecimal cost;
     private String policyNumber;
-    private EnumInsuranceType insuranceType;
+    private String insuranceType;
     private String description;
-
 }
-

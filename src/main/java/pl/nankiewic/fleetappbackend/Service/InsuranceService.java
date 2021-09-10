@@ -1,20 +1,15 @@
 package pl.nankiewic.fleetappbackend.Service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.DTO.InsuranceDTO;
+import pl.nankiewic.fleetappbackend.DTO.InsuranceRequestDTO;
 import pl.nankiewic.fleetappbackend.DTO.InsuranceTypeDTO;
-import pl.nankiewic.fleetappbackend.Entity.Enum.EnumInsuranceType;
-import pl.nankiewic.fleetappbackend.Entity.User;
-import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleInsurance;
 import pl.nankiewic.fleetappbackend.Mapper.InsuranceMapper;
 import pl.nankiewic.fleetappbackend.Mapper.InsuranceTypeMapper;
 import pl.nankiewic.fleetappbackend.Repository.InsuranceTypeRepository;
-import pl.nankiewic.fleetappbackend.Repository.UserRepository;
 import pl.nankiewic.fleetappbackend.Repository.VehicleInsuranceRepository;
-import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -24,34 +19,33 @@ public class InsuranceService {
 
     private final VehicleInsuranceRepository vehicleInsuranceRepository;
     private final InsuranceTypeRepository insuranceType;
-    private final VehicleRepository vehicleRepository;
-    private final UserRepository userRepository;
-    private final InsuranceMapper mapper;
+    private final InsuranceMapper insuranceMapper;
     private final InsuranceTypeMapper insuranceTypeMapper;
 
-    public VehicleInsurance save(InsuranceDTO insuranceDTO) {
-        VehicleInsurance vehicleInsurance = mapper.insuranceDTOtoVehicleInsurance(insuranceDTO);
-        vehicleInsurance.setVehicle(vehicleRepository.findById(insuranceDTO.getVehicleId()).orElseThrow(
-                () -> new EntityNotFoundException("Bład przetwarzania")));
-        vehicleInsurance.setInsuranceType(insuranceType.findByEnumName(parseStingToEnum(insuranceDTO.getInsuranceType())));
-        return vehicleInsuranceRepository.save(vehicleInsurance);
+    public void createVehicleInsurance(InsuranceRequestDTO insuranceRequestDTO) {
+        VehicleInsurance vehicleInsurance = insuranceMapper.insuranceDtoToVehicleInsuranceEntity(insuranceRequestDTO);
+        vehicleInsuranceRepository.save(vehicleInsurance);
     }
 
-    public Iterable<InsuranceDTO> getInsurancesByVehicle(Long id) {
-        return mapper.vehicleInsurancesToInsurancesDTO(vehicleInsuranceRepository
-                .findAllByVehicle((vehicleRepository.findById(id)).orElseThrow(
-                        () -> new EntityNotFoundException("Bład przetwarzania"))));
-    }
-
-    public Iterable<InsuranceDTO> getInsurancesByUser(String email) {
-        User user = userRepository.findUserByEmail(email);
-        Iterable<Vehicle> vehicle = vehicleRepository.findVehiclesByUser(user);
-        return mapper.vehicleInsurancesToInsurancesDTO(vehicleInsuranceRepository.findAllByVehicleIn(vehicle));
+    public void updateVehicleInsurance(InsuranceRequestDTO insuranceRequestDTO) {
+        VehicleInsurance vehicleInsurance = vehicleInsuranceRepository.findById(insuranceRequestDTO.getId()).orElseThrow(
+                () -> new EntityNotFoundException("Insurance not found"));
+        insuranceMapper.updateVehicleInsuranceFromDto(vehicleInsurance, insuranceRequestDTO);
+        vehicleInsuranceRepository.save(vehicleInsurance);
     }
 
     public InsuranceDTO getInsuranceById(Long id) {
-        return mapper.vehicleInsuranceToInsuranceDTO(vehicleInsuranceRepository.findById(id).orElse(null));
+        return vehicleInsuranceRepository.findInsuranceById(id);
     }
+
+    public Iterable<InsuranceDTO> getInsurancesByVehicle(Long id) {
+        return vehicleInsuranceRepository.findAllInsuranceByVehicle(id);
+    }
+
+    public Iterable<InsuranceDTO> getInsurancesByUser(String email) {
+        return vehicleInsuranceRepository.findAllInsuranceByUsersVehicle(email);
+    }
+
 
     public Iterable<InsuranceTypeDTO> getInsuranceTypes() {
         return insuranceTypeMapper.typesToTypesDTO(insuranceType.findAll());
@@ -59,16 +53,6 @@ public class InsuranceService {
 
     public void deleteInsuranceById(Long id) {
         vehicleInsuranceRepository.deleteById(id);
-    }
-
-    private EnumInsuranceType parseStingToEnum(String insuranceType) {
-        if (EnumInsuranceType.AC.name().equals(insuranceType)) {
-            return EnumInsuranceType.AC;
-        } else if (EnumInsuranceType.NNW.name().equals(insuranceType)) {
-            return EnumInsuranceType.NNW;
-        } else if (EnumInsuranceType.OC.name().equals(insuranceType)) {
-            return EnumInsuranceType.OC;
-        } else throw new EntityNotFoundException("nie znaleziono parsowanych danych");
     }
 
 }
