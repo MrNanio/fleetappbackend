@@ -1,37 +1,36 @@
 package pl.nankiewic.fleetappbackend.Mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import pl.nankiewic.fleetappbackend.DTO.RefuelingDTO;
-import pl.nankiewic.fleetappbackend.Entity.User;
-import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleRefueling;
+import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring", uses = {VehicleMapper.class})
-public interface RefuelingMapper {
+import javax.persistence.EntityNotFoundException;
 
-    @Mapping(target = "vehicleId", source = "vehicle")
-    @Mapping(target = "userId", source = "user")
-    RefuelingDTO refuelingToRefuelingDTO(final VehicleRefueling refueling);
+@Mapper(componentModel = "spring", uses = {VehicleMapper.class})
+public abstract class RefuelingMapper {
 
-    default Long vehicleToId(Vehicle vehicle) {
-        if (vehicle == null) {
-            return null;
-        }
-        return vehicle.getId();
-    }
+    @Autowired
+    private VehicleRepository vehicleRepository;
 
-    default Long userToId(User user) {
-        if (user == null) {
-            return null;
-        }
-        return user.getId();
-    }
-
+    @BeanMapping(qualifiedByName = "dtoToEntity")
     @Mapping(target = "vehicle", ignore = true)
     @Mapping(target = "user", ignore = true)
-    VehicleRefueling refuelingDTOToRefueling(final RefuelingDTO refuelingDTO);
+    public abstract VehicleRefueling refuelingDtoToVehicleRefuelingEntity(RefuelingDTO refuelingDTO);
 
-    Iterable<RefuelingDTO> refuelingToRefuelingDTO(Iterable<VehicleRefueling> refueling);
+    @Named(value = "dtoToEntity")
+    @AfterMapping
+    public void vehicleRefuelingAddAttribute(RefuelingDTO refuelingDTO,
+                                             @MappingTarget VehicleRefueling vehicleRefueling) {
+        vehicleRefueling.setVehicle(vehicleRepository.findById(refuelingDTO.getVehicleId()).orElseThrow(
+                () -> new EntityNotFoundException("Vehicle not found")));
+    }
+
+    @BeanMapping(qualifiedByName = "dtoToEntity")
+    @Mapping(target = "vehicle", ignore = true)
+    @Mapping(target = "user", ignore = true)
+    public abstract void updateVehicleRepairFromDto(@MappingTarget VehicleRefueling vehicleRefueling,
+                                                    RefuelingDTO refuelingDTO);
+
 }

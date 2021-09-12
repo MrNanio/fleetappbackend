@@ -1,6 +1,6 @@
 package pl.nankiewic.fleetappbackend.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +11,7 @@ import pl.nankiewic.fleetappbackend.Service.RefuelingService;
 
 import javax.validation.Valid;
 
+@AllArgsConstructor
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/refueling")
@@ -19,17 +20,20 @@ public class RefuelingController {
     private final RefuelingService refuelingService;
     private final CheckService checkService;
 
-    @Autowired
-    public RefuelingController(RefuelingService refuelingService, CheckService checkService) {
-        this.refuelingService = refuelingService;
-        this.checkService = checkService;
-    }
-
     @PostMapping
     public void addRefueling(@RequestBody @Valid RefuelingDTO refuelingDTO, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), refuelingDTO.getVehicleId())) {
-            refuelingService.save(refuelingDTO, userDetails.getUsername());
+            refuelingService.createVehicleRefueling(refuelingDTO, userDetails.getUsername());
+        } else throw new PermissionDeniedException();
+    }
+
+    @PutMapping
+    public void updateRefueling(@RequestBody @Valid RefuelingDTO refuelingDTO,
+                                Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        if (checkService.accessToRefueling(userDetails.getUsername(), refuelingDTO.getId())) {
+            refuelingService.updateVehicleRefueling(refuelingDTO);
         } else throw new PermissionDeniedException();
     }
 
@@ -42,7 +46,8 @@ public class RefuelingController {
     }
 
     @GetMapping("/v/{id}")
-    public Iterable<RefuelingDTO> getRefuelingByVehicle(@PathVariable Long id, Authentication authentication) {
+    public Iterable<RefuelingDTO> getRefuelingByVehicle(@PathVariable Long id,
+                                                        Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), id)) {
             return refuelingService.getRefuelingByVehicle(id);
@@ -61,11 +66,13 @@ public class RefuelingController {
         return refuelingService.getRefuelingByAuthor(userDetails.getUsername());
     }
 
-    @PutMapping
-    public void updateRefueling(@RequestBody @Valid RefuelingDTO refuelingDTO, Authentication authentication) {
+    @GetMapping("/list")
+    public Iterable<RefuelingDTO> getRefuelingByUserIdAndVehicleId(@RequestParam(name = "u") Long userId,
+                                                                   @RequestParam(name = "v") Long vehicleId,
+                                                                   Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToRefueling(userDetails.getUsername(), refuelingDTO.getId())) {
-            refuelingService.save(refuelingDTO, userDetails.getUsername());
+        if (checkService.accessToVehicle(userDetails.getUsername(), vehicleId)) {
+            return refuelingService.getRefuelingByUserAndVehicle(userId, vehicleId);
         } else throw new PermissionDeniedException();
     }
 
@@ -77,13 +84,4 @@ public class RefuelingController {
         } else throw new PermissionDeniedException();
     }
 
-    @GetMapping("/list")
-    public Iterable<RefuelingDTO> getRefuelingByUserIdAndVehicleId(@RequestParam(name = "u") Long userId,
-                                                                   @RequestParam(name = "v") Long vehicleId,
-                                                                   Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToVehicle(userDetails.getUsername(), vehicleId)) {
-            return refuelingService.getRefuelingByUserAndVehicle(userId, vehicleId);
-        } else throw new PermissionDeniedException();
-    }
 }

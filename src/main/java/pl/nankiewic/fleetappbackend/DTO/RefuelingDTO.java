@@ -2,6 +2,7 @@ package pl.nankiewic.fleetappbackend.DTO;
 
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -15,7 +16,7 @@ public class RefuelingDTO {
     private Long userId;
     private LocalDate refuelingDate;
     private String litre;
-    private String cost;
+    private BigDecimal cost;
     private String description;
 
 }
