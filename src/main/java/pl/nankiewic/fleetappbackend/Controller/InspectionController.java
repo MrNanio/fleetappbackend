@@ -1,6 +1,6 @@
 package pl.nankiewic.fleetappbackend.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +12,7 @@ import pl.nankiewic.fleetappbackend.Service.InspectionService;
 
 import javax.validation.Valid;
 
+@AllArgsConstructor
 @RestController
 @PreAuthorize("hasRole('SUPERUSER')")
 @RequestMapping("/inspection")
@@ -21,17 +22,19 @@ public class InspectionController {
     private final CheckService checkService;
     private final InspectionService inspectionService;
 
-    @Autowired
-    public InspectionController(CheckService checkService, InspectionService inspectionService) {
-        this.checkService = checkService;
-        this.inspectionService = inspectionService;
-    }
-
     @PostMapping
     public void addInspection(@RequestBody @Valid InspectionDTO inspectionDTO, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         if (checkService.accessToVehicle(userDetails.getUsername(), inspectionDTO.getVehicleId())) {
-            inspectionService.saveInspection(inspectionDTO);
+            inspectionService.createInspection(inspectionDTO);
+        } else throw new PermissionDeniedException();
+    }
+
+    @PutMapping
+    public void updateInspection(@RequestBody @Valid InspectionDTO inspectionDTO, Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        if (checkService.accessToVehicle(userDetails.getUsername(), inspectionDTO.getVehicleId())) {
+            inspectionService.updateInspection(inspectionDTO);
         } else throw new PermissionDeniedException();
     }
 
@@ -55,14 +58,6 @@ public class InspectionController {
     Iterable<InspectionDTO> getInspectionsByUser(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return inspectionService.getInspectionsByUser(userDetails.getUsername());
-    }
-
-    @PutMapping
-    public void updateInspection(@RequestBody @Valid InspectionDTO inspectionDTO, Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToVehicle(userDetails.getUsername(), inspectionDTO.getVehicleId())) {
-            inspectionService.saveInspection(inspectionDTO);
-        } else throw new PermissionDeniedException();
     }
 
     @DeleteMapping("/{id}")

@@ -1,26 +1,34 @@
 package pl.nankiewic.fleetappbackend.Mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import pl.nankiewic.fleetappbackend.DTO.InspectionDTO;
-import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleInspection;
+import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
+
+import javax.persistence.EntityNotFoundException;
 
 @Mapper(componentModel = "spring")
-public interface InspectionMapper {
+public abstract class InspectionMapper {
 
-    @Mapping(target = "vehicleId", source = "vehicle")
-    InspectionDTO vehicleInspectionToInspectionDTO(final VehicleInspection inspection);
+    @Autowired
+    private VehicleRepository vehicleRepository;
 
-    default Long vehicleToId(Vehicle vehicle) {
-        if (vehicle == null) {
-            return null;
-        }
-        return vehicle.getId();
+    @BeanMapping(qualifiedByName = "dtoToEntity")
+    @Mapping(target = "vehicle", ignore = true)
+    public abstract VehicleInspection vehicleInspectionDtoToEntity(InspectionDTO inspectionDTO);
+
+    @Named(value = "dtoToEntity")
+    @AfterMapping
+    public void vehicleInspectionAddAttribute(InspectionDTO inspectionDTO,
+                                              @MappingTarget VehicleInspection vehicleInspection) {
+        vehicleInspection.setVehicle(vehicleRepository.findById(inspectionDTO.getVehicleId()).orElseThrow(
+                () -> new EntityNotFoundException("Nie znaleziono zasobu: pojazd")));
     }
 
+    @BeanMapping(qualifiedByName = "dtoToEntity")
     @Mapping(target = "vehicle", ignore = true)
-    VehicleInspection inspectionDTOtoVehicleInspection(final InspectionDTO inspectionDTO);
+    public abstract void updateVehicleInspectionFromDto(@MappingTarget VehicleInspection vehicleInspection,
+                                                        InspectionDTO inspectionDTO);
 
-    Iterable<InspectionDTO> vehicleInspectionsToInspectionsDTO(Iterable<VehicleInspection> vehicleInspections);
 }
