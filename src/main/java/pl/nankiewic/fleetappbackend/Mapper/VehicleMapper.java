@@ -69,7 +69,7 @@ public abstract class VehicleMapper {
 
     @Named("dtoToResponseDto")
     @AfterMapping
-    public void vehicleValueMapToString(VehicleDTO vehicleDTO, @MappingTarget VehicleRequestResponseDTO vehicleRequestResponseDTO){
+    public void vehicleValueMapToString(VehicleDTO vehicleDTO, @MappingTarget VehicleRequestResponseDTO vehicleRequestResponseDTO) {
         vehicleRequestResponseDTO.setVehicleStatus(vehicleDTO.getVehicleStatus().name());
         vehicleRequestResponseDTO.setFuelType(vehicleDTO.getFuelType().name());
     }
@@ -88,5 +88,21 @@ public abstract class VehicleMapper {
             @Mapping(target = "vehicleUses", ignore = true)
     })
     public abstract void updateVehicleFromRequest(@MappingTarget Vehicle vehicle, VehicleRequestResponseDTO vehicleRequestResponseDTO);
+
+    @BeanMapping(qualifiedByName = "entityToResponseDto")
+    @Mappings({
+            @Mapping(target = "make", ignore = true),
+            @Mapping(target = "vehicleStatus", ignore = true),
+            @Mapping(target = "fuelType", ignore = true),
+    })
+    public abstract VehicleRequestResponseDTO entityToResponseDto(Vehicle vehicle);
+
+    @Named("entityToResponseDto")
+    @AfterMapping
+    public void addAttributeToMap(Vehicle vehicle, @MappingTarget VehicleRequestResponseDTO vehicleRequestResponseDTO) {
+        vehicleRequestResponseDTO.setVehicleStatus(vehicle.getVehicleStatus().getVehicleStatus().name());
+        vehicleRequestResponseDTO.setFuelType(vehicle.getFuelType().getFuelType().name());
+        vehicleRequestResponseDTO.setMake(vehicle.getVehicleMake().getName());
+    }
 
 }

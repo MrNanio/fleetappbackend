@@ -17,7 +17,6 @@ import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
 
 import pl.nankiewic.fleetappbackend.Security.JWTAuthenticationEntryPoint;
 import pl.nankiewic.fleetappbackend.Security.JWTokenUtility;
-import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.VehicleService;
 
 import java.math.BigDecimal;
@@ -37,8 +36,6 @@ class VehicleControllerTest {
     @MockBean
     private VehicleService vehicleService;
 
-    @MockBean
-    private CheckService checkService;
 
     @MockBean
     private JWTAuthenticationEntryPoint authenticationEntryPoint;
@@ -84,7 +81,6 @@ class VehicleControllerTest {
     @WithMockUser(roles = {"SUPERUSER"})
     void should_update_vehicle() throws Exception {
         //given
-        when(checkService.accessToVehicle(any(), any())).thenReturn(true);
         VehicleRequestResponseDTO vehicleRequestResponseDTO = VehicleRequestResponseDTO.builder()
                 .id(1L)
                 .make("SKODA")
@@ -101,15 +97,13 @@ class VehicleControllerTest {
                 .vehicleStatus("ACTIVE")
                 .build();
 
-
-
         //when
         mockMvc.perform(MockMvcRequestBuilders.put("/vehicle")
                 .content(objectMapper.writeValueAsString(vehicleRequestResponseDTO))
                 .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         //then
-        verify(vehicleService, times(1)).updateVehicle(any());
+        verify(vehicleService, times(1)).updateVehicle(any(), any());
 
     }
 
@@ -141,28 +135,26 @@ class VehicleControllerTest {
     @WithMockUser(roles = {"SUPERUSER"})
     void should_get_vehicle_by_id() throws Exception {
         //given
-        when(checkService.accessToVehicle(any(), any())).thenReturn(true);
         //when
         mockMvc.perform(MockMvcRequestBuilders.get("/vehicle/1"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().is(200))
                 .andReturn();
         //then
-        verify(vehicleService, times(1)).getVehicleDataById(any());
+        verify(vehicleService, times(1)).getVehicleDataById(any(), any());
     }
 
     @Test
     @WithMockUser(roles = {"SUPERUSER"})
     void should_delete_vehicle_by_id() throws Exception {
         //given
-        when(checkService.accessToVehicle(any(), any())).thenReturn(true);
         //when
         mockMvc.perform(MockMvcRequestBuilders.delete("/vehicle/1"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().is(200))
                 .andReturn();
         //then
-        verify(vehicleService, times(1)).deleteVehicleById(any());
+        verify(vehicleService, times(1)).deleteVehicleById(any(), any());
     }
 
 }
