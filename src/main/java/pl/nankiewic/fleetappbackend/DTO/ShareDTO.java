@@ -12,6 +12,6 @@ import java.util.List;
 public class ShareDTO {
 
     private Long userId;
-    private List<String> vehicleId;
+    private List<Long> vehicleId;
 
 }
