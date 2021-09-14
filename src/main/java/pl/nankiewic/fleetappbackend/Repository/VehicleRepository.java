@@ -50,8 +50,8 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
             "v.averageFuelConsumption, " +
             "v.vehicleStatus.vehicleStatus) " +
             "FROM Vehicle v " +
-            "WHERE v.user=?1")
-    List<VehicleDTO> findVehiclesDataByUser(User user);
+            "WHERE v.user.email=?1")
+    List<VehicleDTO> findVehiclesDataByUser(String email);
 
     boolean existsByUser(User user);
 

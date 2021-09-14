@@ -6,8 +6,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import pl.nankiewic.fleetappbackend.DTO.RepairDTO;
-import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
-import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.RepairService;
 
 import javax.validation.Valid;
@@ -19,23 +17,18 @@ import javax.validation.Valid;
 @CrossOrigin(origins = "http://localhost:4200")
 public class RepairController {
 
-    private final CheckService checkService;
     private final RepairService repairService;
 
     @PostMapping
     public void addRepair(Authentication authentication, @RequestBody @Valid RepairDTO repairDTO) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToVehicle(userDetails.getUsername(), repairDTO.getVehicleId())) {
-            repairService.createVehicleRepair(repairDTO);
-        } else throw new PermissionDeniedException();
+        repairService.createVehicleRepair(repairDTO, userDetails.getUsername());
     }
 
     @PutMapping
     public void updateRepair(Authentication authentication, @RequestBody @Valid RepairDTO repairDTO) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToRepair(userDetails.getUsername(), repairDTO.getId())) {
-            repairService.updateVehicleRepair(repairDTO);
-        } else throw new PermissionDeniedException();
+        repairService.updateVehicleRepair(repairDTO, userDetails.getUsername());
     }
 
     @GetMapping
@@ -47,24 +40,18 @@ public class RepairController {
     @GetMapping("/v/{id}")
     public Iterable<RepairDTO> getRepairsByVehicle(@PathVariable Long id, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToVehicle(userDetails.getUsername(), id)) {
-            return repairService.getRepairsByVehicle(id);
-        } else throw new PermissionDeniedException();
+        return repairService.getRepairsByVehicle(id, userDetails.getUsername());
     }
 
     @GetMapping("/{id}")
     public RepairDTO getRepairById(@PathVariable Long id, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToRepair(userDetails.getUsername(), id)) {
-            return repairService.getRepairById(id);
-        } else throw new PermissionDeniedException();
+        return repairService.getRepairById(id, userDetails.getUsername());
     }
 
     @DeleteMapping("/{id}")
     public void deleteRepair(Authentication authentication, @PathVariable Long id) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToRepair(userDetails.getUsername(), id)) {
-            repairService.deleteRepairById(id);
-        } else throw new PermissionDeniedException();
+        repairService.deleteRepairById(id, userDetails.getUsername());
     }
 }

@@ -15,7 +15,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import pl.nankiewic.fleetappbackend.DTO.UseDTO;
 import pl.nankiewic.fleetappbackend.Security.JWTAuthenticationEntryPoint;
 import pl.nankiewic.fleetappbackend.Security.JWTokenUtility;
-import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.UseService;
 
 import java.time.LocalDate;
@@ -35,9 +34,6 @@ class UseControllerTest {
 
     @MockBean
     private UseService useService;
-
-    @MockBean
-    private CheckService checkService;
 
     @MockBean
     private JWTAuthenticationEntryPoint authenticationEntryPoint;
@@ -65,7 +61,6 @@ class UseControllerTest {
                 .tripDate(LocalDate.now())
                 .build();
 
-        when(checkService.accessToVehicle(any(), any())).thenReturn(true);
         //then
 
         mockMvc.perform(MockMvcRequestBuilders.post("/use")
@@ -90,40 +85,37 @@ class UseControllerTest {
                 .tripDate(LocalDate.of(2021, 12, 12))
                 .build();
 
-        when(checkService.accessToUse(any(), any())).thenReturn(true);
         //then
         mockMvc.perform(MockMvcRequestBuilders.put("/use")
                 .content(objectMapper.writeValueAsString(useDTO))
                 .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         //when
-        verify(useService, times(1)).updateVehicleUse(any());
+        verify(useService, times(1)).updateVehicleUse(any(), any());
     }
 
     @Test
     @WithMockUser(roles = {"SUPERUSER"})
     void should_get_vehicle_use_by_vehicle_id() throws Exception {
         //given
-        when(checkService.accessToVehicle(any(), any())).thenReturn(true);
         //when
         mockMvc.perform(MockMvcRequestBuilders.get("/use/v/1"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().is(200));
         //then
-        verify(useService, times(1)).getUseByVehicle(any());
+        verify(useService, times(1)).getUseByVehicle(any(), any());
     }
 
     @Test
     @WithMockUser(roles = {"SUPERUSER"})
     void should_get_vehicle_use_by_id() throws Exception {
         //given
-        when(checkService.accessToUse(any(), any())).thenReturn(true);
         //when
         mockMvc.perform(MockMvcRequestBuilders.get("/use/1"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().is(200));
         //then
-        verify(useService, times(1)).getUseByUseId(any());
+        verify(useService, times(1)).getUseByUseId(any(), any());
     }
 
     @Test
@@ -142,26 +134,24 @@ class UseControllerTest {
     @WithMockUser(roles = {"SUPERUSER"})
     void should_get_vehicle_use_by_user_id_and_vehicle_id() throws Exception {
         //given
-        when(checkService.accessToVehicle(any(), any())).thenReturn(true);
         //when
         mockMvc.perform(MockMvcRequestBuilders.get("/use/list?u=1&v=1"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().is(200));
         //then
-        verify(useService, times(1)).getUseByUserAndVehicle(any(), any());
+        verify(useService, times(1)).getUseByUserAndVehicle(any(), any(), any());
     }
 
     @Test
     @WithMockUser(roles = {"SUPERUSER"})
     void should_delete_vehicle_use_by_id() throws Exception {
         //given
-        when(checkService.accessToUse(any(), any())).thenReturn(true);
         //when
         mockMvc.perform(MockMvcRequestBuilders.delete("/use/1"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().is(200));
         //then
-        verify(useService, times(1)).deleteUseById(any());
+        verify(useService, times(1)).deleteUseById(any(), any());
     }
 
 }

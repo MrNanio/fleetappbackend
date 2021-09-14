@@ -26,10 +26,13 @@ class VehicleServiceTest {
     UserRepository userRepository;
     @Mock
     VehicleMapper vehicleMapper;
+    @Mock
+    CheckExistAndPermissionComponent checkExistAndPermissionComponent;
 
     VehicleService vehicleService;
 
     private static final String EXAMPLE_EMAIL_ADDRESS = "example@example.com";
+    private static final Long EXAMPLE_ID = 1L;
 
     @BeforeEach
     public void setUp() {
@@ -39,7 +42,8 @@ class VehicleServiceTest {
                 vehicleMakeRepository,
                 fuelTypeRepository,
                 userRepository,
-                vehicleMapper);
+                vehicleMapper,
+                checkExistAndPermissionComponent);
     }
 
     @Test
@@ -59,8 +63,9 @@ class VehicleServiceTest {
     void should_update_vehicle() {
         //given
         when(vehicleRepository.findById(any())).thenReturn(Optional.of(Vehicle.builder().build()));
+        when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
         //when
-        vehicleService.updateVehicle(VehicleRequestResponseDTO.builder().build());
+        vehicleService.updateVehicle(VehicleRequestResponseDTO.builder().build(), EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(vehicleRepository, times(1)).findById(any());
     }
@@ -72,7 +77,7 @@ class VehicleServiceTest {
         when(vehicleRepository.existsByUser(any())).thenReturn(true);
         when(vehicleRepository.findVehiclesDataByUser(any())).thenReturn(new ArrayList<>());
         //when
-        vehicleService.getVehiclesDataByUser("example@example.com");
+        vehicleService.getVehiclesDataByUser(EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(vehicleRepository, times(1)).findVehiclesDataByUser(any());
     }
@@ -80,17 +85,19 @@ class VehicleServiceTest {
     @Test
     void should_get_vehicle_by_id() {
         //given
-        when(vehicleRepository.existsById(any())).thenReturn(true);
+        when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
         //when
-        vehicleService.getVehicleDataById(1L);
+        vehicleService.getVehicleDataById(EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(vehicleRepository, times(1)).findVehicleDetailsById(any());
     }
 
     @Test
     void should_delete_vehicle_by_id() {
+        //given
+        when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
         //when
-        vehicleService.deleteVehicleById(1L);
+        vehicleService.deleteVehicleById(EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(vehicleRepository, times(1)).deleteById(any());
     }

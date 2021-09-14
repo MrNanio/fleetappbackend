@@ -1,6 +1,6 @@
 package pl.nankiewic.fleetappbackend.Security.Configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,6 +19,7 @@ import pl.nankiewic.fleetappbackend.Security.AuthorizationFilter;
 import pl.nankiewic.fleetappbackend.Security.JWTAuthenticationEntryPoint;
 import pl.nankiewic.fleetappbackend.Security.JWTokenUtility;
 
+@AllArgsConstructor
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -28,17 +29,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final PasswordEncoder passwordEncoder;
     private final JWTokenUtility jwTokenUtility;
-
-    @Autowired
-    public WebSecurityConfiguration(UserDetailsService userDetailsService,
-                                    JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-                                    PasswordEncoder passwordEncoder,
-                                    JWTokenUtility jwTokenUtility) {
-        this.userDetailsService = userDetailsService;
-        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
-        this.passwordEncoder = passwordEncoder;
-        this.jwTokenUtility = jwTokenUtility;
-    }
 
     @Bean
     @Override

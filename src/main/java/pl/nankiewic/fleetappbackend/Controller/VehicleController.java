@@ -9,8 +9,6 @@ import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleDTO;
 import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
 import pl.nankiewic.fleetappbackend.Entity.FuelType;
 import pl.nankiewic.fleetappbackend.Entity.VehicleMake;
-import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
-import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.VehicleService;
 
 import javax.validation.Valid;
@@ -22,7 +20,6 @@ import javax.validation.Valid;
 public class VehicleController {
 
     private final VehicleService vehicleService;
-    private final CheckService checkService;
 
     @PreAuthorize("hasRole('SUPERUSER')")
     @PostMapping()
@@ -37,9 +34,7 @@ public class VehicleController {
     public void updateVehicle(@RequestBody @Valid VehicleRequestResponseDTO vehicleRequestResponseDTO,
                               Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToVehicle(userDetails.getUsername(), vehicleRequestResponseDTO.getId())) {
-            vehicleService.updateVehicle(vehicleRequestResponseDTO);
-        } else throw new PermissionDeniedException();
+        vehicleService.updateVehicle(vehicleRequestResponseDTO, userDetails.getUsername());
     }
 
     @PreAuthorize("hasRole('SUPERUSER')")
@@ -52,18 +47,14 @@ public class VehicleController {
     @GetMapping("/{id}")
     public VehicleDTO getVehicleById(@PathVariable Long id, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToVehicle(userDetails.getUsername(), id)) {
-            return vehicleService.getVehicleDataById(id);
-        } else throw new PermissionDeniedException();
+        return vehicleService.getVehicleDataById(id, userDetails.getUsername());
     }
 
     @PreAuthorize("hasRole('SUPERUSER')")
     @DeleteMapping("/{id}")
     public void deleteVehicle(Authentication authentication, @PathVariable Long id) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToVehicle(userDetails.getUsername(), id)) {
-            vehicleService.deleteVehicleById(id);
-        } else throw new PermissionDeniedException();
+        vehicleService.deleteVehicleById(id, userDetails.getUsername());
     }
 
     @GetMapping("/make")

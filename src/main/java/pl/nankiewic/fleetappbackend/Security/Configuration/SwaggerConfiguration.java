@@ -16,18 +16,21 @@ import java.util.List;
 @Configuration
 public class SwaggerConfiguration {
 
-    private ApiKey apiKey(){
-        return new ApiKey("JWT","Authorization", "header");
+    private ApiKey apiKey() {
+        return new ApiKey("JWT", "Authorization", "header");
     }
-    private SecurityContext securityContext(){
+
+    private SecurityContext securityContext() {
         return SecurityContext.builder().securityReferences(defaultAuth()).build();
     }
-    private List<SecurityReference> defaultAuth(){
+
+    private List<SecurityReference> defaultAuth() {
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
-        authorizationScopes[0]= authorizationScope;
+        authorizationScopes[0] = authorizationScope;
         return Collections.singletonList(new SecurityReference("JWT", authorizationScopes));
     }
+
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -40,6 +43,7 @@ public class SwaggerConfiguration {
                 .build();
 
     }
+
     private ApiInfo apiInfo() {
         return new ApiInfo(
                 "Fleet Support Application",

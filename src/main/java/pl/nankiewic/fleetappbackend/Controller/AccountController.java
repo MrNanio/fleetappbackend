@@ -1,6 +1,6 @@
 package pl.nankiewic.fleetappbackend.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -12,17 +12,13 @@ import pl.nankiewic.fleetappbackend.Service.AccountService;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping("/user")
 @CrossOrigin(origins = "http://localhost:4200")
-public class UserController {
+public class AccountController {
 
     private final AccountService accountService;
-
-    @Autowired
-    public UserController(AccountService accountService) {
-        this.accountService = accountService;
-    }
 
     @GetMapping("/activation-account")
     public @ResponseBody
@@ -62,7 +58,7 @@ public class UserController {
     public ResponseEntity<MessageResponse> addUserData(@RequestBody @Valid UserDataDTO userDataDTO,
                                                        Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        accountService.saveUserData(userDataDTO, userDetails.getUsername());
+        accountService.createUserData(userDataDTO, userDetails.getUsername());
         return ResponseEntity.ok().body(new MessageResponse("ok", LocalDateTime.now()));
     }
 

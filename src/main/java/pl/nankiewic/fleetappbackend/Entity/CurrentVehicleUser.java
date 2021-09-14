@@ -26,9 +26,4 @@ public class CurrentVehicleUser {
     @JoinColumn(name = "vehicle_id", nullable = false, unique = true)
     private Vehicle vehicle;
 
-    public CurrentVehicleUser(User user, Vehicle vehicle) {
-        this.user = user;
-        this.vehicle = vehicle;
-    }
-
 }

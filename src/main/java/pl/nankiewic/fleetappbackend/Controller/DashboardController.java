@@ -1,27 +1,19 @@
 package pl.nankiewic.fleetappbackend.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import pl.nankiewic.fleetappbackend.DTO.ChartDataRespondDTO;
-import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
-import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.DashboardService;
 
+@AllArgsConstructor
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/dashboard")
 public class DashboardController {
 
         private final DashboardService dashboardService;
-        private final CheckService checkService;
-
-        @Autowired
-        public DashboardController(DashboardService dashboardService, CheckService checkService) {
-                this.dashboardService = dashboardService;
-                this.checkService = checkService;
-        }
 
         @GetMapping("/cost_by_category")
         public Iterable<ChartDataRespondDTO> getCostByCategories(@RequestParam(name = "b") String beginS,
@@ -66,10 +58,7 @@ public class DashboardController {
                                                                Authentication authentication) {
 
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                if (checkService.accessToVehicle(userDetails.getUsername(), Long.parseLong(vehicle))) {
-                        return dashboardService.getFuelCostByVehicleAndData(vehicle, beginS, endS);
-                } else throw new PermissionDeniedException("Odmowa dostępu");
-
+                return dashboardService.getFuelCostByVehicleAndData(vehicle, beginS, endS, userDetails.getUsername());
         }
 
         @GetMapping("/trip_by_vehicle")
@@ -79,9 +68,7 @@ public class DashboardController {
                                                                   Authentication authentication) {
 
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                if (checkService.accessToVehicle(userDetails.getUsername(), Long.parseLong(vehicle))) {
-                        return dashboardService.getDistanceByVehicleAndData(beginS, endS, vehicle);
-                } else throw new PermissionDeniedException("Odmowa dostępu");
+                return dashboardService.getDistanceByVehicleAndData(beginS, endS, vehicle, userDetails.getUsername());
         }
 
         @GetMapping("/vehicle_cost_by_category")
@@ -91,9 +78,7 @@ public class DashboardController {
                                                                       Authentication authentication) {
 
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                if (checkService.accessToVehicle(userDetails.getUsername(), Long.parseLong(vehicle))) {
-                        return dashboardService.getVehicleCostByCategory(vehicle, beginS, endS);
-                } else throw new PermissionDeniedException("Odmowa dostępu");
+                return dashboardService.getVehicleCostByCategory(vehicle, beginS, endS, userDetails.getUsername());
         }
 
         @GetMapping("/vehicle_trip_by_trip_type")
@@ -103,10 +88,7 @@ public class DashboardController {
                                                                       Authentication authentication) {
 
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                if (checkService.accessToVehicle(userDetails.getUsername(), Long.parseLong(vehicle))) {
-                        return dashboardService.getDistanceByVehicleAndDataAndUseType(vehicle, beginS, endS);
-                } else throw new PermissionDeniedException("Odmowa dostępu");
-
+                return dashboardService.getDistanceByVehicleAndDataAndUseType(vehicle, beginS, endS, userDetails.getUsername());
         }
 
         @GetMapping("trip_by_user")

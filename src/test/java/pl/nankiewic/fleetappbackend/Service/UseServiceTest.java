@@ -14,8 +14,6 @@ import pl.nankiewic.fleetappbackend.Repository.*;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import static org.mockito.Mockito.*;
 
 class UseServiceTest {
@@ -28,13 +26,19 @@ class UseServiceTest {
     UserRepository userRepository;
     @Mock
     UseMapper useMapper;
+    @Mock
+    CheckExistAndPermissionComponent checkExistAndPermissionComponent;
 
     UseService useService;
+
+    private static final String EXAMPLE_EMAIL_ADDRESS = "example@example.com";
+    private static final Long EXAMPLE_ID = 1L;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         useService = new UseService(
+                checkExistAndPermissionComponent,
                 vehicleUseRepository,
                 vehicleRepository,
                 userRepository,
@@ -57,6 +61,7 @@ class UseServiceTest {
         String email = "mail@mail.com";
         Vehicle vehicle = Vehicle.builder()
                 .mileage("123").build();
+        when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
         when(vehicleRepository.findById(any())).thenReturn(Optional.of(vehicle));
         when(useMapper.vehicleUseDtoToEntity(any())).thenReturn(VehicleUse.builder().build());
         //when
@@ -80,10 +85,11 @@ class UseServiceTest {
                 .build();
         Vehicle vehicle = Vehicle.builder()
                 .mileage("123").build();
+        when(checkExistAndPermissionComponent.accessToUse(any(), any())).thenReturn(true);
         when(vehicleUseRepository.findById(any())).thenReturn(Optional.of(VehicleUse.builder().trip(Short.parseShort("12")).build()));
         when(vehicleRepository.findById(any())).thenReturn(Optional.of(vehicle));
         //when
-        useService.updateVehicleUse(useDTO);
+        useService.updateVehicleUse(useDTO, EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(vehicleUseRepository, times(1)).save(any());
         verify(useMapper, times(1)).updateVehicleUseFromDto(any(), any());
@@ -93,9 +99,10 @@ class UseServiceTest {
     @Test
     void should_get_use_by_vehicle() {
         //given
+        when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
         when(vehicleRepository.existsById(any())).thenReturn(true);
         //when
-        useService.getUseByVehicle(1L);
+        useService.getUseByVehicle(EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(vehicleUseRepository, times(1)).findAllByVehicleId(any());
 
@@ -103,8 +110,10 @@ class UseServiceTest {
 
     @Test
     void should_get_use_by_id() {
+        //given
+        when(checkExistAndPermissionComponent.accessToUse(any(), any())).thenReturn(true);
         //when
-        useService.getUseByUseId(1L);
+        useService.getUseByUseId(EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(vehicleUseRepository, times(1)).findByUseId(any());
     }
@@ -122,10 +131,9 @@ class UseServiceTest {
     @Test
     void should_get_use_by_user_and_vehicle() {
         //given
-        when(userRepository.existsById(any())).thenReturn(true);
-        when(vehicleRepository.existsById(any())).thenReturn(true);
+        when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
         //when
-        useService.getUseByUserAndVehicle(1L, 1L);
+        useService.getUseByUserAndVehicle(EXAMPLE_ID, EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(vehicleUseRepository, times(1)).findAllByVehicleAndUser(any(), any());
     }
@@ -136,8 +144,9 @@ class UseServiceTest {
         //given
         VehicleUse use = VehicleUse.builder().trip(Short.parseShort("12")).vehicle(Vehicle.builder().mileage("123").build()).build();
         when(vehicleUseRepository.findById(any())).thenReturn(Optional.of(use));
+        when(checkExistAndPermissionComponent.accessToUse(any(), any())).thenReturn(true);
         //when
-        useService.deleteUseById(1L);
+        useService.deleteUseById(EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(vehicleRepository, times(1)).save(any());
         verify(vehicleUseRepository, times(1)).deleteById(any());

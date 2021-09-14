@@ -1,10 +1,11 @@
 package pl.nankiewic.fleetappbackend.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.DTO.*;
 import pl.nankiewic.fleetappbackend.Entity.User;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
+import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.Repository.*;
 
 import javax.persistence.EntityNotFoundException;
@@ -14,10 +15,12 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@AllArgsConstructor
 public class DashboardService {
 
     private static final float FLOAT_VALUE_OF_ZERO = 0.0F;
 
+    private final CheckExistAndPermissionComponent checkExistAndPermissionComponent;
     private final VehicleInspectionRepository vehicleInspectionRepository;
     private final VehicleInsuranceRepository vehicleInsuranceRepository;
     private final VehicleRefuelingRepository vehicleRefuelingRepository;
@@ -26,110 +29,97 @@ public class DashboardService {
     private final VehicleRepository vehicleRepository;
     private final UserRepository userRepository;
 
-    @Autowired
-    public DashboardService(VehicleInspectionRepository vehicleInspectionRepository,
-                            VehicleInsuranceRepository vehicleInsuranceRepository,
-                            VehicleRefuelingRepository vehicleRefuelingRepository,
-                            VehicleRepairRepository vehicleRepairRepository,
-                            VehicleUseRepository vehicleUseRepository,
-                            VehicleRepository vehicleRepository,
-                            UserRepository userRepository) {
-        this.vehicleInspectionRepository = vehicleInspectionRepository;
-        this.vehicleInsuranceRepository = vehicleInsuranceRepository;
-        this.vehicleRefuelingRepository = vehicleRefuelingRepository;
-        this.vehicleRepairRepository = vehicleRepairRepository;
-        this.vehicleUseRepository = vehicleUseRepository;
-        this.vehicleRepository = vehicleRepository;
-        this.userRepository = userRepository;
+    public Iterable<ChartDataRespondDTO> getVehicleCostByCategory(String vehicleId, String begin, String end, String email) {
+        if (checkExistAndPermissionComponent.accessToVehicle(email, Long.parseLong(vehicleId))) {
+            LocalDate beginDate = LocalDate.parse(begin);
+            LocalDate endDate = LocalDate.parse(end);
+
+            Vehicle vehicle = vehicleRepository.findById(Long.parseLong(vehicleId)).orElseThrow(
+                    () -> new EntityNotFoundException("Bład przetwarzania"));
+            List<ChartDataRespondDTO> summary = new ArrayList<>();
+            ChartDataRespondDTO chartDataRepair = new ChartDataRespondDTO(
+                    vehicleCostByCategoriesRepair(vehicle, beginDate, endDate), "Naprawy");
+            summary.add(chartDataRepair);
+            ChartDataRespondDTO chartDataInsurance = new ChartDataRespondDTO(
+                    vehicleCostByCategoriesInsurance(vehicle, beginDate, endDate), "Ubezpieczenia");
+            summary.add(chartDataInsurance);
+            ChartDataRespondDTO chartDataInspection = new ChartDataRespondDTO(
+                    vehicleCostByCategoriesInspection(vehicle, beginDate, endDate), "Przeglądy");
+            summary.add(chartDataInspection);
+            ChartDataRespondDTO chartDataRefueling = new ChartDataRespondDTO(
+                    vehicleCostByCategoriesRefueling(vehicle, beginDate, endDate), "Paliwo");
+            summary.add(chartDataRefueling);
+            return summary;
+        } else throw new PermissionDeniedException("Odmowa dostępu");
     }
 
+    public Iterable<ChartDataRespondDTO> getDistanceByVehicleAndDataAndUseType(String vehicleId, String begin, String end, String email) {
+        if (checkExistAndPermissionComponent.accessToVehicle(email, Long.parseLong(vehicleId))) {
+            LocalDate beginDate = LocalDate.parse(begin);
+            LocalDate endDate = LocalDate.parse(end);
 
-    public Iterable<ChartDataRespondDTO> getVehicleCostByCategory(String vehicleId, String begin, String end) {
+            Vehicle vehicle = vehicleRepository.findById(Long.parseLong(vehicleId)).orElseThrow(
+                    () -> new EntityNotFoundException("Bład przetwarzania"));
+            List<ChartDataRespondDTO> summary = new ArrayList<>();
+            Iterable<DataUseTypeDTO> list = vehicleUseRepository.tripByVehicleAndDataAndTripType(vehicle, beginDate, endDate);
 
-        LocalDate beginDate = LocalDate.parse(begin);
-        LocalDate endDate = LocalDate.parse(end);
-
-        Vehicle vehicle = vehicleRepository.findById(Long.parseLong(vehicleId)).orElseThrow(
-                () -> new EntityNotFoundException("Bład przetwarzania"));
-        List<ChartDataRespondDTO> summary = new ArrayList<>();
-        ChartDataRespondDTO chartDataRepair = new ChartDataRespondDTO(
-                vehicleCostByCategoriesRepair(vehicle, beginDate, endDate), "Naprawy");
-        summary.add(chartDataRepair);
-        ChartDataRespondDTO chartDataInsurance = new ChartDataRespondDTO(
-                vehicleCostByCategoriesInsurance(vehicle, beginDate, endDate), "Ubezpieczenia");
-        summary.add(chartDataInsurance);
-        ChartDataRespondDTO chartDataInspection = new ChartDataRespondDTO(
-                vehicleCostByCategoriesInspection(vehicle, beginDate, endDate), "Przeglądy");
-        summary.add(chartDataInspection);
-        ChartDataRespondDTO chartDataRefueling = new ChartDataRespondDTO(
-                vehicleCostByCategoriesRefueling(vehicle, beginDate, endDate), "Paliwo");
-        summary.add(chartDataRefueling);
-        return summary;
-    }
-
-    public Iterable<ChartDataRespondDTO> getDistanceByVehicleAndDataAndUseType(String vehicleId, String begin, String end) {
-        LocalDate beginDate = LocalDate.parse(begin);
-        LocalDate endDate = LocalDate.parse(end);
-
-        Vehicle vehicle = vehicleRepository.findById(Long.parseLong(vehicleId)).orElseThrow(
-                () -> new EntityNotFoundException("Bład przetwarzania"));
-        List<ChartDataRespondDTO> summary = new ArrayList<>();
-        Iterable<DataUseTypeDTO> list = vehicleUseRepository.tripByVehicleAndDataAndTripType(vehicle, beginDate, endDate);
-
-        for (DataUseTypeDTO dataDTO : list) {
-            switch (dataDTO.getType()) {
-                case "city":
-                    dataDTO.setType("MIEJSKI");
-                    break;
-                case "average":
-                    dataDTO.setType("MIESZANY");
-                    break;
-                case "country":
-                    dataDTO.setType("POZAMIEJSKI");
-                    break;
+            for (DataUseTypeDTO dataDTO : list) {
+                switch (dataDTO.getType()) {
+                    case "city":
+                        dataDTO.setType("MIEJSKI");
+                        break;
+                    case "average":
+                        dataDTO.setType("MIESZANY");
+                        break;
+                    case "country":
+                        dataDTO.setType("POZAMIEJSKI");
+                        break;
+                }
+                ChartDataRespondDTO chartData = new ChartDataRespondDTO(
+                        dataDTO.getCost().floatValue(),
+                        dataDTO.getType());
+                summary.add(chartData);
             }
-            ChartDataRespondDTO chartData = new ChartDataRespondDTO(
-                    dataDTO.getCost().floatValue(),
-                    dataDTO.getType());
-            summary.add(chartData);
-        }
-        return summary;
+            return summary;
+        } else throw new PermissionDeniedException("Odmowa dostępu");
     }
 
-    public Iterable<ChartDataRespondDTO> getFuelCostByVehicleAndData(String vehicleId, String begin, String end) {
-        LocalDate beginDate = LocalDate.parse(begin);
-        LocalDate endDate = LocalDate.parse(end);
-        Vehicle vehicle = vehicleRepository.findById(Long.parseLong(vehicleId)).orElseThrow(
-                () -> new EntityNotFoundException("Bład przetwarzania"));
-        List<ChartDataRespondDTO> summary = new ArrayList<>();
-        Iterable<DataRefuelingDTO> list = vehicleRefuelingRepository.refuelingByVehicle(vehicle, beginDate, endDate);
-        for (DataRefuelingDTO dataDTO : list) {
-            ChartDataRespondDTO chartData = new ChartDataRespondDTO(
-                    dataDTO.getValue().floatValue(),
-                    dataDTO.getDate().toString());
-            summary.add(chartData);
-        }
-        return summary;
-
+    public Iterable<ChartDataRespondDTO> getFuelCostByVehicleAndData(String vehicleId, String begin, String end, String email) {
+        if (checkExistAndPermissionComponent.accessToVehicle(email, Long.parseLong(vehicleId))) {
+            LocalDate beginDate = LocalDate.parse(begin);
+            LocalDate endDate = LocalDate.parse(end);
+            Vehicle vehicle = vehicleRepository.findById(Long.parseLong(vehicleId)).orElseThrow(
+                    () -> new EntityNotFoundException("Bład przetwarzania"));
+            List<ChartDataRespondDTO> summary = new ArrayList<>();
+            Iterable<DataRefuelingDTO> list = vehicleRefuelingRepository.refuelingByVehicle(vehicle, beginDate, endDate);
+            for (DataRefuelingDTO dataDTO : list) {
+                ChartDataRespondDTO chartData = new ChartDataRespondDTO(
+                        dataDTO.getValue().floatValue(),
+                        dataDTO.getDate().toString());
+                summary.add(chartData);
+            }
+            return summary;
+        } else throw new PermissionDeniedException("Odmowa dostępu");
     }
 
-    public Iterable<ChartDataRespondDTO> getDistanceByVehicleAndData(String beginDate, String endDate, String vehicleId) {
+    public Iterable<ChartDataRespondDTO> getDistanceByVehicleAndData(String beginDate, String endDate, String vehicleId, String email) {
+        if (checkExistAndPermissionComponent.accessToVehicle(email, Long.parseLong(vehicleId))) {
+            LocalDate begin = LocalDate.parse(beginDate);
+            LocalDate end = LocalDate.parse(endDate);
 
-        LocalDate begin = LocalDate.parse(beginDate);
-        LocalDate end = LocalDate.parse(endDate);
+            Vehicle vehicle = vehicleRepository.findById(Long.parseLong(vehicleId)).orElseThrow(
+                    () -> new EntityNotFoundException("Bład przetwarzania"));
+            List<ChartDataRespondDTO> summary = new ArrayList<>();
+            Iterable<DataTripDTO> list = vehicleUseRepository.tripByVehicleAndData(vehicle, begin, end);
 
-        Vehicle vehicle = vehicleRepository.findById(Long.parseLong(vehicleId)).orElseThrow(
-                () -> new EntityNotFoundException("Bład przetwarzania"));
-        List<ChartDataRespondDTO> summary = new ArrayList<>();
-        Iterable<DataTripDTO> list = vehicleUseRepository.tripByVehicleAndData(vehicle, begin, end);
-
-        for (DataTripDTO dataDTO : list) {
-            ChartDataRespondDTO chartData = new ChartDataRespondDTO(
-                    dataDTO.getValue().floatValue(),
-                    dataDTO.getDate().toString());
-            summary.add(chartData);
-        }
-        return summary;
+            for (DataTripDTO dataDTO : list) {
+                ChartDataRespondDTO chartData = new ChartDataRespondDTO(
+                        dataDTO.getValue().floatValue(),
+                        dataDTO.getDate().toString());
+                summary.add(chartData);
+            }
+            return summary;
+        } else throw new PermissionDeniedException("Odmowa dostępu");
     }
 
     public Iterable<ChartDataRespondDTO> getFleetCostByCategory(String username, String begin, String end) {

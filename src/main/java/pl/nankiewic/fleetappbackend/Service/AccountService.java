@@ -1,5 +1,6 @@
 package pl.nankiewic.fleetappbackend.Service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
+@AllArgsConstructor
 @Service
 public class AccountService {
     private final UserAccountStatusRepository userAccountStatusRepository;
@@ -34,26 +36,9 @@ public class AccountService {
     private final UserDataMapper userDataMapper;
     private final MailService mailService;
 
-    @Autowired
-    public AccountService(UserAccountStatusRepository userAccountStatusRepository,
-                          VerificationTokenRepository verificationTokenRepository,
-                          UserDataRepository userDataRepository,
-                          PasswordEncoder passwordEncoder,
-                          UserRepository userRepository,
-                          RoleRepository roleRepository,
-                          UserDataMapper userDataMapper,
-                          MailService mailService) {
-        this.userAccountStatusRepository = userAccountStatusRepository;
-        this.verificationTokenRepository = verificationTokenRepository;
-        this.userDataRepository = userDataRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.userDataMapper = userDataMapper;
-        this.mailService = mailService;
-    }
+    //user data - start
+    public void createUserData(UserDataDTO userDataDTO, String email) {
 
-    public void saveUserData(UserDataDTO userDataDTO, String email) {
         User user = userRepository.findUserByEmail(email);
         if (userDataRepository.existsByUser(user)) {
             throw new EntityNotFoundException("Dane istnieją");
@@ -95,6 +80,7 @@ public class AccountService {
         userDataRepository.findByUser(user);
         userDataRepository.deleteById(userDataRepository.findByUser(user).getId());
     }
+    //user data - end
 
     public void getAccountActivation(String activation_token) {
         if (activation_token != null) {
@@ -110,10 +96,7 @@ public class AccountService {
         }
     }
 
-    public void activation(User user) {
-        user.setUserAccountStatus(userAccountStatusRepository.findByEnumName(EnumUserAccountStatus.ACTIVE));
-        userRepository.save(user);
-    }
+
 
 
     public void postResetPassword(EmailDTO emailDTO) {
@@ -225,6 +208,7 @@ public class AccountService {
                 () -> new EntityNotFoundException("Nie znaleziono użytkownika"));
 
         UserAccountStatus userAccountStatus = userAccountStatusRepository.findByEnumName(parseStringToEnum(blockOrUnblock.getUserStatus()));
+
         switch (userAccountStatus.getUserAccountStatus().name()) {
             case "ACTIVE":
             case "INACTIVE":
@@ -307,6 +291,11 @@ public class AccountService {
         } else if (EnumUserAccountStatus.BLOCKED.name().equals(status)) {
             return EnumUserAccountStatus.BLOCKED;
         } else throw new EntityNotFoundException("nie znaleziono parsowanej wartości");
+    }
+
+    private void activation(User user) {
+        user.setUserAccountStatus(userAccountStatusRepository.findByEnumName(EnumUserAccountStatus.ACTIVE));
+        userRepository.save(user);
     }
 
 }

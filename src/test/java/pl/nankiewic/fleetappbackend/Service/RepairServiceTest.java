@@ -9,21 +9,18 @@ import pl.nankiewic.fleetappbackend.Entity.VehicleRepair;
 import pl.nankiewic.fleetappbackend.Mapper.RepairMapper;
 import pl.nankiewic.fleetappbackend.Repository.UserRepository;
 import pl.nankiewic.fleetappbackend.Repository.VehicleRepairRepository;
-import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 class RepairServiceTest {
-
+    @Mock
+    CheckExistAndPermissionComponent checkExistAndPermissionComponent;
     @Mock
     VehicleRepairRepository vehicleRepairRepository;
-    @Mock
-    VehicleRepository vehicleRepository;
     @Mock
     UserRepository userRepository;
     @Mock
@@ -31,12 +28,16 @@ class RepairServiceTest {
 
     RepairService repairService;
 
+    private static final String EXAMPLE_EMAIL_ADDRESS = "example@example.com";
+    private static final Long EXAMPLE_ID = 1L;
+
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         repairService = new RepairService(
+                checkExistAndPermissionComponent,
                 vehicleRepairRepository,
-                vehicleRepository,
                 userRepository,
                 repairMapper);
     }
@@ -52,8 +53,9 @@ class RepairServiceTest {
                 .description("bhjvhvh")
                 .title("fgfgfg")
                 .build();
+        when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
         //when
-        repairService.createVehicleRepair(repairDTO);
+        repairService.createVehicleRepair(repairDTO, EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(vehicleRepairRepository, times(1)).save(any());
     }
@@ -70,9 +72,10 @@ class RepairServiceTest {
                 .title("fgfgfg")
                 .build();
         VehicleRepair repair = VehicleRepair.builder().build();
+        when(checkExistAndPermissionComponent.accessToRepair(any(), any())).thenReturn(true);
         when(vehicleRepairRepository.findById(any())).thenReturn(Optional.of(repair));
         //when
-        repairService.updateVehicleRepair(repairDTO);
+        repairService.updateVehicleRepair(repairDTO, EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(vehicleRepairRepository, times(1)).save(any());
     }
@@ -80,9 +83,9 @@ class RepairServiceTest {
     @Test
     void should_get_repair_by_id() {
         //given
-        when(vehicleRepairRepository.existsById(any())).thenReturn(true);
+        when(checkExistAndPermissionComponent.accessToRepair(any(), any())).thenReturn(true);
         //when
-        repairService.getRepairById(1L);
+        repairService.getRepairById(EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(vehicleRepairRepository, times(1)).findRepairById(any());
     }
@@ -90,9 +93,9 @@ class RepairServiceTest {
     @Test
     void should_get_repairs_by_vehicle() {
         //given
-        when(vehicleRepository.existsById(any())).thenReturn(true);
+        when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
         //when
-        repairService.getRepairsByVehicle(1L);
+        repairService.getRepairsByVehicle(EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(vehicleRepairRepository, times(1)).findAllRepairsByVehicleId(any());
 
@@ -103,7 +106,7 @@ class RepairServiceTest {
         //given
         when(userRepository.existsByEmail(any())).thenReturn(true);
         //when
-        repairService.getRepairsByUser("example@user.pl");
+        repairService.getRepairsByUser(EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(vehicleRepairRepository, times(1)).findAllRepairByFromUserVehicle(any());
 
@@ -113,8 +116,9 @@ class RepairServiceTest {
     @Test
     void should_delete_vehicle_repair_by_id() {
         //given
+        when(checkExistAndPermissionComponent.accessToRepair(any(), any())).thenReturn(true);
         //when
-        repairService.deleteRepairById(1L);
+        repairService.deleteRepairById(EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(vehicleRepairRepository, times(1)).deleteById(any());
     }
