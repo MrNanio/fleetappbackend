@@ -1,6 +1,7 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
 import lombok.*;
+import pl.nankiewic.fleetappbackend.Entity.Enum.EnumInsuranceType;
 
 @Getter
 @Setter
@@ -9,6 +10,6 @@ import lombok.*;
 @Builder
 public class InsuranceTypeDTO {
     private Long id;
-    private String name;
+    private EnumInsuranceType name;
 
 }

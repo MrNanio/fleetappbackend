@@ -7,7 +7,6 @@ import org.mockito.MockitoAnnotations;
 import pl.nankiewic.fleetappbackend.DTO.InsuranceRequestDTO;
 import pl.nankiewic.fleetappbackend.Entity.VehicleInsurance;
 import pl.nankiewic.fleetappbackend.Mapper.InsuranceMapper;
-import pl.nankiewic.fleetappbackend.Mapper.InsuranceTypeMapper;
 import pl.nankiewic.fleetappbackend.Repository.*;
 
 import java.math.BigDecimal;
@@ -15,28 +14,30 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 class InsuranceServiceTest {
+    @Mock
+    CheckExistAndPermissionComponent checkExistAndPermissionComponent;
     @Mock
     VehicleInsuranceRepository vehicleInsuranceRepository;
     @Mock
     InsuranceTypeRepository insuranceTypeRepository;
     @Mock
     InsuranceMapper insuranceMapper;
-    @Mock
-    InsuranceTypeMapper insuranceTypeMapper;
 
     InsuranceService insuranceService;
+
+    private static final String EXAMPLE_EMAIL_ADDRESS = "example@example.com";
+    private static final Long EXAMPLE_ID = 1L;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         insuranceService = new InsuranceService(
+                checkExistAndPermissionComponent,
                 vehicleInsuranceRepository,
                 insuranceTypeRepository,
-                insuranceMapper,
-                insuranceTypeMapper);
+                insuranceMapper);
     }
 
     @Test
@@ -52,8 +53,9 @@ class InsuranceServiceTest {
                 .policyNumber("hghghjgbhjbjh")
                 .build();
         when(insuranceMapper.insuranceDtoToVehicleInsuranceEntity(any())).thenReturn(VehicleInsurance.builder().build());
+        when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
         //when
-        insuranceService.createVehicleInsurance(insuranceRequestDTO);
+        insuranceService.createVehicleInsurance(insuranceRequestDTO, EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(vehicleInsuranceRepository, times(1)).save(any());
 
@@ -72,16 +74,21 @@ class InsuranceServiceTest {
                 .policyNumber("hghghjgbhjbjh")
                 .build();
         VehicleInsurance vehicleInsurance = VehicleInsurance.builder().build();
+        when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
         when(vehicleInsuranceRepository.findById(any())).thenReturn(Optional.of(vehicleInsurance));
         //when
-        insuranceService.updateVehicleInsurance(insuranceRequestDTO);
+        insuranceService.updateVehicleInsurance(insuranceRequestDTO, EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(vehicleInsuranceRepository, times(1)).save(any());
     }
 
     @Test
     void should_get_insurance_by_id() {
-        insuranceService.getInsuranceById(1L);
+        //given
+        when(checkExistAndPermissionComponent.accessToInsurance(any(), any())).thenReturn(true);
+        //when
+        insuranceService.getInsuranceById(EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
+        //then
         verify(vehicleInsuranceRepository, times(1)).findInsuranceById(any());
     }
 
@@ -93,22 +100,28 @@ class InsuranceServiceTest {
 
     @Test
     void should_get_insurance_by_vehicle() {
-        insuranceService.getInsurancesByVehicle(1L);
+        //given
+        when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
+        //when
+        insuranceService.getInsurancesByVehicle(EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
+        //then
         verify(vehicleInsuranceRepository, times(1)).findAllInsuranceByVehicle(any());
     }
 
     @Test
     void should_get_insurance_type() {
         insuranceService.getInsuranceTypes();
-        verify(insuranceTypeRepository, times(1)).findAll();
-
+        verify(insuranceTypeRepository, times(1)).findInsurancesTypes();
     }
 
     @Test
     void should_delete_insurance_by_id() {
-        insuranceService.deleteInsuranceById(1L);
+        //given
+        when(checkExistAndPermissionComponent.accessToInsurance(any(), any())).thenReturn(true);
+        //when
+        insuranceService.deleteInsuranceById(EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
+        //then
         verify(vehicleInsuranceRepository, times(1)).deleteById(any());
-
     }
 
 }
