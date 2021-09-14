@@ -1,6 +1,7 @@
 package pl.nankiewic.fleetappbackend.Controller;
 
 import com.lowagie.text.DocumentException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -10,17 +11,13 @@ import pl.nankiewic.fleetappbackend.Service.ReportsService;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@AllArgsConstructor
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/reports")
 public class ReportsController {
 
     private final ReportsService reportsService;
-
-    @Autowired
-    public ReportsController(ReportsService reportsService) {
-        this.reportsService = reportsService;
-    }
 
     @GetMapping("/by_user")
     public void exportVehicleReportToPDF(@RequestParam(name = "r") String report,

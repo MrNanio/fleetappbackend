@@ -1,5 +1,6 @@
 package pl.nankiewic.fleetappbackend.Service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,13 +20,11 @@ import pl.nankiewic.fleetappbackend.Repository.RoleRepository;
 import pl.nankiewic.fleetappbackend.Repository.UserAccountStatusRepository;
 import pl.nankiewic.fleetappbackend.Repository.UserRepository;
 import pl.nankiewic.fleetappbackend.Repository.VerificationTokenRepository;
-import pl.nankiewic.fleetappbackend.Security.AuthenticationRequest;
-import pl.nankiewic.fleetappbackend.Security.AuthenticationResponse;
-import pl.nankiewic.fleetappbackend.Security.CustomUserDetailsService;
-import pl.nankiewic.fleetappbackend.Security.JWTokenUtility;
+import pl.nankiewic.fleetappbackend.Security.*;
 
 import java.time.LocalDateTime;
 
+@AllArgsConstructor
 @Service
 public class AuthenticationService {
 
@@ -37,26 +36,6 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService userDetailsService;
     private final JWTokenUtility tokenUtility;
-
-
-
-    @Autowired
-    public AuthenticationService(UserAccountStatusRepository userAccountStatusRepository,
-                                 VerificationTokenRepository verificationTokenRepository,
-                                 RoleRepository roleRepository, UserRepository userRepository,
-                                 PasswordEncoder passwordEncoder,
-                                 AuthenticationManager authenticationManager,
-                                 CustomUserDetailsService userDetailsService,
-                                 JWTokenUtility tokenUtility) {
-        this.userAccountStatusRepository = userAccountStatusRepository;
-        this.verificationTokenRepository = verificationTokenRepository;
-        this.roleRepository = roleRepository;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
-        this.userDetailsService = userDetailsService;
-        this.tokenUtility = tokenUtility;
-    }
 
     public AuthenticationResponse login(AuthenticationRequest authenticationRequest) {
 
@@ -76,7 +55,10 @@ public class AuthenticationService {
         user.setLastLoginAt(LocalDateTime.now());
         userRepository.save(user);
 
-        return new AuthenticationResponse(jwtToken, userDetails.getUsername(), user.getId(), user.getRole().getRole().name());
+        return new AuthenticationResponse(jwtToken,
+                userDetails.getUsername(),
+                user.getId(),
+                user.getRole().getRole().name());
     }
 
     public void save(AuthenticationRequest authenticationRequest) {
