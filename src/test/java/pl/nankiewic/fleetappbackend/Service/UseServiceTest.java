@@ -14,8 +14,6 @@ import pl.nankiewic.fleetappbackend.Repository.*;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import static org.mockito.Mockito.*;
 
 class UseServiceTest {
@@ -35,7 +33,6 @@ class UseServiceTest {
 
     private static final String EXAMPLE_EMAIL_ADDRESS = "example@example.com";
     private static final Long EXAMPLE_ID = 1L;
-
 
     @BeforeEach
     public void setUp() {
