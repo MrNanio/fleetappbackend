@@ -5,8 +5,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import pl.nankiewic.fleetappbackend.DTO.RefuelingDTO;
-import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
-import pl.nankiewic.fleetappbackend.Service.CheckService;
 import pl.nankiewic.fleetappbackend.Service.RefuelingService;
 
 import javax.validation.Valid;
@@ -18,40 +16,32 @@ import javax.validation.Valid;
 public class RefuelingController {
 
     private final RefuelingService refuelingService;
-    private final CheckService checkService;
 
     @PostMapping
-    public void addRefueling(@RequestBody @Valid RefuelingDTO refuelingDTO, Authentication authentication) {
+    public void addRefueling(@RequestBody @Valid RefuelingDTO refuelingDTO,
+                             Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToVehicle(userDetails.getUsername(), refuelingDTO.getVehicleId())) {
-            refuelingService.createVehicleRefueling(refuelingDTO, userDetails.getUsername());
-        } else throw new PermissionDeniedException();
+        refuelingService.createVehicleRefueling(refuelingDTO, userDetails.getUsername());
     }
 
     @PutMapping
     public void updateRefueling(@RequestBody @Valid RefuelingDTO refuelingDTO,
                                 Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToRefueling(userDetails.getUsername(), refuelingDTO.getId())) {
-            refuelingService.updateVehicleRefueling(refuelingDTO);
-        } else throw new PermissionDeniedException();
+        refuelingService.updateVehicleRefueling(refuelingDTO, userDetails.getUsername());
     }
 
     @GetMapping("/{id}")
     public RefuelingDTO getRefuelingById(@PathVariable Long id, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToRefueling(userDetails.getUsername(), id)) {
-            return refuelingService.getRefuelingById(id);
-        } else throw new PermissionDeniedException();
+        return refuelingService.getRefuelingById(id, userDetails.getUsername());
     }
 
     @GetMapping("/v/{id}")
     public Iterable<RefuelingDTO> getRefuelingByVehicle(@PathVariable Long id,
                                                         Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToVehicle(userDetails.getUsername(), id)) {
-            return refuelingService.getRefuelingByVehicle(id);
-        } else throw new PermissionDeniedException();
+        return refuelingService.getRefuelingByVehicle(id, userDetails.getUsername());
     }
 
     @GetMapping
@@ -71,17 +61,13 @@ public class RefuelingController {
                                                                    @RequestParam(name = "v") Long vehicleId,
                                                                    Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToVehicle(userDetails.getUsername(), vehicleId)) {
-            return refuelingService.getRefuelingByUserAndVehicle(userId, vehicleId);
-        } else throw new PermissionDeniedException();
+        return refuelingService.getRefuelingByUserAndVehicle(userId, vehicleId, userDetails.getUsername());
     }
 
     @DeleteMapping("/{id}")
     public void deleteRefueling(Authentication authentication, @PathVariable Long id) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (checkService.accessToRefueling(userDetails.getUsername(), id)) {
-            refuelingService.deleteRefuelingById(id);
-        } else throw new PermissionDeniedException();
+        refuelingService.deleteRefuelingById(id, userDetails.getUsername());
     }
 
 }

@@ -10,19 +10,17 @@ import pl.nankiewic.fleetappbackend.Entity.VehicleRefueling;
 import pl.nankiewic.fleetappbackend.Mapper.RefuelingMapper;
 import pl.nankiewic.fleetappbackend.Repository.UserRepository;
 import pl.nankiewic.fleetappbackend.Repository.VehicleRefuelingRepository;
-import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+
 
 class RefuelingServiceTest {
-
     @Mock
-    VehicleRepository vehicleRepository;
+    CheckExistAndPermissionComponent checkExistAndPermissionComponent;
     @Mock
     VehicleRefuelingRepository vehicleRefuelingRepository;
     @Mock
@@ -32,11 +30,15 @@ class RefuelingServiceTest {
 
     RefuelingService refuelingService;
 
+    private static final String EXAMPLE_EMAIL_ADDRESS = "example@example.com";
+    private static final Long EXAMPLE_ID = 1L;
+
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         refuelingService = new RefuelingService(
-                vehicleRepository,
+                checkExistAndPermissionComponent,
                 vehicleRefuelingRepository,
                 userRepository,
                 refuelingMapper);
@@ -53,10 +55,11 @@ class RefuelingServiceTest {
                 .description("bvjgfgjf")
                 .refuelingDate(LocalDate.now())
                 .litre("23").build();
+        when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
         when(refuelingMapper.refuelingDtoToVehicleRefuelingEntity(any())).thenReturn(VehicleRefueling.builder().build());
         when(userRepository.findUserByEmail(any())).thenReturn(User.builder().build());
         //when
-        refuelingService.createVehicleRefueling(refuelingDTO, "mail");
+        refuelingService.createVehicleRefueling(refuelingDTO, EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(vehicleRefuelingRepository, times(1)).save(any());
     }
@@ -72,65 +75,72 @@ class RefuelingServiceTest {
                 .description("bvjgfgjf")
                 .refuelingDate(LocalDate.now())
                 .litre("23").build();
+        when(checkExistAndPermissionComponent.accessToRefueling(any(), any())).thenReturn(true);
         when(vehicleRefuelingRepository.findById(any())).thenReturn(Optional.of(VehicleRefueling.builder().build()));
         //when
-        refuelingService.updateVehicleRefueling(refuelingDTO);
+        refuelingService.updateVehicleRefueling(refuelingDTO, EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(vehicleRefuelingRepository, times(1)).save(any());
     }
 
     @Test
     void should_get_refueling_by_id() {
-        when(vehicleRefuelingRepository.existsById(anyLong())).thenReturn(true);
-
-        refuelingService.getRefuelingById(1L);
-
+        //given
+        when(checkExistAndPermissionComponent.accessToRefueling(any(), any())).thenReturn(true);
+        //when
+        refuelingService.getRefuelingById(EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
+        //then
         verify(vehicleRefuelingRepository, times(1)).findVehicleRefuelingById(any());
     }
 
     @Test
     void should_get_refueling_by_vehicle() {
-        when(vehicleRepository.existsById(any())).thenReturn(true);
-
-        refuelingService.getRefuelingByVehicle(1L);
-
+        //given
+        when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
+        //when
+        refuelingService.getRefuelingByVehicle(EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
+        //then
         verify(vehicleRefuelingRepository, times(1)).findRefuelingListByVehicle(any());
     }
 
     @Test
     void should_get_refueling_by_user() {
+        //given
         when(userRepository.existsByEmail(any())).thenReturn(true);
-
-        refuelingService.getRefuelingByUser("email@email.com");
-
+        //when
+        refuelingService.getRefuelingByUser(EXAMPLE_EMAIL_ADDRESS);
+        //then
         verify(vehicleRefuelingRepository, times(1)).findRefuelingListByUsersVehicle(any());
     }
 
     @Test
     void should_get_refueling_by_author() {
-
+        //given
         when(userRepository.existsByEmail(any())).thenReturn(true);
-
-        refuelingService.getRefuelingByAuthor("email@email.com");
-
+        //when
+        refuelingService.getRefuelingByAuthor(EXAMPLE_EMAIL_ADDRESS);
+        //then
         verify(vehicleRefuelingRepository, times(1)).findRefuelingListByUser(any());
     }
 
     @Test
     void should_get_refueling_by_user_and_vehicle() {
-
+        //given
+        when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
         when(userRepository.existsById(any())).thenReturn(true);
-        when(vehicleRepository.existsById(any())).thenReturn(true);
-
-        refuelingService.getRefuelingByUserAndVehicle(1L, 1L);
-
+        //when
+        refuelingService.getRefuelingByUserAndVehicle(EXAMPLE_ID, EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
+        //then
         verify(vehicleRefuelingRepository, times(1)).findAllByVehicleAndUser(any(), any());
     }
 
     @Test
     void should_delete_by_id() {
-
-        refuelingService.deleteRefuelingById(1L);
+        //given
+        when(checkExistAndPermissionComponent.accessToRefueling(any(), any())).thenReturn(true);
+        //when
+        refuelingService.deleteRefuelingById(EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
+        //then
         verify(vehicleRefuelingRepository, times(1)).deleteById(any());
     }
 }
