@@ -1,6 +1,6 @@
 package pl.nankiewic.fleetappbackend.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
+@AllArgsConstructor
 @Service
 public class ReportsService {
     private final UserRepository userRepository;
@@ -27,26 +28,7 @@ public class ReportsService {
     private final VehicleInsuranceRepository vehicleInsuranceRepository;
     private final VehicleInspectionRepository vehicleInspectionRepository;
     private final VehicleRefuelingRepository vehicleRefuelingRepository;
-    private final CheckService checkService;
-
-    @Autowired
-    public ReportsService(UserRepository userRepository,
-                          VehicleRepository vehicleRepository,
-                          VehicleUseRepository vehicleUseRepository,
-                          VehicleRepairRepository vehicleRepairRepository,
-                          VehicleInsuranceRepository vehicleInsuranceRepository,
-                          VehicleInspectionRepository vehicleInspectionRepository,
-                          VehicleRefuelingRepository vehicleRefuelingRepository,
-                          CheckService checkService) {
-        this.userRepository = userRepository;
-        this.vehicleRepository = vehicleRepository;
-        this.vehicleUseRepository = vehicleUseRepository;
-        this.vehicleRepairRepository = vehicleRepairRepository;
-        this.vehicleInsuranceRepository = vehicleInsuranceRepository;
-        this.vehicleInspectionRepository = vehicleInspectionRepository;
-        this.vehicleRefuelingRepository = vehicleRefuelingRepository;
-        this.checkService = checkService;
-    }
+    private final CheckExistAndPermissionComponent checkExistAndPermissionComponent;
 
     public void exportReportByUserToPDF(String resourceId,
                                         String beginDate,
@@ -96,7 +78,7 @@ public class ReportsService {
         response.setHeader(headerKey, headerValue);
         Long id = Long.valueOf(resourceId);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (!checkService.accessToVehicle(userDetails.getUsername(), id)) {
+        if (!checkExistAndPermissionComponent.accessToVehicle(userDetails.getUsername(), id)) {
             throw new PermissionDeniedException("Odmowa dostępu");
         }
         LocalDate begin = LocalDate.parse(beginDate);
