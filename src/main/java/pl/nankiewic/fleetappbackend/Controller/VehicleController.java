@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleDTO;
 import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
+import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleView;
 import pl.nankiewic.fleetappbackend.Entity.FuelType;
 import pl.nankiewic.fleetappbackend.Entity.VehicleMake;
 import pl.nankiewic.fleetappbackend.Service.VehicleService;
@@ -45,7 +46,7 @@ public class VehicleController {
     }
 
     @GetMapping("/{id}")
-    public VehicleDTO getVehicleById(@PathVariable Long id, Authentication authentication) {
+    public VehicleView getVehicleById(@PathVariable Long id, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return vehicleService.getVehicleDataById(id, userDetails.getUsername());
     }

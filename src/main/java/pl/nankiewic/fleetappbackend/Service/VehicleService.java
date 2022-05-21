@@ -1,16 +1,20 @@
 package pl.nankiewic.fleetappbackend.Service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleDTO;
 import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
+import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleView;
 import pl.nankiewic.fleetappbackend.Entity.FuelType;
 import pl.nankiewic.fleetappbackend.Entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Entity.VehicleMake;
 import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.Mapper.VehicleMapper;
-import pl.nankiewic.fleetappbackend.Repository.*;
+import pl.nankiewic.fleetappbackend.Repository.FuelTypeRepository;
+import pl.nankiewic.fleetappbackend.Repository.UserRepository;
+import pl.nankiewic.fleetappbackend.Repository.VehicleMakeRepository;
+import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
+
 import javax.persistence.EntityNotFoundException;
 
 @AllArgsConstructor
@@ -47,7 +51,7 @@ public class VehicleService {
         } else throw new EntityNotFoundException("Nie znaleziono pojazdów użytkownika");
     }
 
-    public VehicleDTO getVehicleDataById(Long id, String email) {
+    public VehicleView getVehicleDataById(Long id, String email) {
         if (checkExistAndPermissionComponent.accessToVehicle(email, id)) {
             return vehicleRepository.findVehicleDetailsById(id);
         } else throw new PermissionDeniedException();
