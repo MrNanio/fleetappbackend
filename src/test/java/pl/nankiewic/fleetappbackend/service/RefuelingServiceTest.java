@@ -5,11 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import pl.nankiewic.fleetappbackend.DTO.RefuelingDTO;
-import pl.nankiewic.fleetappbackend.Entity.User;
-import pl.nankiewic.fleetappbackend.Entity.VehicleRefueling;
+import pl.nankiewic.fleetappbackend.entity.User;
+import pl.nankiewic.fleetappbackend.entity.VehicleRefueling;
 import pl.nankiewic.fleetappbackend.mapper.RefuelingMapper;
-import pl.nankiewic.fleetappbackend.Repository.UserRepository;
-import pl.nankiewic.fleetappbackend.Repository.VehicleRefuelingRepository;
+import pl.nankiewic.fleetappbackend.repository.UserRepository;
+import pl.nankiewic.fleetappbackend.repository.VehicleRefuelingRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

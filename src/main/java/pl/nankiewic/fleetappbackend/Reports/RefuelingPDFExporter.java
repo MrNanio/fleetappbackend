@@ -5,8 +5,8 @@ import com.lowagie.text.Font;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import pl.nankiewic.fleetappbackend.Entity.Vehicle;
-import pl.nankiewic.fleetappbackend.Entity.VehicleRefueling;
+import pl.nankiewic.fleetappbackend.entity.Vehicle;
+import pl.nankiewic.fleetappbackend.entity.VehicleRefueling;
 
 
 import javax.servlet.http.HttpServletResponse;

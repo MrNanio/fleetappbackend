@@ -5,11 +5,11 @@ import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.DTO.InsuranceDTO;
 import pl.nankiewic.fleetappbackend.DTO.InsuranceRequestDTO;
 import pl.nankiewic.fleetappbackend.DTO.InsuranceTypeDTO;
-import pl.nankiewic.fleetappbackend.Entity.VehicleInsurance;
+import pl.nankiewic.fleetappbackend.entity.VehicleInsurance;
 import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.mapper.InsuranceMapper;
-import pl.nankiewic.fleetappbackend.Repository.InsuranceTypeRepository;
-import pl.nankiewic.fleetappbackend.Repository.VehicleInsuranceRepository;
+import pl.nankiewic.fleetappbackend.repository.InsuranceTypeRepository;
+import pl.nankiewic.fleetappbackend.repository.VehicleInsuranceRepository;
 
 import javax.persistence.EntityNotFoundException;
 

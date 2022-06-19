@@ -3,10 +3,10 @@ package pl.nankiewic.fleetappbackend.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.DTO.*;
-import pl.nankiewic.fleetappbackend.Entity.User;
-import pl.nankiewic.fleetappbackend.Entity.Vehicle;
+import pl.nankiewic.fleetappbackend.entity.User;
+import pl.nankiewic.fleetappbackend.entity.Vehicle;
 import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
-import pl.nankiewic.fleetappbackend.Repository.*;
+import pl.nankiewic.fleetappbackend.repository.*;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;

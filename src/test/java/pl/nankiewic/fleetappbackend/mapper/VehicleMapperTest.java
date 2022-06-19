@@ -7,15 +7,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
-import pl.nankiewic.fleetappbackend.Entity.Enum.EnumFuelType;
-import pl.nankiewic.fleetappbackend.Entity.Enum.EnumVehicleStatus;
-import pl.nankiewic.fleetappbackend.Entity.FuelType;
-import pl.nankiewic.fleetappbackend.Entity.Vehicle;
-import pl.nankiewic.fleetappbackend.Entity.VehicleMake;
-import pl.nankiewic.fleetappbackend.Entity.VehicleStatus;
-import pl.nankiewic.fleetappbackend.Repository.FuelTypeRepository;
-import pl.nankiewic.fleetappbackend.Repository.VehicleMakeRepository;
-import pl.nankiewic.fleetappbackend.Repository.VehicleStatusRepository;
+import pl.nankiewic.fleetappbackend.entity.Enum.EnumFuelType;
+import pl.nankiewic.fleetappbackend.entity.Enum.EnumVehicleStatus;
+import pl.nankiewic.fleetappbackend.entity.FuelType;
+import pl.nankiewic.fleetappbackend.entity.Vehicle;
+import pl.nankiewic.fleetappbackend.entity.VehicleMake;
+import pl.nankiewic.fleetappbackend.entity.VehicleStatus;
+import pl.nankiewic.fleetappbackend.repository.FuelTypeRepository;
+import pl.nankiewic.fleetappbackend.repository.VehicleMakeRepository;
+import pl.nankiewic.fleetappbackend.repository.VehicleStatusRepository;
 
 import java.math.BigDecimal;
 

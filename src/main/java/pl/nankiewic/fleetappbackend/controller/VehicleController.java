@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
 import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleView;
-import pl.nankiewic.fleetappbackend.Entity.FuelType;
-import pl.nankiewic.fleetappbackend.Entity.VehicleMake;
+import pl.nankiewic.fleetappbackend.entity.FuelType;
+import pl.nankiewic.fleetappbackend.entity.VehicleMake;
 import pl.nankiewic.fleetappbackend.service.VehicleService;
 
 import javax.validation.Valid;

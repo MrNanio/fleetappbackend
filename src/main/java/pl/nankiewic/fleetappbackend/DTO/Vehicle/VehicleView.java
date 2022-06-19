@@ -1,7 +1,7 @@
 package pl.nankiewic.fleetappbackend.DTO.Vehicle;
 
-import pl.nankiewic.fleetappbackend.Entity.Enum.EnumFuelType;
-import pl.nankiewic.fleetappbackend.Entity.Enum.EnumVehicleStatus;
+import pl.nankiewic.fleetappbackend.entity.Enum.EnumFuelType;
+import pl.nankiewic.fleetappbackend.entity.Enum.EnumVehicleStatus;
 
 import java.math.BigDecimal;
 

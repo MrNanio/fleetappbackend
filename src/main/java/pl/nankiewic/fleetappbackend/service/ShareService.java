@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.DTO.ShareDTO;
 import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
-import pl.nankiewic.fleetappbackend.Entity.CurrentVehicleUser;
+import pl.nankiewic.fleetappbackend.entity.CurrentVehicleUser;
 import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.mapper.ShareVehicleMapper;
 import pl.nankiewic.fleetappbackend.mapper.VehicleMapper;
-import pl.nankiewic.fleetappbackend.Repository.CurrentVehicleUserRepository;
-import pl.nankiewic.fleetappbackend.Repository.UserRepository;
-import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
+import pl.nankiewic.fleetappbackend.repository.CurrentVehicleUserRepository;
+import pl.nankiewic.fleetappbackend.repository.UserRepository;
+import pl.nankiewic.fleetappbackend.repository.VehicleRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.stream.Collectors;
@@ -45,7 +45,7 @@ public class ShareService {
 
     public Iterable<VehicleRequestResponseDTO> getPossibleVehiclesList(String username) {
         if (userRepository.existsByEmail(username)) {
-            var myByOwner = vehicleRepository.findVehiclesDataByUser(username);
+            var myByOwner = vehicleRepository.findVehiclesDataByUserVehicleDto(username);
             var myVehicleNowShare = currentVehicleUserRepository.findCurrentVehicleUsersByVehicleOwner(username);
             return myByOwner.stream()
                     .filter(v -> myVehicleNowShare.stream()

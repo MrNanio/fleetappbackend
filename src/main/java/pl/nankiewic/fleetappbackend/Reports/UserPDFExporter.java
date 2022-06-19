@@ -3,7 +3,7 @@ package pl.nankiewic.fleetappbackend.Reports;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.pdf.*;
-import pl.nankiewic.fleetappbackend.Entity.User;
+import pl.nankiewic.fleetappbackend.entity.User;
 
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;

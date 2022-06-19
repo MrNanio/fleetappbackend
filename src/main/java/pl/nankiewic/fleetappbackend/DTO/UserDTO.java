@@ -1,8 +1,8 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
 import lombok.*;
-import pl.nankiewic.fleetappbackend.Entity.Enum.EnumRole;
-import pl.nankiewic.fleetappbackend.Entity.Enum.EnumUserAccountStatus;
+import pl.nankiewic.fleetappbackend.entity.Enum.EnumRole;
+import pl.nankiewic.fleetappbackend.entity.Enum.EnumUserAccountStatus;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;

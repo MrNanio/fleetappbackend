@@ -13,8 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import pl.nankiewic.fleetappbackend.DTO.UseDTO;
-import pl.nankiewic.fleetappbackend.Security.JWTAuthenticationEntryPoint;
-import pl.nankiewic.fleetappbackend.Security.JWTokenUtility;
+import pl.nankiewic.fleetappbackend.config.security.JWTAuthenticationEntryPoint;
+import pl.nankiewic.fleetappbackend.config.security.JWTokenUtility;
 import pl.nankiewic.fleetappbackend.service.UseService;
 
 import java.time.LocalDate;

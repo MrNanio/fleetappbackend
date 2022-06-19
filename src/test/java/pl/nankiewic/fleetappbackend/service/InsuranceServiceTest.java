@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import pl.nankiewic.fleetappbackend.DTO.InsuranceRequestDTO;
-import pl.nankiewic.fleetappbackend.Entity.VehicleInsurance;
+import pl.nankiewic.fleetappbackend.entity.VehicleInsurance;
 import pl.nankiewic.fleetappbackend.mapper.InsuranceMapper;
-import pl.nankiewic.fleetappbackend.Repository.*;
+import pl.nankiewic.fleetappbackend.repository.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

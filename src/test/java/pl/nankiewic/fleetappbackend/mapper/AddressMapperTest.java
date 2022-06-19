@@ -3,7 +3,7 @@ package pl.nankiewic.fleetappbackend.mapper;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import pl.nankiewic.fleetappbackend.DTO.AddressDTO;
-import pl.nankiewic.fleetappbackend.Entity.Address;
+import pl.nankiewic.fleetappbackend.entity.Address;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AddressMapperTest {

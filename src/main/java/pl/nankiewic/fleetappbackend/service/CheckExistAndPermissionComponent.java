@@ -2,8 +2,8 @@ package pl.nankiewic.fleetappbackend.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.nankiewic.fleetappbackend.Entity.*;
-import pl.nankiewic.fleetappbackend.Repository.*;
+import pl.nankiewic.fleetappbackend.entity.*;
+import pl.nankiewic.fleetappbackend.repository.*;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;

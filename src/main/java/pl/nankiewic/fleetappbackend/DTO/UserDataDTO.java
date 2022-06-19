@@ -2,7 +2,7 @@ package pl.nankiewic.fleetappbackend.DTO;
 
 
 import lombok.*;
-import pl.nankiewic.fleetappbackend.Entity.Address;
+import pl.nankiewic.fleetappbackend.entity.Address;
 
 @Getter
 @Setter

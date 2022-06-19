@@ -3,10 +3,10 @@ package pl.nankiewic.fleetappbackend.mapper;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.nankiewic.fleetappbackend.DTO.InsuranceRequestDTO;
-import pl.nankiewic.fleetappbackend.Entity.Enum.EnumInsuranceType;
-import pl.nankiewic.fleetappbackend.Entity.VehicleInsurance;
-import pl.nankiewic.fleetappbackend.Repository.InsuranceTypeRepository;
-import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
+import pl.nankiewic.fleetappbackend.entity.Enum.EnumInsuranceType;
+import pl.nankiewic.fleetappbackend.entity.VehicleInsurance;
+import pl.nankiewic.fleetappbackend.repository.InsuranceTypeRepository;
+import pl.nankiewic.fleetappbackend.repository.VehicleRepository;
 
 import javax.persistence.EntityNotFoundException;
 

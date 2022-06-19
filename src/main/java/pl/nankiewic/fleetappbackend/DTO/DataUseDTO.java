@@ -1,9 +1,7 @@
 package pl.nankiewic.fleetappbackend.DTO;
 
 import lombok.*;
-import pl.nankiewic.fleetappbackend.Entity.Vehicle;
-
-import java.math.BigDecimal;
+import pl.nankiewic.fleetappbackend.entity.Vehicle;
 
 @Getter
 @Setter

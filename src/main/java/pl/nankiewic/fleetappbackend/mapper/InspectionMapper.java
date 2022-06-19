@@ -3,8 +3,8 @@ package pl.nankiewic.fleetappbackend.mapper;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.nankiewic.fleetappbackend.DTO.InspectionDTO;
-import pl.nankiewic.fleetappbackend.Entity.VehicleInspection;
-import pl.nankiewic.fleetappbackend.Repository.VehicleRepository;
+import pl.nankiewic.fleetappbackend.entity.VehicleInspection;
+import pl.nankiewic.fleetappbackend.repository.VehicleRepository;
 
 import javax.persistence.EntityNotFoundException;
 

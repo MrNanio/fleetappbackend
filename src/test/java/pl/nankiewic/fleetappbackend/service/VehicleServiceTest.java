@@ -6,10 +6,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
-import pl.nankiewic.fleetappbackend.Entity.User;
-import pl.nankiewic.fleetappbackend.Entity.Vehicle;
+import pl.nankiewic.fleetappbackend.entity.User;
+import pl.nankiewic.fleetappbackend.entity.Vehicle;
 import pl.nankiewic.fleetappbackend.mapper.VehicleMapper;
-import pl.nankiewic.fleetappbackend.Repository.*;
+import pl.nankiewic.fleetappbackend.repository.*;
 
 import java.util.*;
 
