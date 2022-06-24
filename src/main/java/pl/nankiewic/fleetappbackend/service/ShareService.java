@@ -3,7 +3,7 @@ package pl.nankiewic.fleetappbackend.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.DTO.ShareDTO;
-import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
+import pl.nankiewic.fleetappbackend.DTO.vehicle.VehicleRequestResponseDTO;
 import pl.nankiewic.fleetappbackend.entity.CurrentVehicleUser;
 import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.mapper.ShareVehicleMapper;

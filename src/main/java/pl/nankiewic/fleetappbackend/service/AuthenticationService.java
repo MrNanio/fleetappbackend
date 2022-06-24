@@ -22,7 +22,7 @@ import pl.nankiewic.fleetappbackend.repository.VerificationTokenRepository;
 import pl.nankiewic.fleetappbackend.config.security.AuthenticationRequest;
 import pl.nankiewic.fleetappbackend.config.security.AuthenticationResponse;
 import pl.nankiewic.fleetappbackend.config.security.CustomUserDetailsService;
-import pl.nankiewic.fleetappbackend.config.security.JWTokenUtility;
+import pl.nankiewic.fleetappbackend.config.jwt.JWTokenUtility;
 
 import java.time.LocalDateTime;
 
@@ -37,7 +37,6 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService userDetailsService;
-    private final JWTokenUtility tokenUtility;
 
     public AuthenticationResponse login(AuthenticationRequest authenticationRequest) {
 
@@ -52,7 +51,7 @@ public class AuthenticationService {
             throw new UserAccountEnabledException("Konto: " + user.getEmail() + " jest nieaktywne");
         }
 
-        String jwtToken = tokenUtility.generateJwtToken(userDetails);
+        String jwtToken = JWTokenUtility.generateJwtToken(userDetails);
 
         user.setLastLoginAt(LocalDateTime.now());
         userRepository.save(user);

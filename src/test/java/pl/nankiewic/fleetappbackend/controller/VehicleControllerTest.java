@@ -2,159 +2,98 @@ package pl.nankiewic.fleetappbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
+import pl.nankiewic.fleetappbackend.config.jwt.JWTokenUtility;
+import pl.nankiewic.fleetappbackend.config.security.CustomUserDetails;
+import pl.nankiewic.fleetappbackend.repository.UserRepository;
+import pl.nankiewic.fleetappbackend.repository.VehicleRepository;
 
-import pl.nankiewic.fleetappbackend.config.security.JWTAuthenticationEntryPoint;
-import pl.nankiewic.fleetappbackend.config.security.JWTokenUtility;
-import pl.nankiewic.fleetappbackend.service.VehicleService;
+import java.util.HashSet;
+import java.util.Set;
 
-import java.math.BigDecimal;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static pl.nankiewic.fleetappbackend.util.user.UserFactory.buildUser;
+import static pl.nankiewic.fleetappbackend.util.vehicle.VehicleFactory.buildVehicle;
+import static pl.nankiewic.fleetappbackend.util.vehicle.VehicleRequestResponseDTOFactory.buildVehicleRequestResponseDTO;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.mockito.Mockito.*;
-
-@WebMvcTest(controllers = VehicleController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class VehicleControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private VehicleRepository vehicleRepository;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
-    private VehicleService vehicleService;
-
-
-    @MockBean
-    private JWTAuthenticationEntryPoint authenticationEntryPoint;
-
-    @MockBean
-    JWTokenUtility tokenUtility;
-
-    @MockBean
-    PasswordEncoder passwordEncoder;
-
-    @MockBean
-    UserDetailsService userDetailsService;
-
     @Test
-    @WithMockUser(roles = {"SUPERUSER"})
     void should_add_vehicle() throws Exception {
         //given
-        VehicleRequestResponseDTO vehicleRequestResponseDTO = VehicleRequestResponseDTO.builder()
-                .id(1L)
-                .make("SKODA")
-                .model("FABIA")
-                .year("2009")
-                .color("BIAŁY")
-                .mileage("209000")
-                .vinNumber("GTFRED4567DEY65TG")
-                .vehicleRegistrationNumber("LU7654D")
-                .fuelType("ON")
-                .cityFuelConsumption(BigDecimal.valueOf(5.6))
-                .countryFuelConsumption(BigDecimal.valueOf(3.6))
-                .averageFuelConsumption(BigDecimal.valueOf(4.6))
-                .vehicleStatus("ACTIVE")
+        var vehicle = objectMapper.writeValueAsString(buildVehicleRequestResponseDTO());
+        var user = buildUser();
+        var savedUser = userRepository.save(user);
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + savedUser.getRole().getRole().name()));
+        var jwtUser = CustomUserDetails.builder()
+                .username(savedUser.getEmail())
+                .id(savedUser.getId())
+                .isEnabled(true)
+                .authorities(authorities)
                 .build();
+
         //then
         mockMvc.perform(MockMvcRequestBuilders.post("/vehicle")
-                .content(objectMapper.writeValueAsString(vehicleRequestResponseDTO))
-                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .content(vehicle)
+                .header("Authorization", "Bearer " + JWTokenUtility.generateJwtToken(jwtUser))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        //when
-        verify(vehicleService, times(1)).createVehicle(any(), any());
     }
 
     @Test
-    @WithMockUser(roles = {"SUPERUSER"})
     void should_update_vehicle() throws Exception {
         //given
-        VehicleRequestResponseDTO vehicleRequestResponseDTO = VehicleRequestResponseDTO.builder()
-                .id(1L)
-                .make("SKODA")
-                .model("FABIA")
-                .year("2009")
-                .color("BIAŁY")
-                .mileage("209000")
-                .vinNumber("GTFRED4567DEY65TG")
-                .vehicleRegistrationNumber("LU7654D")
-                .fuelType("ON")
-                .cityFuelConsumption(BigDecimal.valueOf(5.6))
-                .countryFuelConsumption(BigDecimal.valueOf(3.6))
-                .averageFuelConsumption(BigDecimal.valueOf(4.6))
-                .vehicleStatus("ACTIVE")
+        var savedUser = userRepository.save(buildUser());
+        var savedVehicle = vehicleRepository.save(buildVehicle(savedUser.getId()));
+        var vehicle = objectMapper.writeValueAsString(buildVehicleRequestResponseDTO(savedVehicle.getId()));
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + savedUser.getRole().getRole().name()));
+        var jwtUser = CustomUserDetails.builder()
+                .username(savedUser.getEmail())
+                .id(savedUser.getId())
+                .isEnabled(true)
+                .authorities(authorities)
                 .build();
 
         //when
         mockMvc.perform(MockMvcRequestBuilders.put("/vehicle")
-                .content(objectMapper.writeValueAsString(vehicleRequestResponseDTO))
-                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .content(vehicle)
+                .header("Authorization", "Bearer " + JWTokenUtility.generateJwtToken(jwtUser))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        //then
-        verify(vehicleService, times(1)).updateVehicle(any(), any());
-
     }
 
-    @Test
-    @WithMockUser(roles = {"SUPERUSER"})
-    void should_get_vehicles_by_vehicle_owner() throws Exception {
-        //given
-        //when
-        mockMvc.perform(MockMvcRequestBuilders.get("/vehicle"))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().is(200));
-        //then
-        verify(vehicleService, times(1)).getVehiclesDataByUser(any());
-    }
-
-    @Test
-    @WithMockUser
-    void should_not_get_vehicles_by_vehicle_owner() throws Exception {
-        //given
-        //when
-        mockMvc.perform(MockMvcRequestBuilders.get("/vehicle"))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().is(403));
-        //then
-        verify(vehicleService, times(0)).getVehiclesDataByUser(any());
-    }
-
-    @Test
-    @WithMockUser(roles = {"SUPERUSER"})
-    void should_get_vehicle_by_id() throws Exception {
-        //given
-        //when
-        mockMvc.perform(MockMvcRequestBuilders.get("/vehicle/1"))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().is(200))
-                .andReturn();
-        //then
-        verify(vehicleService, times(1)).getVehicleDataById(any(), any());
-    }
-
-    @Test
-    @WithMockUser(roles = {"SUPERUSER"})
-    void should_delete_vehicle_by_id() throws Exception {
-        //given
-        //when
-        mockMvc.perform(MockMvcRequestBuilders.delete("/vehicle/1"))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(status().is(200))
-                .andReturn();
-        //then
-        verify(vehicleService, times(1)).deleteVehicleById(any(), any());
+    @AfterEach
+    public void cleanUp() {
+        vehicleRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
 }

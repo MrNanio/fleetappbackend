@@ -5,8 +5,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
-import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleView;
+import pl.nankiewic.fleetappbackend.DTO.vehicle.VehicleRequestResponseDTO;
+import pl.nankiewic.fleetappbackend.DTO.vehicle.VehicleView;
 import pl.nankiewic.fleetappbackend.entity.FuelType;
 import pl.nankiewic.fleetappbackend.entity.VehicleMake;
 import pl.nankiewic.fleetappbackend.service.VehicleService;
@@ -24,18 +24,14 @@ public class VehicleController {
 
     @PreAuthorize("hasRole('SUPERUSER')")
     @PostMapping()
-    public void addVehicle(@RequestBody @Valid VehicleRequestResponseDTO vehicleRequestResponseDTO,
-                           Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        vehicleService.createVehicle(vehicleRequestResponseDTO, userDetails.getUsername());
+    public void addVehicle(@RequestBody @Valid VehicleRequestResponseDTO vehicleRequestResponseDTO) {
+        vehicleService.createVehicle(vehicleRequestResponseDTO);
     }
 
     @PreAuthorize("hasRole('SUPERUSER')")
     @PutMapping
-    public void updateVehicle(@RequestBody @Valid VehicleRequestResponseDTO vehicleRequestResponseDTO,
-                              Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        vehicleService.updateVehicle(vehicleRequestResponseDTO, userDetails.getUsername());
+    public void updateVehicle(@RequestBody @Valid VehicleRequestResponseDTO vehicleRequestResponseDTO) {
+        vehicleService.updateVehicle(vehicleRequestResponseDTO);
     }
 
     @PreAuthorize("hasRole('SUPERUSER')")

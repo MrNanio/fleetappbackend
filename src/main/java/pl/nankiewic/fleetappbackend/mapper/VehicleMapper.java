@@ -3,8 +3,8 @@ package pl.nankiewic.fleetappbackend.mapper;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
 import pl.nankiewic.fleetappbackend.DTO.VehicleDTO;
+import pl.nankiewic.fleetappbackend.DTO.vehicle.VehicleRequestResponseDTO;
 import pl.nankiewic.fleetappbackend.entity.Enum.EnumFuelType;
 import pl.nankiewic.fleetappbackend.entity.Enum.EnumVehicleStatus;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;

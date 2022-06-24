@@ -1,9 +1,11 @@
 package pl.nankiewic.fleetappbackend.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
-import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleView;
+import pl.nankiewic.fleetappbackend.DTO.vehicle.VehicleRequestResponseDTO;
+import pl.nankiewic.fleetappbackend.DTO.vehicle.VehicleView;
 import pl.nankiewic.fleetappbackend.entity.FuelType;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
 import pl.nankiewic.fleetappbackend.entity.VehicleMake;
@@ -28,14 +30,16 @@ public class VehicleService {
     private final VehicleMapper vehicleMapper;
     private final CheckExistAndPermissionComponent checkExistAndPermissionComponent;
 
-    public void createVehicle(VehicleRequestResponseDTO vehicleRequestResponseDTO, String email) {
+    public void createVehicle(VehicleRequestResponseDTO vehicleRequestResponseDTO) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Vehicle vehicle = vehicleMapper.vehicleDTOtoVehicle(vehicleRequestResponseDTO);
-        vehicle.setUser(userRepository.findUserByEmail(email));
+        vehicle.setUser(userRepository.findUserByEmail(auth.getName()));
         vehicleRepository.save(vehicle);
     }
 
-    public void updateVehicle(VehicleRequestResponseDTO vehicleRequestResponseDTO, String email) {
-        if (checkExistAndPermissionComponent.accessToVehicle(email, vehicleRequestResponseDTO.getId())) {
+    public void updateVehicle(VehicleRequestResponseDTO vehicleRequestResponseDTO) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (checkExistAndPermissionComponent.accessToVehicle(auth.getName(), vehicleRequestResponseDTO.getId())) {
             Vehicle vehicle = vehicleRepository.findById(vehicleRequestResponseDTO.getId()).orElseThrow(
                     () -> new EntityNotFoundException("Nie znaleziono zasobu: pojazd"));
             vehicleMapper.updateVehicleFromRequest(vehicle, vehicleRequestResponseDTO);

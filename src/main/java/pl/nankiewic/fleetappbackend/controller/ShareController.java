@@ -5,8 +5,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import pl.nankiewic.fleetappbackend.DTO.ShareDTO;
-
-import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
+import pl.nankiewic.fleetappbackend.DTO.vehicle.VehicleRequestResponseDTO;
 import pl.nankiewic.fleetappbackend.service.ShareService;
 
 import javax.validation.Valid;

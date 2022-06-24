@@ -3,9 +3,13 @@ package pl.nankiewic.fleetappbackend.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import pl.nankiewic.fleetappbackend.DTO.vehicle.VehicleRequestResponseDTO;
 import pl.nankiewic.fleetappbackend.entity.User;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
 import pl.nankiewic.fleetappbackend.mapper.VehicleMapper;
@@ -44,6 +48,11 @@ class VehicleServiceTest {
                 userRepository,
                 vehicleMapper,
                 checkExistAndPermissionComponent);
+
+        Authentication authentication = Mockito.mock(Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
     }
 
     @Test
@@ -52,11 +61,10 @@ class VehicleServiceTest {
         when(vehicleMapper.vehicleDTOtoVehicle(any())).thenReturn(Vehicle.builder().build());
         when(userRepository.findUserByEmail(any())).thenReturn(User.builder().build());
         //when
-        vehicleService.createVehicle(VehicleRequestResponseDTO.builder().build(), EXAMPLE_EMAIL_ADDRESS);
+        vehicleService.createVehicle(VehicleRequestResponseDTO.builder().build());
         //then
         verify(userRepository, times(1)).findUserByEmail(any());
         verify(vehicleMapper, times(1)).vehicleDTOtoVehicle(any());
-
     }
 
     @Test
@@ -65,7 +73,7 @@ class VehicleServiceTest {
         when(vehicleRepository.findById(any())).thenReturn(Optional.of(Vehicle.builder().build()));
         when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
         //when
-        vehicleService.updateVehicle(VehicleRequestResponseDTO.builder().build(), EXAMPLE_EMAIL_ADDRESS);
+        vehicleService.updateVehicle(VehicleRequestResponseDTO.builder().build());
         //then
         verify(vehicleRepository, times(1)).findById(any());
     }

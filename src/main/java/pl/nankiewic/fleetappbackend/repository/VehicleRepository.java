@@ -2,8 +2,8 @@ package pl.nankiewic.fleetappbackend.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleView;
 import pl.nankiewic.fleetappbackend.DTO.VehicleDTO;
+import pl.nankiewic.fleetappbackend.DTO.vehicle.VehicleView;
 import pl.nankiewic.fleetappbackend.entity.User;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
 

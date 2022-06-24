@@ -3,7 +3,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="1" author="nankiewic">
+    <changeSet id="20220623210000" author="nankiewic">
 
         <createTable tableName="fuel_types">
             <column name="id" type="bigint" autoIncrement="true">

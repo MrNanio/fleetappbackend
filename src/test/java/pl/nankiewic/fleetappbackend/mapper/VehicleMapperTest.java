@@ -6,7 +6,7 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import pl.nankiewic.fleetappbackend.DTO.Vehicle.VehicleRequestResponseDTO;
+import pl.nankiewic.fleetappbackend.DTO.vehicle.VehicleRequestResponseDTO;
 import pl.nankiewic.fleetappbackend.entity.Enum.EnumFuelType;
 import pl.nankiewic.fleetappbackend.entity.Enum.EnumVehicleStatus;
 import pl.nankiewic.fleetappbackend.entity.FuelType;

@@ -1,6 +1,6 @@
 package pl.nankiewic.fleetappbackend.config;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,21 +14,18 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pl.nankiewic.fleetappbackend.config.security.AuthorizationFilter;
-import pl.nankiewic.fleetappbackend.config.security.JWTAuthenticationEntryPoint;
-import pl.nankiewic.fleetappbackend.config.security.JWTokenUtility;
+import pl.nankiewic.fleetappbackend.config.jwt.JwtAuthorizationFilter;
+import pl.nankiewic.fleetappbackend.config.jwt.JWTAuthenticationEntryPoint;
 
-@AllArgsConstructor
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@RequiredArgsConstructor
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final UserDetailsService userDetailsService;
+    private final UserDetailsService userService;
     private final JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final PasswordEncoder passwordEncoder;
-    private final JWTokenUtility jwTokenUtility;
 
     @Bean
     @Override
@@ -36,14 +33,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    @Bean
-    public AuthorizationFilter authenticationJwtTokenFilter(JWTokenUtility tokenUtility) {
-        return new AuthorizationFilter(tokenUtility);
-    }
-
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+        authenticationManagerBuilder.userDetailsService(userService).passwordEncoder(passwordEncoder);
     }
 
     @Override
@@ -66,7 +58,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
+                .addFilter(new JwtAuthorizationFilter(authenticationManager()))
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
-        http.addFilterBefore(authenticationJwtTokenFilter(jwTokenUtility), UsernamePasswordAuthenticationFilter.class);
     }
 }
