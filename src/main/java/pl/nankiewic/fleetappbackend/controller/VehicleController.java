@@ -2,8 +2,6 @@ package pl.nankiewic.fleetappbackend.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import pl.nankiewic.fleetappbackend.DTO.vehicle.VehicleRequestResponseDTO;
 import pl.nankiewic.fleetappbackend.DTO.vehicle.VehicleView;
@@ -24,8 +22,8 @@ public class VehicleController {
 
     @PreAuthorize("hasRole('SUPERUSER')")
     @PostMapping()
-    public void addVehicle(@RequestBody @Valid VehicleRequestResponseDTO vehicleRequestResponseDTO) {
-        vehicleService.createVehicle(vehicleRequestResponseDTO);
+    public VehicleRequestResponseDTO addVehicle(@RequestBody @Valid VehicleRequestResponseDTO vehicleRequestResponseDTO) {
+        return vehicleService.createVehicle(vehicleRequestResponseDTO);
     }
 
     @PreAuthorize("hasRole('SUPERUSER')")
@@ -36,22 +34,19 @@ public class VehicleController {
 
     @PreAuthorize("hasRole('SUPERUSER')")
     @GetMapping()
-    public Iterable<VehicleView> getVehiclesByVehicleOwner(Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return vehicleService.getVehiclesDataByUser(userDetails.getUsername());
+    public Iterable<VehicleView> getVehiclesByVehicleOwner() {
+        return vehicleService.getVehiclesDataByUser();
     }
 
     @GetMapping("/{id}")
-    public Optional<VehicleView> getVehicleById(@PathVariable Long id, Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return vehicleService.getVehicleDataById(id, userDetails.getUsername());
+    public Optional<VehicleView> getVehicleById(@PathVariable Long id) {
+        return vehicleService.getVehicleDataById(id);
     }
 
     @PreAuthorize("hasRole('SUPERUSER')")
     @DeleteMapping("/{id}")
-    public void deleteVehicle(Authentication authentication, @PathVariable Long id) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        vehicleService.deleteVehicleById(id, userDetails.getUsername());
+    public void deleteVehicle(@PathVariable Long id) {
+        vehicleService.deleteVehicleById(id);
     }
 
     @GetMapping("/make")

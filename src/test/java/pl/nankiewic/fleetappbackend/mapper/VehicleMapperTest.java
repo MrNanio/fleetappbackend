@@ -7,12 +7,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import pl.nankiewic.fleetappbackend.DTO.vehicle.VehicleRequestResponseDTO;
+import pl.nankiewic.fleetappbackend.entity.*;
 import pl.nankiewic.fleetappbackend.entity.Enum.EnumFuelType;
 import pl.nankiewic.fleetappbackend.entity.Enum.EnumVehicleStatus;
-import pl.nankiewic.fleetappbackend.entity.FuelType;
-import pl.nankiewic.fleetappbackend.entity.Vehicle;
-import pl.nankiewic.fleetappbackend.entity.VehicleMake;
-import pl.nankiewic.fleetappbackend.entity.VehicleStatus;
 import pl.nankiewic.fleetappbackend.repository.FuelTypeRepository;
 import pl.nankiewic.fleetappbackend.repository.VehicleMakeRepository;
 import pl.nankiewic.fleetappbackend.repository.VehicleStatusRepository;
@@ -56,11 +53,13 @@ class VehicleMapperTest {
                 .countryFuelConsumption(BigDecimal.valueOf(8.9))
                 .vehicleStatus("ACTIVE")
                 .build();
+
+        User user = User.builder().build();
         when(vehicleStatusRepository.findByEnumName(any())).thenReturn(VehicleStatus.builder().vehicleStatus(EnumVehicleStatus.ACTIVE).build());
         when(fuelTypeRepository.findByEnumName(any())).thenReturn(FuelType.builder().fuelType(EnumFuelType.PB95).build());
         when(vehicleMakeRepository.findByName(any())).thenReturn(VehicleMake.builder().name("FORD").build());
         //when
-        Vehicle vehicle = vehicleMapper.vehicleDTOtoVehicle(vehicleRequestResponseDTO);
+        Vehicle vehicle = vehicleMapper.vehicleDTOtoVehicle(vehicleRequestResponseDTO, user);
         //then
         assertThat(vehicle.getColor()).isEqualTo(vehicleRequestResponseDTO.getColor());
         assertThat(vehicle.getVehicleStatus().getVehicleStatus()).isEqualTo(EnumVehicleStatus.ACTIVE);

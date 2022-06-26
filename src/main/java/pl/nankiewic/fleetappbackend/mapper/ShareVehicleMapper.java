@@ -20,10 +20,9 @@ public abstract class ShareVehicleMapper {
     @Mapping(target = "user", ignore = true)
     public abstract CurrentVehicleUser shareDtoToCurrentVehicleUser(Long vehicleId, Long userId);
 
-
     @Named(value = "dtoToEntity")
     @AfterMapping
-    public void vehicleRepairAddAttribute(Long vehicleId,
+    public void vehicleShareAddAttribute(Long vehicleId,
                                           Long userId,
                                           @MappingTarget CurrentVehicleUser currentVehicleUser) {
         currentVehicleUser.setVehicle(vehicleRepository.findById(vehicleId).orElseThrow(

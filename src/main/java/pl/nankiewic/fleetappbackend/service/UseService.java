@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.DTO.UseDTO;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
 import pl.nankiewic.fleetappbackend.entity.VehicleUse;
-import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
+import pl.nankiewic.fleetappbackend.exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.mapper.UseMapper;
 import pl.nankiewic.fleetappbackend.repository.UserRepository;
 import pl.nankiewic.fleetappbackend.repository.VehicleRepository;

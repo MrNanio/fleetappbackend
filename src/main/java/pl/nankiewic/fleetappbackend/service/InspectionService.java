@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.DTO.InspectionDTO;
 import pl.nankiewic.fleetappbackend.entity.VehicleInspection;
-import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
+import pl.nankiewic.fleetappbackend.exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.mapper.InspectionMapper;
 import pl.nankiewic.fleetappbackend.repository.VehicleInspectionRepository;
 

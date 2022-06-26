@@ -1,4 +1,4 @@
-package pl.nankiewic.fleetappbackend.Exception;
+package pl.nankiewic.fleetappbackend.exception;
 
 import java.time.LocalDateTime;
 

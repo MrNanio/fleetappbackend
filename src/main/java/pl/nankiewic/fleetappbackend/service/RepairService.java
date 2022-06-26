@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.DTO.RepairDTO;
 import pl.nankiewic.fleetappbackend.entity.VehicleRepair;
-import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
+import pl.nankiewic.fleetappbackend.exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.mapper.RepairMapper;
 import pl.nankiewic.fleetappbackend.repository.UserRepository;
 import pl.nankiewic.fleetappbackend.repository.VehicleRepairRepository;

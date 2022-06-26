@@ -1,5 +1,6 @@
 package pl.nankiewic.fleetappbackend.mapper;
 
+import liquibase.pro.packaged.A;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -7,8 +8,10 @@ import pl.nankiewic.fleetappbackend.DTO.VehicleDTO;
 import pl.nankiewic.fleetappbackend.DTO.vehicle.VehicleRequestResponseDTO;
 import pl.nankiewic.fleetappbackend.entity.Enum.EnumFuelType;
 import pl.nankiewic.fleetappbackend.entity.Enum.EnumVehicleStatus;
+import pl.nankiewic.fleetappbackend.entity.User;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
 import pl.nankiewic.fleetappbackend.repository.FuelTypeRepository;
+import pl.nankiewic.fleetappbackend.repository.UserRepository;
 import pl.nankiewic.fleetappbackend.repository.VehicleMakeRepository;
 import pl.nankiewic.fleetappbackend.repository.VehicleStatusRepository;
 
@@ -25,6 +28,7 @@ public abstract class VehicleMapper {
 
     @BeanMapping(qualifiedByName = "dtoToEntity")
     @Mappings({
+            @Mapping(target = "id", ignore = true),
             @Mapping(target = "vehicleMake", ignore = true),
             @Mapping(target = "vehicleStatus", ignore = true),
             @Mapping(target = "fuelType", ignore = true),
@@ -36,11 +40,11 @@ public abstract class VehicleMapper {
             @Mapping(target = "vehicleRepairs", ignore = true),
             @Mapping(target = "vehicleUses", ignore = true)
     })
-    public abstract Vehicle vehicleDTOtoVehicle(VehicleRequestResponseDTO vehicleRequestResponseDTO);
+    public abstract Vehicle vehicleDTOtoVehicle(VehicleRequestResponseDTO vehicleRequestResponseDTO, User user);
 
     @Named(value = "dtoToEntity")
     @AfterMapping
-    public void vehicleValueMapToEnum(VehicleRequestResponseDTO vehicleRequestResponseDTO, @MappingTarget Vehicle vehicle) {
+    public void vehicleValueMapToEnum(VehicleRequestResponseDTO vehicleRequestResponseDTO, @MappingTarget Vehicle vehicle, User user) {
 
         if (EnumVehicleStatus.ACTIVE.name().equals(vehicleRequestResponseDTO.getVehicleStatus())) {
             vehicle.setVehicleStatus(vehicleStatusRepository.findByEnumName(EnumVehicleStatus.ACTIVE));
@@ -58,6 +62,7 @@ public abstract class VehicleMapper {
             vehicle.setFuelType(fuelTypeRepository.findByEnumName(EnumFuelType.PB98));
         }
         vehicle.setVehicleMake(vehicleMakeRepository.findByName(vehicleRequestResponseDTO.getMake()));
+        vehicle.setUser(user);
     }
 
     @BeanMapping(qualifiedByName = "dtoToResponseDto")

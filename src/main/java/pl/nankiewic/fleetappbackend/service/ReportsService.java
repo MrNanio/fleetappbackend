@@ -5,7 +5,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.entity.*;
-import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
+import pl.nankiewic.fleetappbackend.exception.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.Reports.*;
 import pl.nankiewic.fleetappbackend.repository.*;
 

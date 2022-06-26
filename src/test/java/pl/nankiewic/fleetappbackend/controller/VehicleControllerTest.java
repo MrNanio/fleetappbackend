@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import pl.nankiewic.fleetappbackend.config.jwt.JWTokenUtility;
 import pl.nankiewic.fleetappbackend.config.security.CustomUserDetails;
 import pl.nankiewic.fleetappbackend.repository.UserRepository;
@@ -88,6 +89,77 @@ class VehicleControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+    }
+
+
+    @Test
+    void should_get_vehicles_by_vehicle_owner() throws Exception {
+        //given
+        var savedUser = userRepository.save(buildUser());
+        vehicleRepository.save(buildVehicle(savedUser.getId()));
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + savedUser.getRole().getRole().name()));
+        var jwtUser = CustomUserDetails.builder()
+                .username(savedUser.getEmail())
+                .id(savedUser.getId())
+                .isEnabled(true)
+                .authorities(authorities)
+                .build();
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.get("/vehicle")
+                .header("Authorization", "Bearer " + JWTokenUtility.generateJwtToken(jwtUser)))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is(200));
+    }
+
+    @Test
+    void should_not_get_vehicles_by_vehicle_owner() throws Exception {
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.get("/vehicle"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is(401));
+    }
+
+    @Test
+    void should_get_vehicle_by_id() throws Exception {
+        //given
+        var savedUser = userRepository.save(buildUser());
+        var savedVehicle = vehicleRepository.save(buildVehicle(savedUser.getId()));
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + savedUser.getRole().getRole().name()));
+        var jwtUser = CustomUserDetails.builder()
+                .username(savedUser.getEmail())
+                .id(savedUser.getId())
+                .isEnabled(true)
+                .authorities(authorities)
+                .build();
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.get("/vehicle/" + savedVehicle.getId())
+                .header("Authorization", "Bearer " + JWTokenUtility.generateJwtToken(jwtUser)))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is(200))
+                .andReturn();
+    }
+
+    @Test
+    void should_delete_vehicle_by_id() throws Exception {
+        //given
+        var savedUser = userRepository.save(buildUser());
+        var savedVehicle = vehicleRepository.save(buildVehicle(savedUser.getId()));
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + savedUser.getRole().getRole().name()));
+        var jwtUser = CustomUserDetails.builder()
+                .username(savedUser.getEmail())
+                .id(savedUser.getId())
+                .isEnabled(true)
+                .authorities(authorities)
+                .build();
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.delete("/vehicle/" + savedVehicle.getId())
+                .header("Authorization", "Bearer " + JWTokenUtility.generateJwtToken(jwtUser)))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().is(200))
+                .andReturn();
     }
 
     @AfterEach

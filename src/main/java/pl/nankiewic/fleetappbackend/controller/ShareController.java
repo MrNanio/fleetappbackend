@@ -5,7 +5,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import pl.nankiewic.fleetappbackend.DTO.ShareDTO;
-import pl.nankiewic.fleetappbackend.DTO.vehicle.VehicleRequestResponseDTO;
+import pl.nankiewic.fleetappbackend.DTO.vehicle.VehicleView;
+import pl.nankiewic.fleetappbackend.entity.CurrentVehicleUser;
 import pl.nankiewic.fleetappbackend.service.ShareService;
 
 import javax.validation.Valid;
@@ -18,21 +19,18 @@ public class ShareController {
     private final ShareService shareService;
 
     @PostMapping("/share")
-    public void addShare(Authentication authentication, @RequestBody @Valid ShareDTO shareDTO) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        shareService.setCurrentVehicleUserToVehicle(shareDTO, userDetails.getUsername());
+    public Iterable<CurrentVehicleUser> addShare(@RequestBody @Valid ShareDTO shareDTO) {
+        return shareService.saveCurrentVehicleUserToVehicle(shareDTO);
     }
 
     @GetMapping("/share/user/{id}")
-    public Iterable<VehicleRequestResponseDTO> getShareVehicleByIdUser(@PathVariable Long id, Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return shareService.getShareVehicleListByUserId(id, userDetails.getUsername());
+    public Iterable<VehicleView> getSharedVehicleByUserId(@PathVariable Long id) {
+        return shareService.getSharedVehicleByUserId(id);
     }
 
     @GetMapping("/share/vehicles")
-    public Iterable<VehicleRequestResponseDTO> getPossibleVehicleListToShare(Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return shareService.getPossibleVehiclesList(userDetails.getUsername());
+    public Iterable<VehicleView> getOwnedAndSharedVehiclesViewList() {
+        return shareService.getOwnedAndSharedVehiclesViewList();
     }
 
     @DeleteMapping("/share/vehicle/{id}")

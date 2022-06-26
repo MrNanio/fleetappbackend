@@ -35,7 +35,6 @@ class VehicleServiceTest {
 
     VehicleService vehicleService;
 
-    private static final String EXAMPLE_EMAIL_ADDRESS = "example@example.com";
     private static final Long EXAMPLE_ID = 1L;
 
     @BeforeEach
@@ -58,13 +57,17 @@ class VehicleServiceTest {
     @Test
     void should_create_vehicle() {
         //given
-        when(vehicleMapper.vehicleDTOtoVehicle(any())).thenReturn(Vehicle.builder().build());
-        when(userRepository.findUserByEmail(any())).thenReturn(User.builder().build());
+        when(vehicleMapper.vehicleDTOtoVehicle(any(),any())).thenReturn(Vehicle.builder().build());
+        when(vehicleMapper.entityToResponseDto(any())).thenReturn(VehicleRequestResponseDTO.builder().build());
+        when(userRepository.findByEmail(any())).thenReturn(Optional.of(User.builder().id(1L).build()));
+        when(vehicleRepository.save(any())).thenReturn(Vehicle.builder().build());
         //when
         vehicleService.createVehicle(VehicleRequestResponseDTO.builder().build());
         //then
-        verify(userRepository, times(1)).findUserByEmail(any());
-        verify(vehicleMapper, times(1)).vehicleDTOtoVehicle(any());
+        verify(userRepository, times(1)).findByEmail(any());
+        verify(vehicleMapper, times(1)).vehicleDTOtoVehicle(any(), any());
+        verify(vehicleMapper, times(1)).entityToResponseDto(any());
+        verify(vehicleRepository, times(1)).save(any());
     }
 
     @Test
@@ -85,7 +88,7 @@ class VehicleServiceTest {
         when(vehicleRepository.existsByUser(any())).thenReturn(true);
         when(vehicleRepository.findVehiclesDataByUser(any())).thenReturn(new ArrayList<>());
         //when
-        vehicleService.getVehiclesDataByUser(EXAMPLE_EMAIL_ADDRESS);
+        vehicleService.getVehiclesDataByUser();
         //then
         verify(vehicleRepository, times(1)).findVehiclesDataByUser(any());
     }
@@ -95,7 +98,7 @@ class VehicleServiceTest {
         //given
         when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
         //when
-        vehicleService.getVehicleDataById(EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
+        vehicleService.getVehicleDataById(EXAMPLE_ID);
         //then
         verify(vehicleRepository, times(1)).findVehicleDetailsById(any());
     }
@@ -105,7 +108,7 @@ class VehicleServiceTest {
         //given
         when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
         //when
-        vehicleService.deleteVehicleById(EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
+        vehicleService.deleteVehicleById(EXAMPLE_ID);
         //then
         verify(vehicleRepository, times(1)).deleteById(any());
     }

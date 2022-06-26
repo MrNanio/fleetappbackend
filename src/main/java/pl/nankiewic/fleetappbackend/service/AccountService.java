@@ -11,10 +11,10 @@ import pl.nankiewic.fleetappbackend.entity.User;
 import pl.nankiewic.fleetappbackend.entity.UserAccountStatus;
 import pl.nankiewic.fleetappbackend.entity.UserData;
 import pl.nankiewic.fleetappbackend.entity.VerificationToken;
-import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
-import pl.nankiewic.fleetappbackend.Exception.TokenException;
-import pl.nankiewic.fleetappbackend.Exception.UsernameAlreadyTakenException;
-import pl.nankiewic.fleetappbackend.Exception.WrongOldPasswordException;
+import pl.nankiewic.fleetappbackend.exception.PermissionDeniedException;
+import pl.nankiewic.fleetappbackend.exception.TokenException;
+import pl.nankiewic.fleetappbackend.exception.UsernameAlreadyTakenException;
+import pl.nankiewic.fleetappbackend.exception.WrongOldPasswordException;
 import pl.nankiewic.fleetappbackend.mapper.UserDataMapper;
 import pl.nankiewic.fleetappbackend.repository.*;
 

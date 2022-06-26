@@ -9,7 +9,8 @@ import pl.nankiewic.fleetappbackend.DTO.vehicle.VehicleView;
 import pl.nankiewic.fleetappbackend.entity.FuelType;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
 import pl.nankiewic.fleetappbackend.entity.VehicleMake;
-import pl.nankiewic.fleetappbackend.Exception.PermissionDeniedException;
+import pl.nankiewic.fleetappbackend.exception.PermissionDeniedException;
+import pl.nankiewic.fleetappbackend.exception.UserNotFoundException;
 import pl.nankiewic.fleetappbackend.mapper.VehicleMapper;
 import pl.nankiewic.fleetappbackend.repository.FuelTypeRepository;
 import pl.nankiewic.fleetappbackend.repository.UserRepository;
@@ -30,11 +31,13 @@ public class VehicleService {
     private final VehicleMapper vehicleMapper;
     private final CheckExistAndPermissionComponent checkExistAndPermissionComponent;
 
-    public void createVehicle(VehicleRequestResponseDTO vehicleRequestResponseDTO) {
+    public VehicleRequestResponseDTO createVehicle(VehicleRequestResponseDTO vehicleRequestResponseDTO) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Vehicle vehicle = vehicleMapper.vehicleDTOtoVehicle(vehicleRequestResponseDTO);
-        vehicle.setUser(userRepository.findUserByEmail(auth.getName()));
-        vehicleRepository.save(vehicle);
+        return userRepository.findByEmail(auth.getName())
+                .map(user -> vehicleMapper.vehicleDTOtoVehicle(vehicleRequestResponseDTO, user))
+                .map(vehicleRepository::save)
+                .map(vehicleMapper::entityToResponseDto)
+                .orElseThrow(UserNotFoundException::new);
     }
 
     public void updateVehicle(VehicleRequestResponseDTO vehicleRequestResponseDTO) {
@@ -47,22 +50,25 @@ public class VehicleService {
         } else throw new PermissionDeniedException();
     }
 
-    public Iterable<VehicleView> getVehiclesDataByUser(String email) {
-        if (vehicleRepository.existsByUser(userRepository.findUserByEmail(email))) {
-            if (userRepository.existsByEmail(email)) {
-                return vehicleRepository.findVehiclesDataByUser(email);
+    public Iterable<VehicleView> getVehiclesDataByUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (vehicleRepository.existsByUser(userRepository.findUserByEmail(auth.getName()))) {
+            if (userRepository.existsByEmail(auth.getName())) {
+                return vehicleRepository.findVehiclesDataByUser(auth.getName());
             } else throw new EntityNotFoundException("Nie znaleziono użytkownika");
         } else throw new EntityNotFoundException("Nie znaleziono pojazdów użytkownika");
     }
 
-    public Optional<VehicleView> getVehicleDataById(Long id, String email) {
-        if (checkExistAndPermissionComponent.accessToVehicle(email, id)) {
+    public Optional<VehicleView> getVehicleDataById(Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (checkExistAndPermissionComponent.accessToVehicle(auth.getName(), id)) {
             return vehicleRepository.findVehicleDetailsById(id);
         } else throw new PermissionDeniedException();
     }
 
-    public void deleteVehicleById(Long id, String email) {
-        if (checkExistAndPermissionComponent.accessToVehicle(email, id)) {
+    public void deleteVehicleById(Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (checkExistAndPermissionComponent.accessToVehicle(auth.getName(), id)) {
             vehicleRepository.deleteById(id);
         } else throw new PermissionDeniedException();
     }
