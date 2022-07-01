@@ -10,6 +10,7 @@ import pl.nankiewic.fleetappbackend.entity.VehicleMake;
 import pl.nankiewic.fleetappbackend.service.VehicleService;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -34,7 +35,7 @@ public class VehicleController {
 
     @PreAuthorize("hasRole('SUPERUSER')")
     @GetMapping()
-    public Iterable<VehicleView> getVehiclesByVehicleOwner() {
+    public List<VehicleView> getVehiclesByVehicleOwner() {
         return vehicleService.getVehiclesDataByUser();
     }
 
@@ -50,12 +51,12 @@ public class VehicleController {
     }
 
     @GetMapping("/make")
-    public Iterable<VehicleMake> getMake() {
+    public List<VehicleMake> getMake() {
         return vehicleService.getMake();
     }
 
     @GetMapping("/fuelType")
-    public Iterable<FuelType> getFuelType() {
+    public List<FuelType> getFuelType() {
         return vehicleService.getFuelType();
     }
 

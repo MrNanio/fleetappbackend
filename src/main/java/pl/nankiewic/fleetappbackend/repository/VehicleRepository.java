@@ -31,8 +31,8 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
             "v.averageFuelConsumption as averageFuelConsumption, " +
             "v.vehicleStatus.vehicleStatus as vehicleStatus " +
             "FROM Vehicle v " +
-            "WHERE v.id = :id")
-    Optional<VehicleView> findVehicleDetailsById(Long id);
+            "WHERE v.id = :vehicleId")
+    Optional<VehicleView> findVehicleDetailsById(Long vehicleId);
 
     @Query(value = "SELECT " +
             "v.id as id, " +
