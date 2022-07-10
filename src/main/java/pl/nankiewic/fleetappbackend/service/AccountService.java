@@ -82,21 +82,11 @@ public class AccountService {
     //user data - end
 
     public void getAccountActivation(String activation_token) {
-        if (activation_token != null) {
-            if (verificationTokenRepository.existsVerificationTokenByTokenIs(activation_token)) {
-                VerificationToken token = verificationTokenRepository.findByToken(activation_token);
-                User user = userRepository.findUserByEmail(token.getUser().getEmail());
-                activation(user);
-            } else {
-                throw new TokenException("token nie istnieje");
-            }
-        } else {
-            throw new TokenException("Pusty token");
-        }
+        var user = verificationTokenRepository.findByToken(activation_token)
+                .map(v-> userRepository.findUserByEmail(v.getUser().getEmail()))
+                .orElseThrow(() -> new TokenException("token nie istnieje"));
+        activation(user);
     }
-
-
-
 
     public void postResetPassword(EmailDTO emailDTO) {
         if (userRepository.existsByEmail(emailDTO.getEmail()) && emailDTO.getEmail() != null) {
@@ -111,41 +101,28 @@ public class AccountService {
         } else throw new UsernameNotFoundException("nie znaleziono użytkownika");
     }
 
-    public ResetChangePasswordDTO getResetPassword(String user_token, String user_code) {
-        if (user_token != null) {
-            if (verificationTokenRepository.existsVerificationTokenByTokenIs(user_token)) {
-                VerificationToken token = verificationTokenRepository.findByToken(user_token);
-                if (token.getExpiryDate().isBefore(LocalDateTime.now())) {
-                    throw new TokenException("nie ważny token");
-                }
-                User user = userRepository.findUserByEmail(token.getUser().getEmail());
-                if (user.getResetCode().equals(user_code)) {
-                    return new ResetChangePasswordDTO(user.getEmail(),
-                            null,
-                            user.getId(),
-                            user_token,
-                            user_code);
-                } else throw new TokenException("błąd ogólny");
-            } else {
-                throw new TokenException("token nie istnieje");
-            }
-        } else {
-            throw new TokenException("Pusty token");
-        }
+    public ResetChangePasswordDTO getResetPassword(String userToken, String userCode) {
+        var token = verificationTokenRepository.findByToken(userToken)
+                .orElseThrow(() -> new TokenException("token nie istnieje"));
+        checkIfTokenDateIsValid(token);
+        var user = userRepository.findUserByEmail(token.getUser().getEmail());
+        checkIfTokenDataIsValid(userToken, user);
+        return new ResetChangePasswordDTO(user.getEmail(), null, user.getId(), userToken, userCode);
     }
 
     public void postNewPassword(ResetChangePasswordDTO resetChangePasswordDTO) {
-        if (resetChangePasswordDTO.getUser() != null && userRepository.existsByEmail(resetChangePasswordDTO.getUser())) {
-            User user = userRepository.findUserByEmail(resetChangePasswordDTO.getUser());
-            if (verificationTokenRepository.existsByToken(resetChangePasswordDTO.getVer_token())) {
-                VerificationToken verificationToken = verificationTokenRepository.findByToken(resetChangePasswordDTO.getVer_token());
-                User user1 = verificationToken.getUser();
-                if (user1.getEmail().equals(user.getEmail())) {
-                    user.setPassword(passwordEncoder.encode(resetChangePasswordDTO.getNew_password()));
-                    userRepository.save(user);
-                    //mailService.sendPasswordInfo(user.getEmail());
-                } else throw new TokenException("coś poszło nie tak");
-            } else throw new TokenException("twoja tożsamość nie została potwierdzona");
+
+        if (userRepository.existsByEmail(resetChangePasswordDTO.getUser())) {
+            var requestUser = userRepository.findUserByEmail(resetChangePasswordDTO.getUser());
+            var tokenUser = verificationTokenRepository.findByToken(resetChangePasswordDTO.getVer_token())
+                    .map(VerificationToken::getUser)
+                    .orElseThrow(() -> new TokenException("twoja tożsamość nie została potwierdzona"));
+
+            if (tokenUser.getEmail().equals(requestUser.getEmail())) {
+                requestUser.setPassword(passwordEncoder.encode(resetChangePasswordDTO.getNew_password()));
+                userRepository.save(requestUser);
+                //mailService.sendPasswordInfo(requestUser.getEmail());
+            } else throw new TokenException("coś poszło nie tak");
         } else throw new TokenException("nie nadałeś nowego hasła lub twoja tożsamość nie została potwierdzona ");
     }
 
@@ -159,37 +136,27 @@ public class AccountService {
     }
 
     public IdDTO getUserInvite(String userToken) {
-        if (userToken != null) {
-            if (verificationTokenRepository.existsVerificationTokenByTokenIs(userToken)) {
-                VerificationToken token = verificationTokenRepository.findByToken(userToken);
-                if (token.getExpiryDate().isBefore(LocalDateTime.now())) {
-                    throw new TokenException("link już wygasł poproś o nowe zaproszenie");
-                } else {
-                    User user = userRepository.findUserByEmail(token.getUser().getEmail());
-                    return new IdDTO(user.getEmail(), null, user.getId(), userToken);
-                }
-            } else {
-                throw new TokenException("błędny link");
-            }
-        } else {
-            throw new TokenException("brak tokena");
-        }
+        var token = verificationTokenRepository.findByToken(userToken)
+                .orElseThrow(() -> new TokenException("token nie istnieje"));
+        checkIfTokenDateIsValid(token);
+        var user = userRepository.findUserByEmail(token.getUser().getEmail());
+        return new IdDTO(user.getEmail(), null, user.getId(), userToken);
     }
 
     public void newPasswordForNewUser(IdDTO idDTO) {
         if (idDTO.getEmail() != null && userRepository.existsByEmail(idDTO.getEmail())) {
-            User user = userRepository.findUserByEmail(idDTO.getEmail());
-            if (verificationTokenRepository.existsByToken(idDTO.getToken())) {
-                VerificationToken verificationToken = verificationTokenRepository.findByToken(idDTO.getToken());
-                User user1 = verificationToken.getUser();
-                if (user1.getEmail().equals(user.getEmail())) {
-                    user.setPassword(passwordEncoder.encode(idDTO.getNewPassword()));
-                    user.setEnabled(true);
-                    user.setUserAccountStatus(userAccountStatusRepository.findByEnumName(EnumUserAccountStatus.ACTIVE));
-                    userRepository.save(user);
-                    //mailService.sendSuccessInfo(user.getEmail());
-                } else throw new TokenException("błąd danych autoryzacyjnych: email");
-            } else throw new TokenException("błąd danych autoryzacyjnych: token");
+            var requestUser = userRepository.findUserByEmail(idDTO.getEmail());
+            var tokenUser = verificationTokenRepository.findByToken(idDTO.getToken())
+                    .map(VerificationToken::getUser)
+                    .orElseThrow(() -> new TokenException("token nie istnieje"));
+
+            if (tokenUser.getEmail().equals(requestUser.getEmail())) {
+                requestUser.setPassword(passwordEncoder.encode(idDTO.getNewPassword()));
+                requestUser.setEnabled(true);
+                requestUser.setUserAccountStatus(userAccountStatusRepository.findByEnumName(EnumUserAccountStatus.ACTIVE));
+                userRepository.save(requestUser);
+                //mailService.sendSuccessInfo(user.getEmail());
+            } else throw new TokenException("błąd danych autoryzacyjnych: email");
         } else throw new TokenException("twoja tożsamość nie została potwierdzona ");
     }
 
@@ -220,11 +187,9 @@ public class AccountService {
                 break;
         }
         userRepository.save(user);
-
     }
 
     public UserDTO getUserById(Long id) {
-
         return userRepository.findUserByUserId(id);
         // return userMapper.userToUserDTO(userRepository.findUserById(id));
     }
@@ -295,6 +260,18 @@ public class AccountService {
     private void activation(User user) {
         user.setUserAccountStatus(userAccountStatusRepository.findByEnumName(EnumUserAccountStatus.ACTIVE));
         userRepository.save(user);
+    }
+
+    private void checkIfTokenDateIsValid(VerificationToken token) {
+        if (token.getExpiryDate().isBefore(LocalDateTime.now())) {
+            throw new TokenException("nie ważny token");
+        }
+    }
+
+    private void checkIfTokenDataIsValid(String userDbToken, User user){
+        if (!user.getResetCode().equals(userDbToken)) {
+            throw new TokenException("błąd tokena");
+        }
     }
 
 }

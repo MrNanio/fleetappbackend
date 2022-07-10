@@ -17,7 +17,6 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
-
 class RefuelingServiceTest {
     @Mock
     CheckExistAndPermissionComponent checkExistAndPermissionComponent;

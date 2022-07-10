@@ -7,15 +7,15 @@ import org.mockito.MockitoAnnotations;
 import pl.nankiewic.fleetappbackend.DTO.InsuranceRequestDTO;
 import pl.nankiewic.fleetappbackend.entity.VehicleInsurance;
 import pl.nankiewic.fleetappbackend.mapper.InsuranceMapper;
-import pl.nankiewic.fleetappbackend.repository.*;
+import pl.nankiewic.fleetappbackend.repository.InsuranceTypeRepository;
+import pl.nankiewic.fleetappbackend.repository.VehicleInsuranceRepository;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
 class InsuranceServiceTest {
+
     @Mock
     CheckExistAndPermissionComponent checkExistAndPermissionComponent;
     @Mock
@@ -43,41 +43,22 @@ class InsuranceServiceTest {
     @Test
     void should_create_vehicle_insurance() {
         //given
-        InsuranceRequestDTO insuranceRequestDTO = InsuranceRequestDTO.builder()
-                .id(1L)
-                .insuranceType("NNW")
-                .cost(BigDecimal.valueOf(234.4))
-                .vehicleId(1L)
-                .description("hghghg")
-                .expirationDate(LocalDate.now())
-                .policyNumber("hghghjgbhjbjh")
-                .build();
         when(insuranceMapper.insuranceDtoToVehicleInsuranceEntity(any())).thenReturn(VehicleInsurance.builder().build());
         when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
         //when
-        insuranceService.createVehicleInsurance(insuranceRequestDTO, EXAMPLE_EMAIL_ADDRESS);
+        insuranceService.createVehicleInsurance(InsuranceRequestDTO.builder().build(), EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(vehicleInsuranceRepository, times(1)).save(any());
-
     }
 
     @Test
     void should_update_vehicle_insurance() {
         //given
-        InsuranceRequestDTO insuranceRequestDTO = InsuranceRequestDTO.builder()
-                .id(1L)
-                .insuranceType("NNW")
-                .cost(BigDecimal.valueOf(234.4))
-                .vehicleId(1L)
-                .description("hghghg")
-                .expirationDate(LocalDate.now())
-                .policyNumber("hghghjgbhjbjh")
-                .build();
         VehicleInsurance vehicleInsurance = VehicleInsurance.builder().build();
         when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
         when(vehicleInsuranceRepository.findById(any())).thenReturn(Optional.of(vehicleInsurance));
         //when
-        insuranceService.updateVehicleInsurance(insuranceRequestDTO, EXAMPLE_EMAIL_ADDRESS);
+        insuranceService.updateVehicleInsurance(InsuranceRequestDTO.builder().build(), EXAMPLE_EMAIL_ADDRESS);
         //then
         verify(vehicleInsuranceRepository, times(1)).save(any());
     }

@@ -20,6 +20,7 @@ import java.util.*;
 import static org.mockito.Mockito.*;
 
 class VehicleServiceTest {
+
     @Mock
     VehicleRepository vehicleRepository;
     @Mock

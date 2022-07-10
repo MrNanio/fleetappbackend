@@ -2,12 +2,15 @@ package pl.nankiewic.fleetappbackend.DTO;
 
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class ResetChangePasswordDTO {
+    @NotBlank
     private String user;
     private String new_password;
     private Long identification;

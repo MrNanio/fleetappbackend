@@ -5,9 +5,12 @@ import org.springframework.stereotype.Repository;
 import pl.nankiewic.fleetappbackend.entity.User;
 import pl.nankiewic.fleetappbackend.entity.VerificationToken;
 
+import java.util.Optional;
+
 @Repository
 public interface VerificationTokenRepository extends JpaRepository<VerificationToken, Long> {
-    VerificationToken findByToken(String token);
+
+    Optional<VerificationToken> findByToken(String token);
 
     VerificationToken findByUser(User user);
 

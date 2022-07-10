@@ -17,6 +17,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 
 class RepairServiceTest {
+
     @Mock
     CheckExistAndPermissionComponent checkExistAndPermissionComponent;
     @Mock

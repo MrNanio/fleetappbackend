@@ -91,7 +91,6 @@ class VehicleControllerTest {
                 .andExpect(status().isOk());
     }
 
-
     @Test
     void should_get_vehicles_by_vehicle_owner() throws Exception {
         //given
