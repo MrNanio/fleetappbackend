@@ -1,6 +1,5 @@
 package pl.nankiewic.fleetappbackend.mapper;
 
-import liquibase.pro.packaged.A;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,7 +10,6 @@ import pl.nankiewic.fleetappbackend.entity.Enum.EnumVehicleStatus;
 import pl.nankiewic.fleetappbackend.entity.User;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
 import pl.nankiewic.fleetappbackend.repository.FuelTypeRepository;
-import pl.nankiewic.fleetappbackend.repository.UserRepository;
 import pl.nankiewic.fleetappbackend.repository.VehicleMakeRepository;
 import pl.nankiewic.fleetappbackend.repository.VehicleStatusRepository;
 
