@@ -1,6 +1,6 @@
 package pl.nankiewic.fleetappbackend.util.insurance;
 
-import pl.nankiewic.fleetappbackend.DTO.InsuranceRequestDTO;
+import pl.nankiewic.fleetappbackend.dto.insurance.InsuranceRequestDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

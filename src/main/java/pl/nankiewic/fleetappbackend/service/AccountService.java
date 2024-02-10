@@ -4,17 +4,18 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.nankiewic.fleetappbackend.DTO.*;
-import pl.nankiewic.fleetappbackend.entity.Enum.EnumRole;
-import pl.nankiewic.fleetappbackend.entity.Enum.EnumUserAccountStatus;
+import pl.nankiewic.fleetappbackend.dto.*;
+import pl.nankiewic.fleetappbackend.dto.user.UserDataDTO;
+import pl.nankiewic.fleetappbackend.dto.user.UserView;
+import pl.nankiewic.fleetappbackend.entity.enums.Role;
+import pl.nankiewic.fleetappbackend.entity.enums.UserAccountStatus;
 import pl.nankiewic.fleetappbackend.entity.User;
-import pl.nankiewic.fleetappbackend.entity.UserAccountStatus;
 import pl.nankiewic.fleetappbackend.entity.UserData;
 import pl.nankiewic.fleetappbackend.entity.VerificationToken;
-import pl.nankiewic.fleetappbackend.exception.PermissionDeniedException;
-import pl.nankiewic.fleetappbackend.exception.TokenException;
-import pl.nankiewic.fleetappbackend.exception.UsernameAlreadyTakenException;
-import pl.nankiewic.fleetappbackend.exception.WrongOldPasswordException;
+import pl.nankiewic.fleetappbackend.exceptions.PermissionDeniedException;
+import pl.nankiewic.fleetappbackend.exceptions.TokenException;
+import pl.nankiewic.fleetappbackend.exceptions.UsernameAlreadyTakenException;
+import pl.nankiewic.fleetappbackend.exceptions.WrongOldPasswordException;
 import pl.nankiewic.fleetappbackend.mapper.UserDataMapper;
 import pl.nankiewic.fleetappbackend.repository.*;
 
@@ -27,26 +28,44 @@ import java.util.Random;
 @Service
 public class AccountService {
 
-    private final UserAccountStatusRepository userAccountStatusRepository;
+    private static final long EXPIRE_TOKEN_TIME = 120;
+
     private final VerificationTokenRepository verificationTokenRepository;
     private final UserDataRepository userDataRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final UserDataMapper userDataMapper;
     private final MailService mailService;
 
-    private static final long EXPIRE_TOKEN_TIME = 120;
+    public void accountActivationByToken(String activationToken) {
+        verificationTokenRepository.findByToken(activationToken)
+                .map(VerificationToken::getUser)
+                .ifPresent(u -> changeStatusAndSave(u, UserAccountStatus.ACTIVE));
+    }
 
-    public void getAccountActivation(String activation_token) {
-        var user = verificationTokenRepository.findByToken(activation_token)
-                .map(v -> userRepository.findUserByEmail(v.getUser().getEmail()))
-                .orElseThrow(() -> new TokenException("token nie istnieje"));
-        activation(user);
+    public void blockUserAccountByUserId(Long userId) {
+        userRepository.findById(userId)
+                .ifPresent(u -> changeStatusAndSave(u, UserAccountStatus.BLOCKED, false));
+    }
+
+    public void activateUserAccountByUserId(Long userId) {
+        userRepository.findById(userId)
+                .ifPresent(u -> changeStatusAndSave(u, UserAccountStatus.ACTIVE, true));
+    }
+
+    public void deactivateUserAccountByUserId(Long userId) {
+        userRepository.findById(userId)
+                .ifPresent(u -> changeStatusAndSave(u, UserAccountStatus.INACTIVE, true));
+    }
+
+    public void deleteUserData(String email) {
+        userRepository.findUserByEmail(email)
+                .map(User::getUserData)
+                .ifPresent(userDataRepository::delete);
     }
 
     public void postResetPassword(EmailDTO emailDTO) {
-        var user = userRepository.findByEmail(emailDTO.getEmail())
+        var user = userRepository.findUserByEmail(emailDTO.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException(""));
         user.setResetCode(createMultitaskingCode());
         user.setResetAt(LocalDateTime.now());
@@ -61,13 +80,13 @@ public class AccountService {
         var token = verificationTokenRepository.findByToken(userToken)
                 .orElseThrow(() -> new TokenException("token nie istnieje"));
         checkIfTokenDateIsValid(token);
-        var user = userRepository.findUserByEmail(token.getUser().getEmail());
+        var user = userRepository.findUserByEmail(token.getUser().getEmail()).orElseThrow();
         checkIfTokenDataIsValid(userToken, user);
         return new ResetChangePasswordDTO(user.getEmail(), null, user.getId(), userToken, userCode);
     }
 
     public void postNewPassword(ResetChangePasswordDTO resetChangePasswordDTO) {
-        var requestUser = userRepository.findByEmail(resetChangePasswordDTO.getUser())
+        var requestUser = userRepository.findUserByEmail(resetChangePasswordDTO.getUser())
                 .orElseThrow(() -> new UsernameNotFoundException(""));
         var tokenUser = verificationTokenRepository.findByToken(resetChangePasswordDTO.getVer_token())
                 .map(VerificationToken::getUser)
@@ -79,7 +98,7 @@ public class AccountService {
     }
 
     public void changePassword(PasswordDTO passwordDTO, String email) {
-        var user = userRepository.findByEmail(email)
+        var user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(""));
         checkIfPasswordMatches(passwordDTO.getOldPassword(), user.getPassword());
         user.setPassword(passwordEncoder.encode(passwordDTO.getNewPassword()));
@@ -91,12 +110,12 @@ public class AccountService {
         var token = verificationTokenRepository.findByToken(userToken)
                 .orElseThrow(() -> new TokenException("token nie istnieje"));
         checkIfTokenDateIsValid(token);
-        var user = userRepository.findUserByEmail(token.getUser().getEmail());
+        var user = userRepository.findUserByEmail(token.getUser().getEmail()).orElseThrow();
         return new IdDTO(user.getEmail(), null, user.getId(), userToken);
     }
 
     public void newPasswordForNewUser(IdDTO idDTO) {
-        var requestUser = userRepository.findByEmail(idDTO.getEmail())
+        var requestUser = userRepository.findUserByEmail(idDTO.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException(""));
         var tokenUser = verificationTokenRepository.findByToken(idDTO.getToken())
                 .map(VerificationToken::getUser)
@@ -105,16 +124,16 @@ public class AccountService {
         setAndSaveUser(requestUser, idDTO);
     }
 
-    public List<UserDTO> getUserByManager(String email) {
-        return userRepository.getUserByManagerEmail(email);
+    public List<UserView> getUserByManager(String email) {
+        return userRepository.getUserViewsByManagerEmail(email);
     }
 
-    public Iterable<UserDTO> getAllUser() {
-        return userRepository.findUsersWithoutRole(EnumRole.ADMIN.name());
+    public List<UserView> getAllUser() {
+        return userRepository.findUserViewsWithoutRole(Role.ADMIN);
     }
 
     public void createUserData(UserDataDTO userDataDTO, String email) {
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(email).orElseThrow();
         if (userDataRepository.existsByUser(user)) {
             throw new EntityNotFoundException("Dane istnieją");
         }
@@ -124,7 +143,7 @@ public class AccountService {
     }
 
     public void updateUserData(UserDataDTO userDataDTO, String email) {
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(email).orElseThrow();
         if (!userDataRepository.existsByUser(user)) {
             throw new EntityNotFoundException("Dane nie istnieją");
         }
@@ -134,11 +153,12 @@ public class AccountService {
     }
 
     public UserDataDTO getUserData(String email, Long id) {
+        //todo
         if (userRepository.existsByEmail(email) && userRepository.existsById(id)) {
-            User user = userRepository.findUserByEmail(email);
+            User user = userRepository.findUserByEmail(email).orElseThrow();
             User user1 = userRepository.findById(id).orElseThrow(
                     () -> new EntityNotFoundException("Nie znaleziono użytkownika"));
-            if ((user1.getUser() != null && user1.getUser() == user) || user.getEmail().equals(user1.getEmail())) {
+            if ((user1.getParentUser() != null && user1.getParentUser() == user) || user.getEmail().equals(user1.getEmail())) {
                 if (userDataRepository.existsByUser(user1)) {
                     return userDataMapper.userDataToUserDataDTO(userDataRepository.findByUser(user1));
                 } else throw new EntityNotFoundException("Dane nie istnieją");
@@ -146,40 +166,14 @@ public class AccountService {
         } else throw new EntityNotFoundException("Nie znaleziono użytkownika");
     }
 
-    public void deleteUserData(String email) {
-        var user = userRepository.findUserByEmail(email);
-        userDataRepository.deleteById(userDataRepository.findByUser(user).getId());
-    }
-
-    public void blockOrUnblockUser(BlockOrUnblock blockOrUnblock) {
-
-        User user = userRepository.findById(blockOrUnblock.getId()).orElseThrow(
-                () -> new EntityNotFoundException("Nie znaleziono użytkownika"));
-
-        UserAccountStatus userAccountStatus = userAccountStatusRepository.findByEnumName(parseStringToEnum(blockOrUnblock.getUserStatus()));
-
-        switch (userAccountStatus.getUserAccountStatus().name()) {
-            case "ACTIVE":
-            case "INACTIVE":
-                user.setEnabled(true);
-                user.setUserAccountStatus(userAccountStatus);
-                break;
-            case "BLOCKED":
-                user.setEnabled(false);
-                user.setUserAccountStatus(userAccountStatus);
-                break;
-        }
-        userRepository.save(user);
-    }
-
-    public UserDTO getUserById(Long id) {
-        return userRepository.findUserByUserId(id);
-        // return userMapper.userToUserDTO(userRepository.findUserById(id));
+    public UserView getUserById(Long id) {
+        return userRepository.findUserViewByUserId(id)
+                .orElseThrow();
     }
 
     public void addNewUser(EmailDTO emailDTO, String email) {
         if (userRepository.existsByEmail(emailDTO.getEmail())) {
-            User user = userRepository.findUserByEmail(emailDTO.getEmail());
+            User user = userRepository.findUserByEmail(emailDTO.getEmail()).orElseThrow();
             if (!user.isEnabled() && user.getVerificationToken().getExpiryDate().isAfter(LocalDateTime.now())) {
                 // mailService.sendInviteMail(emailDTO.getEmail(), user.getVerificationToken().getToken());
             } else if (!user.isEnabled() && user.getVerificationToken().getExpiryDate().isBefore(LocalDateTime.now())) {
@@ -190,9 +184,9 @@ public class AccountService {
                 verificationTokenRepository.save(verificationToken);
             } else throw new UsernameAlreadyTakenException("mail już ma aktywne konto");
         } else if (userRepository.existsByEmail(email) && !userRepository.existsByEmail(emailDTO.getEmail())) {
-            User manager = userRepository.findUserByEmail(email);
+            User manager = userRepository.findUserByEmail(email).orElseThrow();
             User user = new User();
-            user.setUser(manager);
+            user.setParentUser(manager);
             user.setPassword(passwordEncoder.encode(createMultitaskingCode()));
             user.setEmail(emailDTO.getEmail());
             userRegister(user);
@@ -209,8 +203,8 @@ public class AccountService {
 
     private void userRegister(User user) {
         user.setCreatedAt(LocalDateTime.now());
-        user.setRole(roleRepository.findRoleByEnumName(EnumRole.USER.name()));
-        user.setUserAccountStatus(userAccountStatusRepository.findByEnumName(EnumUserAccountStatus.INACTIVE));
+        user.setRole(Role.USER);
+        user.setUserAccountStatus(UserAccountStatus.INACTIVE);
         user.setEnabled(false);
         userRepository.save(user);
     }
@@ -228,25 +222,21 @@ public class AccountService {
         return buffer.toString();
     }
 
-    private EnumUserAccountStatus parseStringToEnum(String status) {
-        if (EnumUserAccountStatus.ACTIVE.name().equals(status)) {
-            return EnumUserAccountStatus.ACTIVE;
-        } else if (EnumUserAccountStatus.INACTIVE.name().equals(status)) {
-            return EnumUserAccountStatus.INACTIVE;
-        } else if (EnumUserAccountStatus.BLOCKED.name().equals(status)) {
-            return EnumUserAccountStatus.BLOCKED;
-        } else throw new EntityNotFoundException("nie znaleziono parsowanej wartości");
+    private void changeStatusAndSave(User user, UserAccountStatus status) {
+        user.setUserAccountStatus(status);
+        userRepository.save(user);
     }
 
-    private void activation(User user) {
-        user.setUserAccountStatus(userAccountStatusRepository.findByEnumName(EnumUserAccountStatus.ACTIVE));
+    private void changeStatusAndSave(User user, UserAccountStatus status, boolean enabled) {
+        user.setUserAccountStatus(status);
+        user.setEnabled(enabled);
         userRepository.save(user);
     }
 
     private void setAndSaveUser(User user, IdDTO idDTO) {
         user.setPassword(passwordEncoder.encode(idDTO.getNewPassword()));
         user.setEnabled(true);
-        user.setUserAccountStatus(userAccountStatusRepository.findByEnumName(EnumUserAccountStatus.ACTIVE));
+        user.setUserAccountStatus(UserAccountStatus.ACTIVE);
         userRepository.save(user);
         //mailService.sendSuccessInfo(user.getEmail());
     }

@@ -1,41 +1,52 @@
 package pl.nankiewic.fleetappbackend.config.security;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
 import org.springframework.stereotype.Service;
-import pl.nankiewic.fleetappbackend.entity.Role;
-import pl.nankiewic.fleetappbackend.entity.User;
+import pl.nankiewic.fleetappbackend.entity.enums.Role;
 import pl.nankiewic.fleetappbackend.repository.UserRepository;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
+@Slf4j
 @AllArgsConstructor
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
+
+    private static final String NOT_FOUND = "user.not.found";
 
     private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        if (!userRepository.existsByEmail(email)) {
-            throw new UsernameNotFoundException("Użytkownik nie istnieje");
-        }
-        User user = userRepository.findUserByEmail((email));
-        return new CustomUserDetails(user.getId(),
-                user.getEmail(),
-                user.getPassword(),
-                getAuthorities(user.getRole()),
-                user.isEnabled());
+
+        log.info("user exist in database: {}", email);
+        var user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(NOT_FOUND));
+        var authorities = getAuthorities(user.getRole());
+        var locked = !user.isEnabled();
+
+        return User.builder()
+                .username(user.getEmail())
+                .password(user.getPassword())
+                .authorities(authorities)
+                .accountLocked(locked)
+                .build();
     }
 
-    private Collection<? extends GrantedAuthority> getAuthorities(Role roles) {
+    private Collection<? extends GrantedAuthority> getAuthorities(Role role) {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_"+roles.getRole().name()));
+        authorities.add(new SimpleGrantedAuthority(role.name()));
+
         return authorities;
     }
+
 }

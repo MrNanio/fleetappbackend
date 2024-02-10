@@ -3,7 +3,6 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
                    logicalFilePath="db/changelog/01-create-database-schema">
-    <include file="changelog/20220623210000_create_init_database_schema.xml" relativeToChangelogFile="true"/>
-    <include file="changelog/20220623220000_fill_database.xml" relativeToChangelogFile="true"/>
-    <include file="changelog/20220629222400_add_unique_constraint.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/20240208193000_create_init_database_schema.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/20240208193500_add_unique_constraint.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

@@ -2,14 +2,15 @@ package pl.nankiewic.fleetappbackend.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.nankiewic.fleetappbackend.DTO.RepairDTO;
+import pl.nankiewic.fleetappbackend.dto.RepairDTO;
 import pl.nankiewic.fleetappbackend.entity.VehicleRepair;
-import pl.nankiewic.fleetappbackend.exception.PermissionDeniedException;
+import pl.nankiewic.fleetappbackend.exceptions.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.mapper.RepairMapper;
 import pl.nankiewic.fleetappbackend.repository.UserRepository;
 import pl.nankiewic.fleetappbackend.repository.VehicleRepairRepository;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @AllArgsConstructor
 @Service
@@ -42,13 +43,13 @@ public class RepairService {
         } else throw new PermissionDeniedException();
     }
 
-    public Iterable<RepairDTO> getRepairsByVehicle(Long id, String email) {
+    public List<RepairDTO> getRepairsByVehicle(Long id, String email) {
         if (checkExistAndPermissionComponent.accessToVehicle(email, id)) {
             return vehicleRepairRepository.findAllRepairsByVehicleId(id);
         } else throw new PermissionDeniedException();
     }
 
-    public Iterable<RepairDTO> getRepairsByUser(String email) {
+    public List<RepairDTO> getRepairsByUser(String email) {
         if (userRepository.existsByEmail(email)) {
             return vehicleRepairRepository.findAllRepairByFromUserVehicle(email);
         } else throw new EntityNotFoundException("User not found");

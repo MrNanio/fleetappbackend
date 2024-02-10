@@ -62,7 +62,8 @@ public class JWTokenUtility {
             authorities.add(new SimpleGrantedAuthority(role));
             return CustomUserDetails.builder()
                     .username(jwt.getSubject())
-                    .authorities(authorities).build();
+                    .authorities(authorities)
+                    .build();
         } catch (JWTDecodeException exception) {
             return null;
         }

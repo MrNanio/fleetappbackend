@@ -5,8 +5,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.entity.*;
-import pl.nankiewic.fleetappbackend.exception.PermissionDeniedException;
-import pl.nankiewic.fleetappbackend.Reports.*;
+import pl.nankiewic.fleetappbackend.exceptions.PermissionDeniedException;
+import pl.nankiewic.fleetappbackend.reports.*;
 import pl.nankiewic.fleetappbackend.repository.*;
 
 import javax.persistence.EntityNotFoundException;
@@ -167,7 +167,7 @@ public class ReportsService {
 
     private Iterable<Vehicle> getVehicleByUser(String email) {
         if (userRepository.existsByEmail(email)) {
-            User user = userRepository.findUserByEmail(email);
+            User user = userRepository.findUserByEmail(email).orElseThrow();
             return vehicleRepository.findVehiclesByUser(user);
         } else throw new EntityNotFoundException("not found");
     }

@@ -1,6 +1,7 @@
 package pl.nankiewic.fleetappbackend.config.security;
 
 import lombok.*;
+import pl.nankiewic.fleetappbackend.entity.enums.Role;
 
 @Getter
 @Setter
@@ -8,17 +9,11 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class AuthenticationResponse {
+
     private String token;
     private String type = "Bearer";
     private String email;
     private Long id;
-    private String roles;
-
-    public AuthenticationResponse(String token, String email, Long id, String roles) {
-        this.token = token;
-        this.email = email;
-        this.id = id;
-        this.roles = roles;
-    }
+    private Role role;
 
 }

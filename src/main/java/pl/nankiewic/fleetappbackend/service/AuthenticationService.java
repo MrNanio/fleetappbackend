@@ -1,5 +1,6 @@
 package pl.nankiewic.fleetappbackend.service;
 
+import io.vavr.Tuple;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -8,88 +9,83 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.nankiewic.fleetappbackend.entity.Enum.EnumRole;
-import pl.nankiewic.fleetappbackend.entity.Enum.EnumUserAccountStatus;
-import pl.nankiewic.fleetappbackend.entity.Role;
-import pl.nankiewic.fleetappbackend.entity.User;
-import pl.nankiewic.fleetappbackend.entity.VerificationToken;
-import pl.nankiewic.fleetappbackend.exception.UserAccountEnabledException;
-import pl.nankiewic.fleetappbackend.exception.UsernameAlreadyTakenException;
-import pl.nankiewic.fleetappbackend.repository.RoleRepository;
-import pl.nankiewic.fleetappbackend.repository.UserAccountStatusRepository;
-import pl.nankiewic.fleetappbackend.repository.UserRepository;
-import pl.nankiewic.fleetappbackend.repository.VerificationTokenRepository;
+import pl.nankiewic.fleetappbackend.config.jwt.JWTokenUtility;
 import pl.nankiewic.fleetappbackend.config.security.AuthenticationRequest;
 import pl.nankiewic.fleetappbackend.config.security.AuthenticationResponse;
-import pl.nankiewic.fleetappbackend.config.security.CustomUserDetailsService;
-import pl.nankiewic.fleetappbackend.config.jwt.JWTokenUtility;
+import pl.nankiewic.fleetappbackend.entity.User;
+import pl.nankiewic.fleetappbackend.entity.VerificationToken;
+import pl.nankiewic.fleetappbackend.entity.enums.Role;
+import pl.nankiewic.fleetappbackend.entity.enums.UserAccountStatus;
+import pl.nankiewic.fleetappbackend.repository.UserRepository;
+import pl.nankiewic.fleetappbackend.repository.VerificationTokenRepository;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
 public class AuthenticationService {
 
-    private final UserAccountStatusRepository userAccountStatusRepository;
+    private static final String BEARER_TYPE = "Bearer";
+
     private final VerificationTokenRepository verificationTokenRepository;
-    private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-    private final CustomUserDetailsService userDetailsService;
 
-    public AuthenticationResponse login(AuthenticationRequest authenticationRequest) {
+    public AuthenticationResponse login(AuthenticationRequest request) {
+        var auth = new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                authenticationRequest.getEmail(),
-                authenticationRequest.getPassword()));
+        return Optional.of(auth)
+                .map(authenticationManager::authenticate)
+                .map(this::manageSuccessfulLogin)
+                .orElseThrow();
+    }
+
+    @Transactional
+    public void createSuperuser(AuthenticationRequest authenticationRequest) {
+        Optional.of(authenticationRequest)
+                .map(this::buildUser)
+                .map(userRepository::save)
+                .map(VerificationToken::new)
+                .ifPresent(verificationTokenRepository::save);
+        //todo mailService.sendActivationEmail(user.getEmail(),verificationTokenRepository.findByUser(user).getToken());
+    }
+
+
+    private AuthenticationResponse manageSuccessfulLogin(Authentication authentication){
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        var userDetails = (UserDetails) authentication.getPrincipal();
+        var token = JWTokenUtility.generateJwtToken(userDetails);
 
-        User user = userRepository.findUserByEmail((authenticationRequest.getEmail()));
-        if (!user.isEnabled()) {
-            throw new UserAccountEnabledException("Konto: " + user.getEmail() + " jest nieaktywne");
-        }
-
-        String jwtToken = JWTokenUtility.generateJwtToken(userDetails);
-
-        user.setLastLoginAt(LocalDateTime.now());
-        userRepository.save(user);
-
-        return new AuthenticationResponse(jwtToken,
-                userDetails.getUsername(),
-                user.getId(),
-                user.getRole().getRole().name());
+        return userRepository.findUserByEmail(userDetails.getUsername())
+                .map(User::updateLastLoginAt)
+                .map(userRepository::save)
+                .map(user -> Tuple.of(user, token))
+                .map(t -> buildAuthenticationResponse(t._1, t._2))
+                .orElseThrow();
     }
 
-    public void save(AuthenticationRequest authenticationRequest) {
-
-        if (userRepository.existsByEmail(authenticationRequest.getEmail())) {
-            throw new UsernameAlreadyTakenException("Użytkownik istnieje " + authenticationRequest.getEmail());
-        }
-
-        User user = new User();
-        user.setEmail(authenticationRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(authenticationRequest.getPassword()));
-        superuserRegister(user);
+    private AuthenticationResponse buildAuthenticationResponse(User user, String token) {
+        return AuthenticationResponse.builder()
+                .token(token)
+                .email(user.getEmail())
+                .id(user.getId())
+                .role(user.getRole())
+                .type(BEARER_TYPE)
+                .build();
     }
 
-    private void superuserRegister(User user) {
-        user.setCreatedAt(LocalDateTime.now());
-
-        Role role = roleRepository.findRoleByRole(EnumRole.SUPERUSER);
-
-        user.setRole(role);
-        user.setUserAccountStatus(userAccountStatusRepository.findByEnumName(EnumUserAccountStatus.INACTIVE));
-        user.setEnabled(true);
-        userRepository.save(user);
-        activationToken(userRepository.findUserByEmail(user.getEmail()));
-    }
-
-    private void activationToken(User user) {
-        VerificationToken verificationToken = new VerificationToken(user);
-        verificationTokenRepository.save(verificationToken);
-        //mailService.sendActivationEmail(user.getEmail(),verificationTokenRepository.findByUser(user).getToken());
+    private User buildUser(AuthenticationRequest authenticationRequest) {
+        return User.builder()
+                .email(authenticationRequest.getEmail())
+                .password(passwordEncoder.encode(authenticationRequest.getPassword()))
+                .createdAt(LocalDateTime.now())
+                .role(Role.SUPERUSER)
+                .userAccountStatus(UserAccountStatus.INACTIVE)
+                .enabled(true)
+                .build();
     }
 
 }

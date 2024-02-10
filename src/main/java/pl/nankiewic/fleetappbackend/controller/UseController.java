@@ -5,10 +5,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import pl.nankiewic.fleetappbackend.DTO.UseDTO;
+import pl.nankiewic.fleetappbackend.dto.UseDTO;
 import pl.nankiewic.fleetappbackend.service.UseService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -35,8 +36,8 @@ public class UseController {
     }
 
     @GetMapping("/v/{id}")
-    public Iterable<UseDTO> getUseByVehicleId(@PathVariable Long id,
-                                              Authentication authentication) {
+    public List<UseDTO> getUseByVehicleId(@PathVariable Long id,
+                                          Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return useService.getUseByVehicle(id, userDetails.getUsername());
     }
@@ -55,7 +56,7 @@ public class UseController {
     }
 
     @GetMapping("/list")
-    public Iterable<UseDTO> getUseByUserIdAndVehicleId(@RequestParam(name = "u") Long userId,
+    public List<UseDTO> getUseByUserIdAndVehicleId(@RequestParam(name = "u") Long userId,
                                                        @RequestParam(name = "v") Long vehicleId,
                                                        Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();

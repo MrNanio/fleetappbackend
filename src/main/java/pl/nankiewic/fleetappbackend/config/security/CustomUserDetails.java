@@ -2,6 +2,7 @@ package pl.nankiewic.fleetappbackend.config.security;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,15 +12,12 @@ import java.util.Collection;
 @Builder
 public class CustomUserDetails implements UserDetails {
 
+    @Getter
     private final Long id;
     private final String username;
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
     private final boolean isEnabled;
-
-    public Long getId() {
-        return id;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

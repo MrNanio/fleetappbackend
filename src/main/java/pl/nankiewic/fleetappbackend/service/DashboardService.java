@@ -2,10 +2,10 @@ package pl.nankiewic.fleetappbackend.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.nankiewic.fleetappbackend.DTO.*;
+import pl.nankiewic.fleetappbackend.dto.*;
 import pl.nankiewic.fleetappbackend.entity.User;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
-import pl.nankiewic.fleetappbackend.exception.PermissionDeniedException;
+import pl.nankiewic.fleetappbackend.exceptions.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.repository.*;
 
 import javax.persistence.EntityNotFoundException;
@@ -127,7 +127,7 @@ public class DashboardService {
         LocalDate beginDate = LocalDate.parse(begin);
         LocalDate endDate = LocalDate.parse(end);
 
-        User user = userRepository.findUserByEmail(username);
+        User user = userRepository.findUserByEmail(username).orElseThrow();
         List<ChartDataRespondDTO> summary = new ArrayList<>();
         ChartDataRespondDTO chartDataRepair = new ChartDataRespondDTO(
                 fleetCostByCategoriesRepair(user, beginDate, endDate), "Naprawy");
@@ -147,7 +147,7 @@ public class DashboardService {
     public Iterable<ChartDataRespondDTO> getSummaryRefuelingByVehicle(String username, String begin, String end) {
         LocalDate beginDate = LocalDate.parse(begin);
         LocalDate endDate = LocalDate.parse(end);
-        User user = userRepository.findUserByEmail(username);
+        User user = userRepository.findUserByEmail(username).orElseThrow();
         Iterable<DataDTO> list = vehicleRefuelingRepository.sumOfRefuelingByVehicle(user, beginDate, endDate);
         List<ChartDataRespondDTO> summary = new ArrayList<>();
         for (DataDTO dataDTO : list) {
@@ -162,7 +162,7 @@ public class DashboardService {
     public Iterable<ChartDataRespondDTO> getSummaryUseByVehicle(String username, String begin, String end) {
         LocalDate beginDate = LocalDate.parse(begin);
         LocalDate endDate = LocalDate.parse(end);
-        User user = userRepository.findUserByEmail(username);
+        User user = userRepository.findUserByEmail(username).orElseThrow();
         List<ChartDataRespondDTO> summary = new ArrayList<>();
         Iterable<DataUseDTO> list = vehicleUseRepository.sumOfRefuelingByVehicle(user, beginDate, endDate);
         for (DataUseDTO dataDTO : list) {
@@ -177,7 +177,7 @@ public class DashboardService {
     public Iterable<ChartDataRespondDTO> getNumberOfUsesByVehicle(String username, String begin, String end) {
         LocalDate beginDate = LocalDate.parse(begin);
         LocalDate endDate = LocalDate.parse(end);
-        User user = userRepository.findUserByEmail(username);
+        User user = userRepository.findUserByEmail(username).orElseThrow();
         List<ChartDataRespondDTO> summary = new ArrayList<>();
         Iterable<DataTripUserDTO> list = vehicleUseRepository.numberOfUsesByVehicleAndDataAndUser(user, beginDate, endDate);
         for (DataTripUserDTO dataDTO : list) {
@@ -226,7 +226,7 @@ public class DashboardService {
     public Iterable<ChartDataRespondDTO> getDistanceByVehicleAndDataByLoginUser(String username, String begin, String end) {
         LocalDate beginDate = LocalDate.parse(begin);
         LocalDate endDate = LocalDate.parse(end);
-        User user = userRepository.findUserByEmail(username);
+        User user = userRepository.findUserByEmail(username).orElseThrow();
         List<ChartDataRespondDTO> summary = new ArrayList<>();
         Iterable<DataTripUserDTO> list = vehicleUseRepository.tripByVehicleAndDataAndUser(user, beginDate, endDate);
         for (DataTripUserDTO dataDTO : list) {
@@ -241,7 +241,7 @@ public class DashboardService {
     public Iterable<ChartDataRespondDTO> getFuelCostByVehicleAndDataByLoginUser(String username, String begin, String end) {
         LocalDate beginDate = LocalDate.parse(begin);
         LocalDate endDate = LocalDate.parse(end);
-        User user = userRepository.findUserByEmail(username);
+        User user = userRepository.findUserByEmail(username).orElseThrow();
         List<ChartDataRespondDTO> summary = new ArrayList<>();
         Iterable<DataFuelCostUserDTO> list = vehicleRefuelingRepository.fuelCostByVehicleAndUser(user, beginDate, endDate);
         for (DataFuelCostUserDTO dataDTO : list) {

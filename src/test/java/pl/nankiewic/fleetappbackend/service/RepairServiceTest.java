@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import pl.nankiewic.fleetappbackend.DTO.RepairDTO;
+import pl.nankiewic.fleetappbackend.dto.RepairDTO;
 import pl.nankiewic.fleetappbackend.entity.VehicleRepair;
 import pl.nankiewic.fleetappbackend.mapper.RepairMapper;
 import pl.nankiewic.fleetappbackend.repository.UserRepository;

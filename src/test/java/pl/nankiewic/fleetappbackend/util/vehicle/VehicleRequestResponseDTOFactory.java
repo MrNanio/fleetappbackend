@@ -1,6 +1,6 @@
 package pl.nankiewic.fleetappbackend.util.vehicle;
 
-import pl.nankiewic.fleetappbackend.DTO.vehicle.VehicleRequestResponseDTO;
+import pl.nankiewic.fleetappbackend.dto.vehicle.VehicleRequestResponseDTO;
 
 import java.math.BigDecimal;
 

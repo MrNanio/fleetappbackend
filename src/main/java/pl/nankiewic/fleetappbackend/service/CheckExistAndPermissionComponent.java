@@ -22,14 +22,14 @@ public class CheckExistAndPermissionComponent {
     private final UserRepository userRepository;
 
     public boolean accessToVehicle(String email, Long vehicleId) {
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(email).orElseThrow();
         Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(
                 () -> new EntityNotFoundException("Nie znaleziono zasobu: pojazd"));
         return isMyVehicleByOwn(user, vehicle) || isMyVehicleByShare(user, vehicle);
     }
 
     public boolean accessToInspection(String email, Long inspectionId) {
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(email).orElseThrow();
         VehicleInspection vehicleInspection = vehicleInspectionRepository.findById(inspectionId).orElseThrow(
                 () -> new EntityNotFoundException("Nie znaleziono zasobu: inspekcja"));
         Vehicle vehicle = vehicleInspection.getVehicle();
@@ -37,7 +37,7 @@ public class CheckExistAndPermissionComponent {
     }
 
     public boolean accessToRepair(String email, Long repairId) {
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(email).orElseThrow();
         VehicleRepair vehicleRepair = vehicleRepairRepository.findById(repairId).orElseThrow(
                 () -> new EntityNotFoundException("Nie znaleziono zasobu: naprawa"));
         Vehicle vehicle = vehicleRepair.getVehicle();
@@ -45,7 +45,7 @@ public class CheckExistAndPermissionComponent {
     }
 
     public boolean accessToInsurance(String email, Long insuranceId) {
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(email).orElseThrow();
         VehicleInsurance vehicleInsurance = vehicleInsuranceRepository.findById(insuranceId).orElseThrow(
                 () -> new EntityNotFoundException("Nie znaleziono zasobu: ubezpieczenie"));
         Vehicle vehicle = vehicleInsurance.getVehicle();
@@ -53,7 +53,7 @@ public class CheckExistAndPermissionComponent {
     }
 
     public boolean accessToRefueling(String email, Long refuelingId) {
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(email).orElseThrow();
         VehicleRefueling refueling = vehicleRefuelingRepository.findById(refuelingId).orElseThrow(
                 () -> new EntityNotFoundException("Nie znaleziono zasobu: tankowanie"));
         Vehicle vehicle = refueling.getVehicle();
@@ -61,7 +61,7 @@ public class CheckExistAndPermissionComponent {
     }
 
     public boolean accessToUse(String email, Long useId) {
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmail(email).orElseThrow();
         VehicleUse vehicleUse = vehicleUseRepository.findById(useId).orElseThrow(
                 () -> new EntityNotFoundException("Nie znaleziono zasobu: użycie"));
         Vehicle vehicle = vehicleUse.getVehicle();

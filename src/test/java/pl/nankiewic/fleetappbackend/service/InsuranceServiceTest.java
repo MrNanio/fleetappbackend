@@ -4,10 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import pl.nankiewic.fleetappbackend.DTO.InsuranceRequestDTO;
+import pl.nankiewic.fleetappbackend.dto.insurance.InsuranceRequestDTO;
 import pl.nankiewic.fleetappbackend.entity.VehicleInsurance;
 import pl.nankiewic.fleetappbackend.mapper.InsuranceMapper;
-import pl.nankiewic.fleetappbackend.repository.InsuranceTypeRepository;
 import pl.nankiewic.fleetappbackend.repository.VehicleInsuranceRepository;
 
 import java.util.Optional;
@@ -20,8 +19,6 @@ class InsuranceServiceTest {
     CheckExistAndPermissionComponent checkExistAndPermissionComponent;
     @Mock
     VehicleInsuranceRepository vehicleInsuranceRepository;
-    @Mock
-    InsuranceTypeRepository insuranceTypeRepository;
     @Mock
     InsuranceMapper insuranceMapper;
 
@@ -36,7 +33,6 @@ class InsuranceServiceTest {
         insuranceService = new InsuranceService(
                 checkExistAndPermissionComponent,
                 vehicleInsuranceRepository,
-                insuranceTypeRepository,
                 insuranceMapper);
     }
 
@@ -89,11 +85,11 @@ class InsuranceServiceTest {
         verify(vehicleInsuranceRepository, times(1)).findAllInsuranceByVehicle(any());
     }
 
-    @Test
-    void should_get_insurance_type() {
-        insuranceService.getInsuranceTypes();
-        verify(insuranceTypeRepository, times(1)).findInsurancesTypes();
-    }
+//    @Test
+//    void should_get_insurance_type() {
+//        insuranceService.getInsuranceTypes();
+//        verify(insuranceTypeRepository, times(1)).findInsurancesTypes();
+//    }
 
     @Test
     void should_delete_insurance_by_id() {

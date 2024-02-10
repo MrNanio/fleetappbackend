@@ -2,7 +2,7 @@ package pl.nankiewic.fleetappbackend.mapper;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import pl.nankiewic.fleetappbackend.DTO.RepairDTO;
+import pl.nankiewic.fleetappbackend.dto.RepairDTO;
 import pl.nankiewic.fleetappbackend.entity.VehicleRepair;
 import pl.nankiewic.fleetappbackend.repository.VehicleRepository;
 

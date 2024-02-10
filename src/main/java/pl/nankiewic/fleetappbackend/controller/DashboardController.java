@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import pl.nankiewic.fleetappbackend.DTO.ChartDataRespondDTO;
+import pl.nankiewic.fleetappbackend.dto.ChartDataRespondDTO;
 import pl.nankiewic.fleetappbackend.service.DashboardService;
 
 @AllArgsConstructor

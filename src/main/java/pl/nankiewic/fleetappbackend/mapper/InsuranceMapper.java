@@ -2,10 +2,9 @@ package pl.nankiewic.fleetappbackend.mapper;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import pl.nankiewic.fleetappbackend.DTO.InsuranceRequestDTO;
-import pl.nankiewic.fleetappbackend.entity.Enum.EnumInsuranceType;
+import pl.nankiewic.fleetappbackend.dto.insurance.InsuranceRequestDTO;
+import pl.nankiewic.fleetappbackend.entity.enums.InsuranceType;
 import pl.nankiewic.fleetappbackend.entity.VehicleInsurance;
-import pl.nankiewic.fleetappbackend.repository.InsuranceTypeRepository;
 import pl.nankiewic.fleetappbackend.repository.VehicleRepository;
 
 import javax.persistence.EntityNotFoundException;
@@ -15,12 +14,9 @@ public abstract class InsuranceMapper {
 
     @Autowired
     private VehicleRepository vehicleRepository;
-    @Autowired
-    private InsuranceTypeRepository insuranceTypeRepository;
 
     @BeanMapping(qualifiedByName = "dtoToEntity")
     @Mapping(target = "vehicle", ignore = true)
-    @Mapping(target = "insuranceType", ignore = true)
     public abstract VehicleInsurance insuranceDtoToVehicleInsuranceEntity(InsuranceRequestDTO insuranceRequestDTO);
 
     @Named(value = "dtoToEntity")
@@ -28,15 +24,6 @@ public abstract class InsuranceMapper {
     public void vehicleInsuranceAddAttribute(InsuranceRequestDTO insuranceRequestDTO, @MappingTarget VehicleInsurance vehicleInsurance) {
         vehicleInsurance.setVehicle(vehicleRepository.findById(insuranceRequestDTO.getVehicleId()).orElseThrow(
                 () -> new EntityNotFoundException("Vehicle not found")));
-
-        if (EnumInsuranceType.AC.name().equals(insuranceRequestDTO.getInsuranceType())) {
-            vehicleInsurance.setInsuranceType(insuranceTypeRepository.findByEnumName(EnumInsuranceType.AC));
-        } else if (EnumInsuranceType.OC.name().equals(insuranceRequestDTO.getInsuranceType())) {
-            vehicleInsurance.setInsuranceType(insuranceTypeRepository.findByEnumName(EnumInsuranceType.OC));
-        } else if (EnumInsuranceType.NNW.name().equals(insuranceRequestDTO.getInsuranceType())) {
-            vehicleInsurance.setInsuranceType(insuranceTypeRepository.findByEnumName(EnumInsuranceType.NNW));
-        } else throw new EntityNotFoundException("Insurance type not found");
-
     }
 
     @BeanMapping(qualifiedByName = "dtoToEntity")

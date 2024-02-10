@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import pl.nankiewic.fleetappbackend.DTO.RefuelingDTO;
+import pl.nankiewic.fleetappbackend.dto.RefuelingDTO;
 import pl.nankiewic.fleetappbackend.entity.User;
 import pl.nankiewic.fleetappbackend.entity.VehicleRefueling;
 import pl.nankiewic.fleetappbackend.mapper.RefuelingMapper;

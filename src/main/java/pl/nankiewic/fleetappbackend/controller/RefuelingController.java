@@ -4,10 +4,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import pl.nankiewic.fleetappbackend.DTO.RefuelingDTO;
+import pl.nankiewic.fleetappbackend.dto.RefuelingDTO;
 import pl.nankiewic.fleetappbackend.service.RefuelingService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -51,13 +52,13 @@ public class RefuelingController {
     }
 
     @GetMapping("/my")
-    public Iterable<RefuelingDTO> getRefuelingByAuthor(Authentication authentication) {
+    public List<RefuelingDTO> getRefuelingByAuthor(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return refuelingService.getRefuelingByAuthor(userDetails.getUsername());
     }
 
     @GetMapping("/list")
-    public Iterable<RefuelingDTO> getRefuelingByUserIdAndVehicleId(@RequestParam(name = "u") Long userId,
+    public List<RefuelingDTO> getRefuelingByUserIdAndVehicleId(@RequestParam(name = "u") Long userId,
                                                                    @RequestParam(name = "v") Long vehicleId,
                                                                    Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();

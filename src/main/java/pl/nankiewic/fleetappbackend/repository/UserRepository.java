@@ -4,59 +4,53 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import pl.nankiewic.fleetappbackend.DTO.EmailDTO;
-import pl.nankiewic.fleetappbackend.DTO.UserDTO;
-import pl.nankiewic.fleetappbackend.entity.Role;
+import pl.nankiewic.fleetappbackend.dto.EmailDTO;
+import pl.nankiewic.fleetappbackend.dto.user.UserView;
 import pl.nankiewic.fleetappbackend.entity.User;
+import pl.nankiewic.fleetappbackend.entity.enums.Role;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findUserByEmail(String email);
 
-    Iterable<User> findAllByRoleIsNot(Role role);
-
-    Iterable<User> findByUser(User manager);
-
-    Optional<User> findByEmail(String email);
-
-    User findUserByEmail(String email);
-
-    @Query(value = "SELECT new pl.nankiewic.fleetappbackend.DTO.UserDTO(u.email, " +
-            "u.role.role, " +
-            "u.id, " +
-            "u.createdAt, " +
-            "u.lastLoginAt, " +
-            "u.userAccountStatus.userAccountStatus, " +
-            "u.isEnabled) " +
+    @Query(value = "SELECT u.id as id, " +
+            "u.email as email, " +
+            "u.role as role, " +
+            "u.createdAt as createdAt, " +
+            "u.lastLoginAt as lastLoginAt, " +
+            "u.userAccountStatus as userStatus, " +
+            "u.enabled as enabled " +
             "FROM User u " +
-            "WHERE u.id=?1")
-    UserDTO findUserByUserId(Long id);
+            "WHERE u.id = :id")
+    Optional<UserView> findUserViewByUserId(Long id);
 
-    @Query(value = "SELECT new pl.nankiewic.fleetappbackend.DTO.UserDTO(u.email, " +
-            "u.role.role, " +
-            "u.id, " +
-            "u.createdAt, " +
-            "u.lastLoginAt, " +
-            "u.userAccountStatus.userAccountStatus, " +
-            "u.isEnabled) " +
+    @Query(value = "SELECT u.id as id, " +
+            "u.email as email, " +
+            "u.role as role, " +
+            "u.createdAt as createdAt, " +
+            "u.lastLoginAt as lastLoginAt, " +
+            "u.userAccountStatus as userStatus, " +
+            "u.enabled as enabled " +
             "FROM User u " +
-            "WHERE u.user.email=?1")
-    List<UserDTO> getUserByManagerEmail(String email);
+            "JOIN u.parentUser pu " +
+            "WHERE pu.email = :email")
+    List<UserView> getUserViewsByManagerEmail(String email);
 
-    @Query(value = "SELECT new pl.nankiewic.fleetappbackend.DTO.UserDTO(u.email, " +
-            "u.role.role, " +
-            "u.id, " +
-            "u.createdAt, " +
-            "u.lastLoginAt, " +
-            "u.userAccountStatus.userAccountStatus, " +
-            "u.isEnabled) " +
+    @Query(value = "SELECT u.id as id, " +
+            "u.email as email, " +
+            "u.role as role, " +
+            "u.createdAt as createdAt, " +
+            "u.lastLoginAt as lastLoginAt, " +
+            "u.userAccountStatus as userStatus, " +
+            "u.enabled as enabled " +
             "FROM User u " +
-            "WHERE u.role.role=?1")
-    List<UserDTO> findUsersWithoutRole(String enumRole);
+            "WHERE u.role <> :role")
+    List<UserView> findUserViewsWithoutRole(Role role);
 
-    @Query(value = "SELECT new pl.nankiewic.fleetappbackend.DTO.EmailDTO(u.email) " +
+    @Query(value = "SELECT new pl.nankiewic.fleetappbackend.dto.EmailDTO(u.email) " +
             "FROM User u " +
             "WHERE u.id=?1")
     EmailDTO findUserEmailByUserId(Long id);

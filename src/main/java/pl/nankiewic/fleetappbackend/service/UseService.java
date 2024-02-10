@@ -2,16 +2,17 @@ package pl.nankiewic.fleetappbackend.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.nankiewic.fleetappbackend.DTO.UseDTO;
+import pl.nankiewic.fleetappbackend.dto.UseDTO;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
 import pl.nankiewic.fleetappbackend.entity.VehicleUse;
-import pl.nankiewic.fleetappbackend.exception.PermissionDeniedException;
+import pl.nankiewic.fleetappbackend.exceptions.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.mapper.UseMapper;
 import pl.nankiewic.fleetappbackend.repository.UserRepository;
 import pl.nankiewic.fleetappbackend.repository.VehicleRepository;
 import pl.nankiewic.fleetappbackend.repository.VehicleUseRepository;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @AllArgsConstructor
 @Service
@@ -27,7 +28,7 @@ public class UseService {
         if (checkExistAndPermissionComponent.accessToVehicle(email, use.getVehicleId())) {
             VehicleUse vehicleUse = useMapper.vehicleUseDtoToEntity(use);
             addMileageToVehicle(use.getVehicleId(), use.getTrip());
-            vehicleUse.setUser(userRepository.findUserByEmail(email));
+            vehicleUse.setUser(userRepository.findUserByEmail(email).orElseThrow());
             vehicleUseRepository.save(vehicleUse);
         } else throw new PermissionDeniedException();
     }
@@ -44,7 +45,7 @@ public class UseService {
         } else throw new PermissionDeniedException();
     }
 
-    public Iterable<UseDTO> getUseByVehicle(Long id, String email) {
+    public List<UseDTO> getUseByVehicle(Long id, String email) {
         if (checkExistAndPermissionComponent.accessToVehicle(email, id)) {
             return vehicleUseRepository.findAllByVehicleId(id);
         } else throw new PermissionDeniedException();
@@ -56,11 +57,11 @@ public class UseService {
         } else throw new PermissionDeniedException();
     }
 
-    public Iterable<UseDTO> getUseByUser(String email) {
-        return vehicleUseRepository.findAllByUserId(userRepository.findUserByEmail(email).getId());
+    public List<UseDTO> getUseByUser(String email) {
+        return vehicleUseRepository.findAllByUserId(userRepository.findUserByEmail(email).orElseThrow().getId());
     }
 
-    public Iterable<UseDTO> getUseByUserAndVehicle(Long userId, Long vehicleId, String email) {
+    public List<UseDTO> getUseByUserAndVehicle(Long userId, Long vehicleId, String email) {
         if (checkExistAndPermissionComponent.accessToVehicle(email, vehicleId)) {
             return vehicleUseRepository.findAllByVehicleAndUser(vehicleId, userId);
         } else throw new PermissionDeniedException();

@@ -32,15 +32,13 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+        var jwt = parseJwt(request);
+        Optional.ofNullable(jwt)
+                .filter(uname -> Objects.isNull(SecurityContextHolder.getContext().getAuthentication()))
+                .filter(JWTokenUtility::tokenVerify)
+                .map(JWTokenUtility::getUser)
+                .ifPresent(userJwtDTO -> setSecurityContextHolder(request, userJwtDTO));
 
-        String jwt = parseJwt(request);
-        if (jwt != null && JWTokenUtility.tokenVerify(jwt)) {
-            Optional.of(jwt)
-                    .filter(uname -> Objects.isNull(SecurityContextHolder.getContext().getAuthentication()))
-                    .filter(JWTokenUtility::tokenVerify)
-                    .map(JWTokenUtility::getUser)
-                    .ifPresent(userJwtDTO -> setSecurityContextHolder(request, userJwtDTO));
-        }
         filterChain.doFilter(request, response);
     }
 

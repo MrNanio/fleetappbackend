@@ -6,11 +6,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import pl.nankiewic.fleetappbackend.DTO.*;
+import pl.nankiewic.fleetappbackend.dto.*;
+import pl.nankiewic.fleetappbackend.dto.user.UserDataDTO;
+import pl.nankiewic.fleetappbackend.dto.user.UserView;
 import pl.nankiewic.fleetappbackend.service.AccountService;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -21,24 +24,23 @@ public class AccountController {
     private final AccountService accountService;
 
     @GetMapping("/activation-account")
-    public @ResponseBody
-    void activationAccount(@RequestParam String activation_token) {
-        accountService.getAccountActivation(activation_token);
+    public void activationAccount(@RequestParam String token) {
+        accountService.accountActivationByToken(token);
     }
 
     @PostMapping("/reset-password")
-    public void resetPasswordEmailRequest(@RequestBody @Valid EmailDTO emailDTO) {
+    public void sendResetPasswordEmailMessage(@RequestBody @Valid EmailDTO emailDTO) {
         accountService.postResetPassword(emailDTO);
     }
 
     @GetMapping("/reset-password")
-    public ResetChangePasswordDTO getResetPasswordAuth(@RequestParam(name = "u") String userToken,
-                                                       @RequestParam(name = "c") String userCode) {
+    public ResetChangePasswordDTO resetForgottenPassword(@RequestParam(name = "u") String userToken,
+                                                         @RequestParam(name = "c") String userCode) {
         return accountService.getResetPassword(userToken, userCode);
     }
 
     @PostMapping("/reset-password/new")
-    public void createNewPassword(@RequestBody @Valid ResetChangePasswordDTO resetChangePasswordDTO) {
+    public void createPassword(@RequestBody @Valid ResetChangePasswordDTO resetChangePasswordDTO) {
         accountService.postNewPassword(resetChangePasswordDTO);
     }
 
@@ -96,7 +98,7 @@ public class AccountController {
 
     @PreAuthorize("hasRole('SUPERUSER')")
     @GetMapping("/show-all-account")
-    Iterable<UserDTO> getAllUser(Authentication authentication) {
+    List<UserView> getAllUser(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return accountService.getUserByManager(userDetails.getUsername());
     }

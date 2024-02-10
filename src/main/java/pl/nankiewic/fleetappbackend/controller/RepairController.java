@@ -5,10 +5,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import pl.nankiewic.fleetappbackend.DTO.RepairDTO;
+import pl.nankiewic.fleetappbackend.dto.RepairDTO;
 import pl.nankiewic.fleetappbackend.service.RepairService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -32,13 +33,13 @@ public class RepairController {
     }
 
     @GetMapping
-    public Iterable<RepairDTO> getRepairsByUser(Authentication authentication) {
+    public List<RepairDTO> getRepairsByUser(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return repairService.getRepairsByUser(userDetails.getUsername());
     }
 
     @GetMapping("/v/{id}")
-    public Iterable<RepairDTO> getRepairsByVehicle(@PathVariable Long id, Authentication authentication) {
+    public List<RepairDTO> getRepairsByVehicle(@PathVariable Long id, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return repairService.getRepairsByVehicle(id, userDetails.getUsername());
     }

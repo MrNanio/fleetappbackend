@@ -1,5 +1,7 @@
 package pl.nankiewic.fleetappbackend.entity;
 import lombok.*;
+import pl.nankiewic.fleetappbackend.entity.enums.Role;
+import pl.nankiewic.fleetappbackend.entity.enums.UserAccountStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -39,17 +41,17 @@ public class User {
     private LocalDateTime lastLoginAt;
 
     @Column(name = "is_enabled")
-    private boolean isEnabled;
+    private boolean enabled;
 
-    @ManyToOne
-    @JoinColumn(name = "user_account_status_id", nullable = false)
+    @Column(name = "account_status", length = 15, nullable = false)
+    @Enumerated(EnumType.STRING)
     private UserAccountStatus userAccountStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id")
-    private User user;
+    private User parentUser;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "parentUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<User> users = new HashSet<>();
 
     @OneToOne(mappedBy = "user")
@@ -67,8 +69,8 @@ public class User {
     @OneToOne(mappedBy = "user")
     private VerificationToken verificationToken;
 
-    @ManyToOne
-    @JoinColumn(name = "roles_id", nullable = false)
+    @Column(name = "role", length = 15, nullable = false)
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -79,4 +81,10 @@ public class User {
         this.email = email;
         this.password = password;
     }
+
+    public User updateLastLoginAt() {
+        this.setLastLoginAt(LocalDateTime.now());
+        return this;
+    }
+
 }

@@ -3,11 +3,10 @@ package pl.nankiewic.fleetappbackend.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import pl.nankiewic.fleetappbackend.DTO.BlockOrUnblock;
-import pl.nankiewic.fleetappbackend.DTO.UserDTO;
+import pl.nankiewic.fleetappbackend.dto.user.UserView;
 import pl.nankiewic.fleetappbackend.service.AccountService;
 
-import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -19,17 +18,21 @@ public class AdminController {
     private final AccountService accountService;
 
     @GetMapping
-    public Iterable<UserDTO> getAllUser() {
+    public List<UserView> getAllUser() {
         return accountService.getAllUser();
     }
 
     @GetMapping("user/{id}")
-    public UserDTO getUserById(@PathVariable Long id) {
+    public UserView getUserById(@PathVariable Long id) {
         return accountService.getUserById(id);
     }
 
+
+    //FIXME
+    /*
     @PostMapping("/status")
     public void blockOrUnblockUserById(@RequestBody @Valid BlockOrUnblock blockOrUnblock) {
         accountService.blockOrUnblockUser(blockOrUnblock);
     }
+    */
 }

@@ -33,8 +33,8 @@ public class VerificationToken {
     private LocalDateTime expiryDate;
 
     private LocalDateTime calculateExpiryDate() {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        return localDateTime.plusMinutes(VerificationToken.EXPIRATION);
+        LocalDateTime now = LocalDateTime.now();
+        return now.plusMinutes(VerificationToken.EXPIRATION);
     }
 
     public VerificationToken(User user) {

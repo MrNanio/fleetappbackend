@@ -4,11 +4,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import pl.nankiewic.fleetappbackend.DTO.ShareDTO;
-import pl.nankiewic.fleetappbackend.DTO.vehicle.VehicleView;
+import pl.nankiewic.fleetappbackend.dto.ShareDTO;
+import pl.nankiewic.fleetappbackend.dto.vehicle.VehicleView;
 import pl.nankiewic.fleetappbackend.entity.CurrentVehicleUser;
 import pl.nankiewic.fleetappbackend.entity.User;
-import pl.nankiewic.fleetappbackend.exception.PermissionDeniedException;
+import pl.nankiewic.fleetappbackend.exceptions.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.mapper.ShareVehicleMapper;
 import pl.nankiewic.fleetappbackend.repository.CurrentVehicleUserRepository;
 import pl.nankiewic.fleetappbackend.repository.UserRepository;
@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Service
 public class ShareService {
+
     private final VehicleRepository vehicleRepository;
     private final UserRepository userRepository;
     private final CurrentVehicleUserRepository currentVehicleUserRepository;
@@ -34,13 +35,13 @@ public class ShareService {
                 .collect(Collectors.toList());
     }
 
-    public Iterable<VehicleView> getSharedVehicleByUserId(Long userId) {
+    public List<VehicleView> getSharedVehicleByUserId(Long userId) {
         return vehicleRepository.findVehicleByShared(userId);
     }
 
-    public Iterable<VehicleView> getOwnedAndSharedVehiclesViewList() {
+    public List<VehicleView> getOwnedAndSharedVehiclesViewList() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return userRepository.findByEmail(auth.getName())
+        return userRepository.findUserByEmail(auth.getName())
                 .map(User::getId)
                 .map(vehicleRepository::findVehicleByShareOrOwn)
                 .orElseThrow(EntityNotFoundException::new);

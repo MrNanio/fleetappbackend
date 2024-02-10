@@ -2,8 +2,7 @@ package pl.nankiewic.fleetappbackend.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import pl.nankiewic.fleetappbackend.DTO.VehicleDTO;
-import pl.nankiewic.fleetappbackend.DTO.vehicle.VehicleView;
+import pl.nankiewic.fleetappbackend.dto.vehicle.VehicleView;
 import pl.nankiewic.fleetappbackend.entity.User;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
 
@@ -12,7 +11,7 @@ import java.util.Optional;
 
 public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 
-    Iterable<Vehicle> findVehiclesByUser(User user);
+    List<Vehicle> findVehiclesByUser(User user);
 
     Optional<Vehicle> findById(Long id);
 
@@ -25,11 +24,11 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
             "v.mileage as mileage, " +
             "v.vinNumber as vinNumber, " +
             "v.vehicleRegistrationNumber as vehicleRegistrationNumber, " +
-            "v.fuelType.fuelType as fuelType, " +
+            "v.fuelType as fuelType, " +
             "v.cityFuelConsumption as cityFuelConsumption, " +
             "v.countryFuelConsumption as countryFuelConsumption, " +
             "v.averageFuelConsumption as averageFuelConsumption, " +
-            "v.vehicleStatus.vehicleStatus as vehicleStatus " +
+            "v.vehicleStatus as vehicleStatus " +
             "FROM Vehicle v " +
             "WHERE v.id = :vehicleId")
     Optional<VehicleView> findVehicleDetailsById(Long vehicleId);
@@ -87,11 +86,11 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
             "v.mileage as mileage, " +
             "v.vinNumber as vinNumber, " +
             "v.vehicleRegistrationNumber as vehicleRegistrationNumber, " +
-            "v.fuelType.fuelType as fuelType, " +
+            "v.fuelType as fuelType, " +
             "v.cityFuelConsumption as cityFuelConsumption, " +
             "v.countryFuelConsumption as countryFuelConsumption, " +
             "v.averageFuelConsumption as averageFuelConsumption, " +
-            "v.vehicleStatus.vehicleStatus as vehicleStatus " +
+            "v.vehicleStatus as vehicleStatus " +
             "FROM Vehicle v " +
             "WHERE v.user.email=?1")
     List<VehicleView> findVehiclesDataByUser(String email);
@@ -105,11 +104,11 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
             "v.mileage as mileage, " +
             "v.vinNumber as vinNumber, " +
             "v.vehicleRegistrationNumber as vehicleRegistrationNumber, " +
-            "v.fuelType.fuelType as fuelType, " +
+            "v.fuelType as fuelType, " +
             "v.cityFuelConsumption as cityFuelConsumption, " +
             "v.countryFuelConsumption as countryFuelConsumption, " +
             "v.averageFuelConsumption as averageFuelConsumption, " +
-            "v.vehicleStatus.vehicleStatus as vehicleStatus " +
+            "v.vehicleStatus as vehicleStatus " +
             "FROM Vehicle v " +
             "WHERE v.user.email=?1")
     List<VehicleView> findVehiclesDataByUserVehicleDto(String email);

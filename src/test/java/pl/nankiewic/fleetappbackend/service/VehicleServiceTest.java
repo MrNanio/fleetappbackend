@@ -9,7 +9,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import pl.nankiewic.fleetappbackend.DTO.vehicle.VehicleRequestResponseDTO;
+import pl.nankiewic.fleetappbackend.dto.vehicle.VehicleRequestResponseDTO;
 import pl.nankiewic.fleetappbackend.entity.User;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
 import pl.nankiewic.fleetappbackend.mapper.VehicleMapper;

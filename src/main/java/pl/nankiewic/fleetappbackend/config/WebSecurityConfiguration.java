@@ -11,11 +11,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.nankiewic.fleetappbackend.config.jwt.JwtAuthorizationFilter;
 import pl.nankiewic.fleetappbackend.config.jwt.JWTAuthenticationEntryPoint;
+import pl.nankiewic.fleetappbackend.config.security.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
@@ -23,7 +23,7 @@ import pl.nankiewic.fleetappbackend.config.jwt.JWTAuthenticationEntryPoint;
 @RequiredArgsConstructor
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final UserDetailsService userService;
+    private final CustomUserDetailsService userService;
     private final JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final PasswordEncoder passwordEncoder;
 
@@ -47,7 +47,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/**").permitAll()
+                .antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/test/**").permitAll()
                 .antMatchers("/user/activation-account").permitAll()
                 .antMatchers("/user/reset-password").permitAll()

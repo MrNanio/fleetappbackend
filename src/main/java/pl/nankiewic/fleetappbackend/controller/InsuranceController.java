@@ -5,12 +5,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import pl.nankiewic.fleetappbackend.DTO.InsuranceDTO;
-import pl.nankiewic.fleetappbackend.DTO.InsuranceRequestDTO;
-import pl.nankiewic.fleetappbackend.DTO.InsuranceTypeDTO;
+import pl.nankiewic.fleetappbackend.dto.insurance.InsuranceRequestDTO;
+import pl.nankiewic.fleetappbackend.dto.insurance.InsuranceView;
+import pl.nankiewic.fleetappbackend.entity.enums.InsuranceType;
 import pl.nankiewic.fleetappbackend.service.InsuranceService;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @RestController
@@ -36,19 +38,19 @@ public class InsuranceController {
     }
 
     @GetMapping("/{id}")
-    public InsuranceDTO getInsurancesById(@PathVariable Long id, Authentication authentication) {
+    public InsuranceView getInsurancesById(@PathVariable Long id, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return insuranceService.getInsuranceById(id, userDetails.getUsername());
     }
 
     @GetMapping("/v/{id}")
-    public Iterable<InsuranceDTO> getInsurancesByVehicle(@PathVariable Long id, Authentication authentication) {
+    public List<InsuranceView> getInsurancesByVehicle(@PathVariable Long id, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return insuranceService.getInsurancesByVehicle(id, userDetails.getUsername());
     }
 
     @GetMapping
-    public Iterable<InsuranceDTO> getInsurancesByUser(Authentication authentication) {
+    public List<InsuranceView> getInsurancesByUser(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return insuranceService.getInsurancesByUser(userDetails.getUsername());
     }
@@ -60,7 +62,8 @@ public class InsuranceController {
     }
 
     @GetMapping("/types")
-    public Iterable<InsuranceTypeDTO> getInsuranceTypes() {
+    public Set<InsuranceType> getInsuranceTypes() {
         return insuranceService.getInsuranceTypes();
     }
+
 }

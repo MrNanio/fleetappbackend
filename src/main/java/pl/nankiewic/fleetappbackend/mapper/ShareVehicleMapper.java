@@ -23,8 +23,8 @@ public abstract class ShareVehicleMapper {
     @Named(value = "dtoToEntity")
     @AfterMapping
     public void vehicleShareAddAttribute(Long vehicleId,
-                                          Long userId,
-                                          @MappingTarget CurrentVehicleUser currentVehicleUser) {
+                                         Long userId,
+                                         @MappingTarget CurrentVehicleUser currentVehicleUser) {
         currentVehicleUser.setVehicle(vehicleRepository.findById(vehicleId).orElseThrow(
                 () -> new EntityNotFoundException("Vehicle not found")));
         currentVehicleUser.setUser(userRepository.findById(userId).orElseThrow(

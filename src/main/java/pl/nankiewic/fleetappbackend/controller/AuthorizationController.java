@@ -19,12 +19,13 @@ public class AuthorizationController {
 
     @PostMapping("/signin")
     public ResponseEntity<AuthenticationResponse> loginUser(@RequestBody @Valid AuthenticationRequest authenticationRequest) {
-        return ResponseEntity.ok().body(authenticationService.login(authenticationRequest));
+        return ResponseEntity.ok()
+                .body(authenticationService.login(authenticationRequest));
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody @Valid AuthenticationRequest authenticationRequest) {
-        authenticationService.save(authenticationRequest);
+    public ResponseEntity<String> registerUser(@RequestBody @Valid AuthenticationRequest authenticationRequest) {
+        authenticationService.createSuperuser(authenticationRequest);
         return ResponseEntity.ok("Success");
     }
 

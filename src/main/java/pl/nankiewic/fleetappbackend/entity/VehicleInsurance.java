@@ -2,6 +2,7 @@ package pl.nankiewic.fleetappbackend.entity;
 
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import pl.nankiewic.fleetappbackend.entity.enums.InsuranceType;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -39,13 +40,12 @@ public class VehicleInsurance {
     @Column(name = "description", length = 100)
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "insurance_type_id", nullable = false)
+    @Column(name = "insurance_type", length = 45, nullable = false)
+    @Enumerated(EnumType.STRING)
     private InsuranceType insuranceType;
 
     @ManyToOne
     @JoinColumn(name = "vehicle_id", nullable = false)
     private Vehicle vehicle;
-
 
 }

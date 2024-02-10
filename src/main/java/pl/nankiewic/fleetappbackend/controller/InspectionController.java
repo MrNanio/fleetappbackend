@@ -5,7 +5,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import pl.nankiewic.fleetappbackend.DTO.InspectionDTO;
+import pl.nankiewic.fleetappbackend.dto.InspectionDTO;
 import pl.nankiewic.fleetappbackend.service.InspectionService;
 
 import javax.validation.Valid;

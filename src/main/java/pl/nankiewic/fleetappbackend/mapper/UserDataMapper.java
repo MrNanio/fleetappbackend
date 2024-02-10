@@ -3,7 +3,7 @@ package pl.nankiewic.fleetappbackend.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import pl.nankiewic.fleetappbackend.DTO.UserDataDTO;
+import pl.nankiewic.fleetappbackend.dto.user.UserDataDTO;
 import pl.nankiewic.fleetappbackend.entity.User;
 import pl.nankiewic.fleetappbackend.entity.UserData;
 

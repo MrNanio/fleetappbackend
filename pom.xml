@@ -22,6 +22,7 @@
         <jjwt.version>3.18.2</jjwt.version>
         <h2.version>2.2.224</h2.version>
         <pdfbox.version>3.0.1</pdfbox.version>
+        <vavr.version>0.9.0</vavr.version>
     </properties>
 
     <dependencies>
@@ -70,6 +71,11 @@
             <artifactId>mysql-connector-j</artifactId>
             <version>${mysql.version}</version>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.vavr</groupId>
+            <artifactId>vavr</artifactId>
+            <version>${vavr.version}</version>
         </dependency>
         <dependency>
             <groupId>com.auth0</groupId>
