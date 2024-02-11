@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import pl.nankiewic.fleetappbackend.dto.EmailDTO;
+import pl.nankiewic.fleetappbackend.dto.PasswordRecoveryDTO;
 import pl.nankiewic.fleetappbackend.dto.user.UserView;
 import pl.nankiewic.fleetappbackend.entity.User;
 import pl.nankiewic.fleetappbackend.entity.enums.Role;
@@ -37,7 +37,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "FROM User u " +
             "JOIN u.parentUser pu " +
             "WHERE pu.email = :email")
-    List<UserView> getUserViewsByManagerEmail(String email);
+    List<UserView> getUserViewsByParentUserEmail(String email);
 
     @Query(value = "SELECT u.id as id, " +
             "u.email as email, " +
@@ -50,10 +50,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "WHERE u.role <> :role")
     List<UserView> findUserViewsWithoutRole(Role role);
 
-    @Query(value = "SELECT new pl.nankiewic.fleetappbackend.dto.EmailDTO(u.email) " +
+    @Query(value = "SELECT new pl.nankiewic.fleetappbackend.dto.PasswordRecoveryDTO(u.email) " +
             "FROM User u " +
             "WHERE u.id=?1")
-    EmailDTO findUserEmailByUserId(Long id);
+    PasswordRecoveryDTO findUserEmailByUserId(Long id);
 
     boolean existsByEmail(String email);
 

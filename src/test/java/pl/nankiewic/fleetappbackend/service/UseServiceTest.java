@@ -48,7 +48,7 @@ class UseServiceTest {
     @Test
     void should_create_vehicle_use() {
         //given
-        UseDTO useDTO = UseDTO.builder()
+        var useDTO = UseDTO.builder()
                 .id(1L)
                 .vehicleId(1L)
                 .userId(1L)
@@ -57,18 +57,21 @@ class UseServiceTest {
                 .description("Example")
                 .tripType("MIEJSKI")
                 .build();
+        var email = "mail@mail.com";
+        var vehicle = Vehicle.builder()
+                .mileage("123")
+                .build();
+        var vehicleUse = VehicleUse.builder()
+                .build();
 
-        String email = "mail@mail.com";
-        Vehicle vehicle = Vehicle.builder()
-                .mileage("123").build();
         when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
+        when(vehicleUseRepository.save(any())).thenReturn(vehicleUse);
+        when(useMapper.vehicleUseDtoToEntity(any())).thenReturn(vehicleUse);
         when(vehicleRepository.findById(any())).thenReturn(Optional.of(vehicle));
-        when(useMapper.vehicleUseDtoToEntity(any())).thenReturn(VehicleUse.builder().build());
         //when
         useService.createVehicleUse(useDTO, email);
         //then
         verify(vehicleUseRepository, times(1)).save(any());
-
     }
 
     @Test
@@ -121,7 +124,7 @@ class UseServiceTest {
     @Test
     void should_get_use_by_user() {
         //given
-        when(userRepository.findUserByEmail(any())).thenReturn(User.builder().id(1L).build());
+        when(userRepository.findUserByEmail(any())).thenReturn(Optional.ofNullable(User.builder().id(1L).build()));
         //when
         useService.getUseByUser("mail@mail.com");
         //then

@@ -56,7 +56,7 @@ class RefuelingServiceTest {
                 .litre("23").build();
         when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
         when(refuelingMapper.refuelingDtoToVehicleRefuelingEntity(any())).thenReturn(VehicleRefueling.builder().build());
-        when(userRepository.findUserByEmail(any())).thenReturn(User.builder().build());
+        when(userRepository.findUserByEmail(any())).thenReturn(Optional.ofNullable(User.builder().build()));
         //when
         refuelingService.createVehicleRefueling(refuelingDTO, EXAMPLE_EMAIL_ADDRESS);
         //then

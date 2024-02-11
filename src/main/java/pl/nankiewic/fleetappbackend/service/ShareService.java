@@ -36,14 +36,14 @@ public class ShareService {
     }
 
     public List<VehicleView> getSharedVehicleByUserId(Long userId) {
-        return vehicleRepository.findVehicleByShared(userId);
+        return vehicleRepository.findVehicleViewsByCurrentUserId(userId);
     }
 
     public List<VehicleView> getOwnedAndSharedVehiclesViewList() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return userRepository.findUserByEmail(auth.getName())
                 .map(User::getId)
-                .map(vehicleRepository::findVehicleByShareOrOwn)
+                .map(vehicleRepository::findVehicleViewsByCurrentUserIdOrOwnerId)
                 .orElseThrow(EntityNotFoundException::new);
     }
 

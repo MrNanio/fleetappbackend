@@ -43,7 +43,7 @@ public class VehiclePDFExporter {
 
     private void writeTableData(PdfPTable table) {
         for (Vehicle vehicle : vehiclesList) {
-            table.addCell(vehicle.getVehicleMake().getName());
+            table.addCell(vehicle.getMake().name());
             table.addCell(vehicle.getModel());
             table.addCell(vehicle.getVehicleRegistrationNumber());
             table.addCell(vehicle.getMileage());

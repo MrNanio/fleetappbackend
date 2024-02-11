@@ -28,7 +28,6 @@ public class UseService {
         if (checkExistAndPermissionComponent.accessToVehicle(email, use.getVehicleId())) {
             VehicleUse vehicleUse = useMapper.vehicleUseDtoToEntity(use);
             addMileageToVehicle(use.getVehicleId(), use.getTrip());
-            vehicleUse.setUser(userRepository.findUserByEmail(email).orElseThrow());
             vehicleUseRepository.save(vehicleUse);
         } else throw new PermissionDeniedException();
     }
@@ -86,7 +85,6 @@ public class UseService {
         int mil = Integer.parseInt(vehicle.getMileage()) + trip;
         vehicle.setMileage(Integer.toString(mil));
         vehicleRepository.save(vehicle);
-
     }
 
     private void recalculateMileageToVehicle(Long vehicleId, Short tripValueFromDatabase, Short updateValueOfTrip) {

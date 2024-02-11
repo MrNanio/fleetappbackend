@@ -37,12 +37,6 @@ public class AccountService {
     private final UserDataMapper userDataMapper;
     private final MailService mailService;
 
-    public void accountActivationByToken(String activationToken) {
-        verificationTokenRepository.findByToken(activationToken)
-                .map(VerificationToken::getUser)
-                .ifPresent(u -> changeStatusAndSave(u, UserAccountStatus.ACTIVE));
-    }
-
     public void blockUserAccountByUserId(Long userId) {
         userRepository.findById(userId)
                 .ifPresent(u -> changeStatusAndSave(u, UserAccountStatus.BLOCKED, false));
@@ -58,14 +52,14 @@ public class AccountService {
                 .ifPresent(u -> changeStatusAndSave(u, UserAccountStatus.INACTIVE, true));
     }
 
-    public void deleteUserData(String email) {
-        userRepository.findUserByEmail(email)
-                .map(User::getUserData)
-                .ifPresent(userDataRepository::delete);
+    public void accountActivationByToken(String activationToken) {
+        verificationTokenRepository.findByToken(activationToken)
+                .map(VerificationToken::getUser)
+                .ifPresent(u -> changeStatusAndSave(u, UserAccountStatus.ACTIVE));
     }
 
-    public void postResetPassword(EmailDTO emailDTO) {
-        var user = userRepository.findUserByEmail(emailDTO.getEmail())
+    public void recoveryPasswordByEmailAddress(PasswordRecoveryDTO passwordRecoveryDTO) {
+        var user = userRepository.findUserByEmail(passwordRecoveryDTO.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException(""));
         user.setResetCode(createMultitaskingCode());
         user.setResetAt(LocalDateTime.now());
@@ -76,23 +70,14 @@ public class AccountService {
         //mailService.sendResetPassword(user.getEmail(), user.getResetCode(), verificationTokenRepository.findByUser(user).getToken());
     }
 
-    public ResetChangePasswordDTO getResetPassword(String userToken, String userCode) {
-        var token = verificationTokenRepository.findByToken(userToken)
-                .orElseThrow(() -> new TokenException("token nie istnieje"));
-        checkIfTokenDateIsValid(token);
-        var user = userRepository.findUserByEmail(token.getUser().getEmail()).orElseThrow();
-        checkIfTokenDataIsValid(userToken, user);
-        return new ResetChangePasswordDTO(user.getEmail(), null, user.getId(), userToken, userCode);
-    }
-
-    public void postNewPassword(ResetChangePasswordDTO resetChangePasswordDTO) {
-        var requestUser = userRepository.findUserByEmail(resetChangePasswordDTO.getUser())
+    public void changeForgottenPassword(PasswordRecoveryDTO passwordRecoveryDTO) {
+        var requestUser = userRepository.findUserByEmail(passwordRecoveryDTO.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException(""));
-        var tokenUser = verificationTokenRepository.findByToken(resetChangePasswordDTO.getVer_token())
+        var tokenUser = verificationTokenRepository.findByToken(passwordRecoveryDTO.getCode())
                 .map(VerificationToken::getUser)
                 .orElseThrow(() -> new TokenException("twoja tożsamość nie została potwierdzona"));
         checkIfTokenEmailIsEqualDbEmail(requestUser, tokenUser);
-        requestUser.setPassword(passwordEncoder.encode(resetChangePasswordDTO.getNew_password()));
+        requestUser.setPassword(passwordEncoder.encode(passwordRecoveryDTO.getPassword()));
         userRepository.save(requestUser);
         //mailService.sendPasswordInfo(requestUser.getEmail());
     }
@@ -106,6 +91,11 @@ public class AccountService {
         //mailService.sendPasswordInfo(user.getEmail());
     }
 
+    public void deleteUserData(String email) {
+        userRepository.findUserByEmail(email)
+                .map(User::getUserData)
+                .ifPresent(userDataRepository::delete);
+    }
     public IdDTO getUserInvite(String userToken) {
         var token = verificationTokenRepository.findByToken(userToken)
                 .orElseThrow(() -> new TokenException("token nie istnieje"));
@@ -125,7 +115,7 @@ public class AccountService {
     }
 
     public List<UserView> getUserByManager(String email) {
-        return userRepository.getUserViewsByManagerEmail(email);
+        return userRepository.getUserViewsByParentUserEmail(email);
     }
 
     public List<UserView> getAllUser() {
@@ -171,9 +161,9 @@ public class AccountService {
                 .orElseThrow();
     }
 
-    public void addNewUser(EmailDTO emailDTO, String email) {
-        if (userRepository.existsByEmail(emailDTO.getEmail())) {
-            User user = userRepository.findUserByEmail(emailDTO.getEmail()).orElseThrow();
+    public void addNewUser(PasswordRecoveryDTO passwordRecoveryDTO, String email) {
+        if (userRepository.existsByEmail(passwordRecoveryDTO.getEmail())) {
+            User user = userRepository.findUserByEmail(passwordRecoveryDTO.getEmail()).orElseThrow();
             if (!user.isEnabled() && user.getVerificationToken().getExpiryDate().isAfter(LocalDateTime.now())) {
                 // mailService.sendInviteMail(emailDTO.getEmail(), user.getVerificationToken().getToken());
             } else if (!user.isEnabled() && user.getVerificationToken().getExpiryDate().isBefore(LocalDateTime.now())) {
@@ -183,12 +173,12 @@ public class AccountService {
                 verificationToken.setExpiryDate(LocalDateTime.now().plusMinutes(120));
                 verificationTokenRepository.save(verificationToken);
             } else throw new UsernameAlreadyTakenException("mail już ma aktywne konto");
-        } else if (userRepository.existsByEmail(email) && !userRepository.existsByEmail(emailDTO.getEmail())) {
+        } else if (userRepository.existsByEmail(email) && !userRepository.existsByEmail(passwordRecoveryDTO.getEmail())) {
             User manager = userRepository.findUserByEmail(email).orElseThrow();
             User user = new User();
             user.setParentUser(manager);
             user.setPassword(passwordEncoder.encode(createMultitaskingCode()));
-            user.setEmail(emailDTO.getEmail());
+            user.setEmail(passwordRecoveryDTO.getEmail());
             userRegister(user);
             VerificationToken verificationToken = new VerificationToken(user);
             verificationTokenRepository.save(verificationToken);
@@ -197,7 +187,7 @@ public class AccountService {
 
     }
 
-    public EmailDTO getUserEmail(Long id) {
+    public PasswordRecoveryDTO getUserEmail(Long id) {
         return userRepository.findUserEmailByUserId(id);
     }
 
@@ -270,5 +260,14 @@ public class AccountService {
             throw new TokenException("błąd danych autoryzacyjnych: email");
         }
     }
+
+    //    public ResetChangePasswordDTO getResetPassword(String userToken, String userCode) {
+//        var token = verificationTokenRepository.findByToken(userToken)
+//                .orElseThrow(() -> new TokenException("token nie istnieje"));
+//        checkIfTokenDateIsValid(token);
+//        var user = userRepository.findUserByEmail(token.getUser().getEmail()).orElseThrow();
+//        checkIfTokenDataIsValid(userToken, user);
+//        return new ResetChangePasswordDTO(user.getEmail(), null, user.getId(), userToken, userCode);
+//    }
 
 }

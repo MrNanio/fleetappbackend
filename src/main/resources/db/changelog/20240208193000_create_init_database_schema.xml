@@ -4,14 +4,6 @@
                     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet id="20240208193000" author="pnankiewic">
-        <createTable tableName="vehicle_makes">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="name" type="varchar(45)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
 
         <createTable tableName="users">
             <column name="id" type="bigint" autoIncrement="true">
@@ -104,10 +96,8 @@
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="vehicle_make_id" type="bigint">
-                <constraints nullable="false"
-                             foreignKeyName="fk_vehicle_make_vehicle"
-                             references="vehicle_makes(id)"/>
+            <column name="make" type="varchar(45)">
+                <constraints nullable="false"/>
             </column>
             <column name="model" type="varchar(45)">
                 <constraints nullable="false"/>

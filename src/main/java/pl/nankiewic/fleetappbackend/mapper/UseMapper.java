@@ -1,18 +1,13 @@
 package pl.nankiewic.fleetappbackend.mapper;
 
 import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import pl.nankiewic.fleetappbackend.dto.UseDTO;
+import pl.nankiewic.fleetappbackend.entity.User;
+import pl.nankiewic.fleetappbackend.entity.Vehicle;
 import pl.nankiewic.fleetappbackend.entity.VehicleUse;
-import pl.nankiewic.fleetappbackend.repository.VehicleRepository;
-
-import javax.persistence.EntityNotFoundException;
 
 @Mapper(componentModel = "spring")
 public abstract class UseMapper {
-
-    @Autowired
-    private VehicleRepository vehicleRepository;
 
     @BeanMapping(qualifiedByName = "dtoToEntity")
     @Mapping(target = "vehicle", ignore = true)
@@ -22,8 +17,15 @@ public abstract class UseMapper {
     @Named(value = "dtoToEntity")
     @AfterMapping
     public void vehicleUseAddAttribute(UseDTO useDTO, @MappingTarget VehicleUse vehicleUse) {
-        vehicleUse.setVehicle(vehicleRepository.findById(useDTO.getVehicleId()).orElseThrow(
-                () -> new EntityNotFoundException("Nie znaleziono zasobu: użycie")));
+        var vehicle = Vehicle.builder()
+                .id(useDTO.getVehicleId())
+                .build();
+        var user = User.builder()
+                .id(useDTO.getUserId())
+                .build();
+
+        vehicleUse.setUser(user);
+        vehicleUse.setVehicle(vehicle);
     }
 
     @BeanMapping(qualifiedByName = "dtoToEntity")

@@ -4,25 +4,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import pl.nankiewic.fleetappbackend.dto.vehicle.VehicleRequestResponseDTO;
+import pl.nankiewic.fleetappbackend.dto.vehicle.VehicleDTO;
 import pl.nankiewic.fleetappbackend.entity.User;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
-import pl.nankiewic.fleetappbackend.entity.VehicleMake;
 import pl.nankiewic.fleetappbackend.entity.enums.FuelType;
-import pl.nankiewic.fleetappbackend.repository.VehicleMakeRepository;
+import pl.nankiewic.fleetappbackend.entity.enums.VehicleMake;
 
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static pl.nankiewic.fleetappbackend.entity.enums.VehicleStatus.ACTIVE;
 
 class VehicleMapperTest {
-    @Mock
-    private VehicleMakeRepository vehicleMakeRepository;
 
     @InjectMocks
     private final VehicleMapper vehicleMapper = Mappers.getMapper(VehicleMapper.class);
@@ -35,8 +29,8 @@ class VehicleMapperTest {
     @Test
     void should_map_vehicle_request_response_to_vehicle_entity() {
         //given
-        VehicleRequestResponseDTO vehicleRequestResponseDTO = VehicleRequestResponseDTO.builder()
-                .make("FORD")
+        VehicleDTO vehicleDTO = VehicleDTO.builder()
+                .make(VehicleMake.FORD)
                 .model("FOCUS")
                 .year("2010")
                 .color("RED")
@@ -49,16 +43,13 @@ class VehicleMapperTest {
                 .countryFuelConsumption(BigDecimal.valueOf(8.9))
                 .vehicleStatus(ACTIVE)
                 .build();
-
-        User user = User.builder().build();
-        when(vehicleMakeRepository.findByName(any())).thenReturn(VehicleMake.builder().name("FORD").build());
         //when
-        Vehicle vehicle = vehicleMapper.vehicleDTOtoVehicle(vehicleRequestResponseDTO, user);
+        Vehicle vehicle = vehicleMapper.vehicleDTOtoVehicle(vehicleDTO);
         //then
-        assertThat(vehicle.getColor()).isEqualTo(vehicleRequestResponseDTO.getColor());
+        assertThat(vehicle.getColor()).isEqualTo(vehicleDTO.getColor());
         assertThat(vehicle.getVehicleStatus()).isEqualTo(ACTIVE);
         assertThat(vehicle.getFuelType()).isEqualTo(FuelType.PB95);
-        assertThat(vehicle.getVehicleMake().getName()).isEqualTo(vehicleRequestResponseDTO.getMake());
+        assertThat(vehicle.getMake()).isEqualTo(VehicleMake.FORD);
     }
 
 }

@@ -3,6 +3,7 @@ package pl.nankiewic.fleetappbackend.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import pl.nankiewic.fleetappbackend.entity.enums.FuelType;
+import pl.nankiewic.fleetappbackend.entity.enums.VehicleMake;
 import pl.nankiewic.fleetappbackend.entity.enums.VehicleStatus;
 
 import javax.persistence.*;
@@ -24,9 +25,9 @@ public class Vehicle {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "vehicle_make_id")
-    private VehicleMake vehicleMake;
+    @Column(name = "make", length = 45, nullable = false)
+    @Enumerated(EnumType.STRING)
+    private VehicleMake make;
 
     @Column(name = "model", length = 45, nullable = false)
     private String model;

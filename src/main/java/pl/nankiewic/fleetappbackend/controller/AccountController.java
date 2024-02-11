@@ -17,31 +17,47 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/user")
+@RequestMapping("api/account")
 @CrossOrigin(origins = "http://localhost:4200")
 public class AccountController {
 
     private final AccountService accountService;
 
-    @GetMapping("/activation-account")
+    /**
+     * manage account status and availability - admin/superuser
+     */
+    @PostMapping("/block/{id}")
+    public void blockUserAccount(@PathVariable Long id) {
+        accountService.blockUserAccountByUserId(id);
+    }
+
+    @PostMapping("/activate/{id}")
+    public void activateUserAccount(@PathVariable Long id) {
+        accountService.activateUserAccountByUserId(id);
+    }
+
+    @PostMapping("/deactivate/{id}")
+    public void deactivateUserAccount(@PathVariable Long id) {
+        accountService.deactivateUserAccountByUserId(id);
+    }
+
+    /**
+     * first account activation, password recovery, password change,
+     */
+
+    @GetMapping("/activation")
     public void activationAccount(@RequestParam String token) {
         accountService.accountActivationByToken(token);
     }
 
-    @PostMapping("/reset-password")
-    public void sendResetPasswordEmailMessage(@RequestBody @Valid EmailDTO emailDTO) {
-        accountService.postResetPassword(emailDTO);
+    @PostMapping("/recovery-password")
+    public void recoveryPasswordByEmailAddress(@RequestBody @Valid PasswordRecoveryDTO passwordRecoveryDTO) {
+        accountService.recoveryPasswordByEmailAddress(passwordRecoveryDTO);
     }
 
-    @GetMapping("/reset-password")
-    public ResetChangePasswordDTO resetForgottenPassword(@RequestParam(name = "u") String userToken,
-                                                         @RequestParam(name = "c") String userCode) {
-        return accountService.getResetPassword(userToken, userCode);
-    }
-
-    @PostMapping("/reset-password/new")
-    public void createPassword(@RequestBody @Valid ResetChangePasswordDTO resetChangePasswordDTO) {
-        accountService.postNewPassword(resetChangePasswordDTO);
+    @PostMapping("/change-forgotten-password")
+    public void changeForgottenPassword(@RequestBody @Valid PasswordRecoveryDTO passwordRecoveryDTO) {
+        accountService.changeForgottenPassword(passwordRecoveryDTO);
     }
 
     @PostMapping("/change-password")
@@ -50,14 +66,12 @@ public class AccountController {
         accountService.changePassword(passwordDTO, userDetails.getUsername());
     }
 
-    @GetMapping("/userdata/{id}")
-    public ResponseEntity<UserDataDTO> getUserData(@PathVariable Long id, Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return ResponseEntity.ok().body(accountService.getUserData(userDetails.getUsername(), id));
-    }
+    /**
+     *  create, update, get, delete user data
+     */
 
     @PostMapping("/userdata")
-    public ResponseEntity<MessageResponse> addUserData(@RequestBody @Valid UserDataDTO userDataDTO,
+    public ResponseEntity<MessageResponse> createUserData(@RequestBody @Valid UserDataDTO userDataDTO,
                                                        Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         accountService.createUserData(userDataDTO, userDetails.getUsername());
@@ -72,6 +86,12 @@ public class AccountController {
         return ResponseEntity.ok().body(new MessageResponse("ok", LocalDateTime.now()));
     }
 
+    @GetMapping("/userdata/{id}")
+    public ResponseEntity<UserDataDTO> getUserData(@PathVariable Long id, Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        return ResponseEntity.ok().body(accountService.getUserData(userDetails.getUsername(), id));
+    }
+
     @DeleteMapping("/userdata")
     public ResponseEntity<MessageResponse> deleteUserData(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -79,34 +99,53 @@ public class AccountController {
         return ResponseEntity.ok().body(new MessageResponse("ok", LocalDateTime.now()));
     }
 
+    /**
+     * invite user - USER, activate, only for account with role USER
+     */
+
     @PreAuthorize("hasRole('SUPERUSER')")
-    @PostMapping("/new-account")
-    public void postInviteToNewUser(@RequestBody @Valid EmailDTO emailDTO, Authentication authentication) {
+    @PostMapping("/user")
+    public void inviteUser(@RequestBody @Valid PasswordRecoveryDTO passwordRecoveryDTO, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        accountService.addNewUser(emailDTO, userDetails.getUsername());
+        accountService.addNewUser(passwordRecoveryDTO, userDetails.getUsername());
     }
 
-    @GetMapping("/new-account")
-    public IdDTO getUserInvite(@RequestParam(name = "u") String token) {
+    @GetMapping("/user")
+    public IdDTO inviteUser(@RequestParam(name = "u") String token) {
         return accountService.getUserInvite(token);
     }
 
-    @PostMapping("/new-account/password")
+    @PostMapping("/user/password")
     public void setNewPasswordForUser(@RequestBody @Valid IdDTO idDTO) {
         accountService.newPasswordForNewUser(idDTO);
     }
 
+    /**
+     * SUPERUSER (manger) - features
+     */
+
     @PreAuthorize("hasRole('SUPERUSER')")
-    @GetMapping("/show-all-account")
+    @GetMapping("/all")
     List<UserView> getAllUser(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return accountService.getUserByManager(userDetails.getUsername());
     }
 
+    //fixme: logika
     @PreAuthorize("hasRole('SUPERUSER')")
     @GetMapping("/get-user-by-id/{id}")
-    EmailDTO getUserEmail(@PathVariable Long id) {
+    PasswordRecoveryDTO getUserEmail(@PathVariable Long id) {
         return accountService.getUserEmail(id);
     }
-}
 
+    @GetMapping
+    public List<UserView> getAllUser() {
+        return accountService.getAllUser();
+    }
+
+    @GetMapping("user/{id}")
+    public UserView getUserById(@PathVariable Long id) {
+        return accountService.getUserById(id);
+    }
+
+}

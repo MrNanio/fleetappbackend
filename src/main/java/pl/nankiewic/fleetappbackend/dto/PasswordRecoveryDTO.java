@@ -7,7 +7,14 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class EmailDTO {
+public class PasswordRecoveryDTO {
+
     private String email;
+
+    private String password;
+
+    private String repeatedPassword;
+
+    private String code;
 
 }

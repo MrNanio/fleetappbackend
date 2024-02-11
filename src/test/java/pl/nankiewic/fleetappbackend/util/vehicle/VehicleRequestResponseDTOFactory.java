@@ -1,57 +1,60 @@
 package pl.nankiewic.fleetappbackend.util.vehicle;
 
-import pl.nankiewic.fleetappbackend.dto.vehicle.VehicleRequestResponseDTO;
+import pl.nankiewic.fleetappbackend.dto.vehicle.VehicleDTO;
+import pl.nankiewic.fleetappbackend.entity.enums.FuelType;
+import pl.nankiewic.fleetappbackend.entity.enums.VehicleMake;
+import pl.nankiewic.fleetappbackend.entity.enums.VehicleStatus;
 
 import java.math.BigDecimal;
 
 public class VehicleRequestResponseDTOFactory {
 
-    public static VehicleRequestResponseDTO buildVehicleRequestResponseDTO() {
-        return VehicleRequestResponseDTO.builder()
-                .make("SKODA")
+    public static VehicleDTO buildVehicleRequestResponseDTO() {
+        return VehicleDTO.builder()
+                .make(VehicleMake.SKODA)
                 .model("FABIA")
                 .year("2009")
                 .color("BIAŁY")
                 .mileage("209000")
                 .vinNumber("GTFRED4567DEY65TG")
                 .vehicleRegistrationNumber("LU7654D")
-                .fuelType("ON")
+                .fuelType(FuelType.ON)
                 .cityFuelConsumption(BigDecimal.valueOf(5.6))
                 .countryFuelConsumption(BigDecimal.valueOf(3.6))
                 .averageFuelConsumption(BigDecimal.valueOf(4.6))
-                .vehicleStatus("ACTIVE")
+                .vehicleStatus(VehicleStatus.ACTIVE)
                 .build();
     }
 
-    public static VehicleRequestResponseDTO buildVehicleRequestResponseDTO(Long id) {
-        return VehicleRequestResponseDTO.builder()
+    public static VehicleDTO buildVehicleRequestResponseDTO(Long id) {
+        return VehicleDTO.builder()
                 .id(id)
-                .make("SKODA")
+                .make(VehicleMake.SKODA)
                 .model("FABIA")
                 .year("2009")
                 .color("BIAŁY")
                 .mileage("209000")
                 .vinNumber("GTFRED4567DEY65TG")
                 .vehicleRegistrationNumber("LU7654D")
-                .fuelType("ON")
+                .fuelType(FuelType.ON)
                 .cityFuelConsumption(BigDecimal.valueOf(5.6))
                 .countryFuelConsumption(BigDecimal.valueOf(3.6))
                 .averageFuelConsumption(BigDecimal.valueOf(4.6))
-                .vehicleStatus("ACTIVE")
+                .vehicleStatus(VehicleStatus.ACTIVE)
                 .build();
     }
 
 
-    public static VehicleRequestResponseDTO buildVehicleRequestResponseDTO(String make, String model) {
-        return VehicleRequestResponseDTO.builder()
+    public static VehicleDTO buildVehicleRequestResponseDTO(VehicleMake make, String model) {
+        return VehicleDTO.builder()
                 .make(make)
                 .model(model)
-                .vehicleStatus("ACTIVE")
+                .vehicleStatus(VehicleStatus.ACTIVE)
                 .build();
     }
 
-    public static VehicleRequestResponseDTO buildVehicleRequestResponseDTO(String make, String model, String status) {
-        return VehicleRequestResponseDTO.builder()
+    public static VehicleDTO buildVehicleRequestResponseDTO(VehicleMake make, String model, VehicleStatus status) {
+        return VehicleDTO.builder()
                 .make(make)
                 .model(model)
                 .vehicleStatus(status)
