@@ -1,8 +1,8 @@
 package pl.nankiewic.fleetappbackend.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import pl.nankiewic.fleetappbackend.config.jwt.JWTokenHelper;
 import pl.nankiewic.fleetappbackend.dto.vehicle.VehicleBaseDTO;
 import pl.nankiewic.fleetappbackend.dto.vehicle.VehicleDTO;
 import pl.nankiewic.fleetappbackend.dto.vehicle.VehicleView;
@@ -13,7 +13,6 @@ import pl.nankiewic.fleetappbackend.entity.enums.VehicleMake;
 import pl.nankiewic.fleetappbackend.exceptions.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.exceptions.UserNotFoundException;
 import pl.nankiewic.fleetappbackend.mapper.VehicleMapper;
-import pl.nankiewic.fleetappbackend.repository.UserRepository;
 import pl.nankiewic.fleetappbackend.repository.VehicleRepository;
 
 import java.util.Arrays;
@@ -27,17 +26,13 @@ import java.util.stream.Collectors;
 public class VehicleService {
 
     private final VehicleRepository vehicleRepository;
-    private final UserRepository userRepository;
     private final VehicleMapper vehicleMapper;
     private final CheckExistAndPermissionComponent checkExistAndPermissionComponent;
 
     public VehicleDTO createVehicle(VehicleBaseDTO vehicleBaseDTO) {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var user = userRepository.findUserByEmail(authentication.getName())
-                .orElseThrow();
 
         return Optional.of(vehicleMapper.vehicleDTOtoVehicle(vehicleBaseDTO))
-                .map(v -> mapUser(v, user))
+                .map(this::mapVehicleOwner)
                 .map(vehicleRepository::save)
                 .map(vehicleMapper::entityToDto)
                 .orElseThrow(UserNotFoundException::new);
@@ -54,8 +49,9 @@ public class VehicleService {
     }
 
     public List<VehicleView> findVehicleViewsByUser() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        return vehicleRepository.findVehicleViewsByUser(authentication.getName());
+        var userId = JWTokenHelper.getJWTUserId();
+
+        return vehicleRepository.findVehicleViewsByUser(userId);
     }
 
     public Optional<VehicleView> getVehicleDataById(Long id) {
@@ -79,14 +75,20 @@ public class VehicleService {
     }
 
     private void validPermissionToObject(Long vehicleId) {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!checkExistAndPermissionComponent.accessToVehicle(authentication.getName(), vehicleId)) {
+        if (!checkExistAndPermissionComponent.accessToVehicle(vehicleId)) {
             throw new PermissionDeniedException();
         }
     }
 
-    private Vehicle mapUser(Vehicle vehicle, User user) {
+    private Vehicle mapVehicleOwner(Vehicle vehicle) {
+        var userId = JWTokenHelper.getJWTUserId();
+        var user = User.builder()
+                .id(userId)
+                .build();
+
         vehicle.setUser(user);
+
         return vehicle;
     }
+
 }

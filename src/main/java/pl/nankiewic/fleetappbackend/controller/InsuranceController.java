@@ -2,8 +2,6 @@ package pl.nankiewic.fleetappbackend.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import pl.nankiewic.fleetappbackend.dto.insurance.InsuranceRequestDTO;
 import pl.nankiewic.fleetappbackend.dto.insurance.InsuranceView;
@@ -24,41 +22,33 @@ public class InsuranceController {
     private final InsuranceService insuranceService;
 
     @PostMapping
-    public void addInsurance(Authentication authentication,
-                             @RequestBody @Valid InsuranceRequestDTO insuranceRequestDTO) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        insuranceService.createVehicleInsurance(insuranceRequestDTO, userDetails.getUsername());
+    public void addInsurance(@RequestBody @Valid InsuranceRequestDTO insuranceRequestDTO) {
+        insuranceService.createVehicleInsurance(insuranceRequestDTO);
     }
 
     @PutMapping
-    public void updateInsurance(Authentication authentication,
-                                @RequestBody @Valid InsuranceRequestDTO insuranceRequestDTO) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        insuranceService.updateVehicleInsurance(insuranceRequestDTO, userDetails.getUsername());
+    public void updateInsurance(@RequestBody @Valid InsuranceRequestDTO insuranceRequestDTO) {
+        insuranceService.updateVehicleInsurance(insuranceRequestDTO);
     }
 
     @GetMapping("/{id}")
-    public InsuranceView getInsurancesById(@PathVariable Long id, Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return insuranceService.getInsuranceById(id, userDetails.getUsername());
+    public InsuranceView getInsurancesById(@PathVariable Long id) {
+        return insuranceService.getInsuranceById(id);
     }
 
     @GetMapping("/v/{id}")
-    public List<InsuranceView> getInsurancesByVehicle(@PathVariable Long id, Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return insuranceService.getInsurancesByVehicle(id, userDetails.getUsername());
+    public List<InsuranceView> getInsurancesByVehicle(@PathVariable Long id) {
+        return insuranceService.getInsurancesByVehicle(id);
     }
 
     @GetMapping
-    public List<InsuranceView> getInsurancesByUser(Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return insuranceService.getInsurancesByUser(userDetails.getUsername());
+    public List<InsuranceView> getInsurancesByUser() {
+        return insuranceService.getInsurancesByUser();
     }
 
     @DeleteMapping("/{id}")
-    public void deleteInsurance(Authentication authentication, @PathVariable Long id) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        insuranceService.deleteInsuranceById(id, userDetails.getUsername());
+    public void deleteInsurance(@PathVariable Long id) {
+        insuranceService.deleteInsuranceById(id);
     }
 
     @GetMapping("/types")

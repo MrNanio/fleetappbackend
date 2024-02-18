@@ -107,12 +107,12 @@ public class AccountController {
     @PostMapping("/user")
     public void inviteUser(@RequestBody @Valid PasswordRecoveryDTO passwordRecoveryDTO, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        accountService.addNewUser(passwordRecoveryDTO, userDetails.getUsername());
+        accountService.inviteUser(passwordRecoveryDTO, userDetails.getUsername());
     }
 
     @GetMapping("/user")
     public IdDTO inviteUser(@RequestParam(name = "u") String token) {
-        return accountService.getUserInvite(token);
+        return accountService.inviteUser(token);
     }
 
     @PostMapping("/user/password")

@@ -1,8 +1,6 @@
 package pl.nankiewic.fleetappbackend.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import pl.nankiewic.fleetappbackend.dto.ShareDTO;
 import pl.nankiewic.fleetappbackend.dto.vehicle.VehicleView;
@@ -35,8 +33,8 @@ public class ShareController {
     }
 
     @DeleteMapping("/share/vehicle/{id}")
-    public void deleteShareVehicleByIdVehicle(@PathVariable Long id, Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        shareService.deleteShareVehicleListByVehicleId(id, userDetails.getUsername());
+    public void deleteShareVehicleByIdVehicle(@PathVariable Long id) {
+        shareService.deleteShareVehicleListByVehicleId(id);
     }
+
 }

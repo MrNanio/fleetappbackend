@@ -21,8 +21,6 @@ import java.util.Set;
 @RequestMapping("api/vehicle")
 public class VehicleController {
 
-    //FIXME add validators
-
     private final VehicleService vehicleService;
 
     @PreAuthorize("hasRole('SUPERUSER')")

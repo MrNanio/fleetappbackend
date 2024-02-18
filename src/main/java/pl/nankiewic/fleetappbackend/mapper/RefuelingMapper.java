@@ -2,7 +2,7 @@ package pl.nankiewic.fleetappbackend.mapper;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import pl.nankiewic.fleetappbackend.dto.RefuelingDTO;
+import pl.nankiewic.fleetappbackend.dto.refueling.RefuelingDTO;
 import pl.nankiewic.fleetappbackend.entity.VehicleRefueling;
 import pl.nankiewic.fleetappbackend.repository.VehicleRepository;
 

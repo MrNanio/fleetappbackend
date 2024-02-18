@@ -4,7 +4,6 @@ import lombok.*;
 
 import javax.validation.constraints.NotNull;
 
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -14,6 +13,8 @@ public class AuthenticationRequest {
 
     @NotNull
     private String email;
+
     @NotNull
     private String password;
+
 }

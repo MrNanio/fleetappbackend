@@ -1,29 +1,9 @@
 package pl.nankiewic.fleetappbackend.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import pl.nankiewic.fleetappbackend.config.jwt.JWTokenUtility;
-import pl.nankiewic.fleetappbackend.config.security.CustomUserDetails;
-import pl.nankiewic.fleetappbackend.repository.UserRepository;
-import pl.nankiewic.fleetappbackend.repository.VehicleRepository;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static pl.nankiewic.fleetappbackend.util.user.UserFactory.buildUser;
-import static pl.nankiewic.fleetappbackend.util.vehicle.VehicleFactory.buildVehicle;
 import static pl.nankiewic.fleetappbackend.util.vehicle.VehicleRequestResponseDTOFactory.buildVehicleRequestResponseDTO;
 
 @SpringBootTest

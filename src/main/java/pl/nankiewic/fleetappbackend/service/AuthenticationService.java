@@ -1,17 +1,16 @@
 package pl.nankiewic.fleetappbackend.service;
 
-import io.vavr.Tuple;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.nankiewic.fleetappbackend.config.jwt.JWTokenUtility;
+import pl.nankiewic.fleetappbackend.config.jwt.JWTokenProvider;
 import pl.nankiewic.fleetappbackend.config.security.AuthenticationRequest;
 import pl.nankiewic.fleetappbackend.config.security.AuthenticationResponse;
+import pl.nankiewic.fleetappbackend.config.security.CustomUserDetails;
 import pl.nankiewic.fleetappbackend.entity.User;
 import pl.nankiewic.fleetappbackend.entity.VerificationToken;
 import pl.nankiewic.fleetappbackend.entity.enums.Role;
@@ -33,6 +32,7 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final JWTokenProvider tokenProvider;
 
     public AuthenticationResponse login(AuthenticationRequest request) {
         var auth = new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
@@ -56,18 +56,18 @@ public class AuthenticationService {
 
     private AuthenticationResponse manageSuccessfulLogin(Authentication authentication){
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        var userDetails = (UserDetails) authentication.getPrincipal();
-        var token = JWTokenUtility.generateJwtToken(userDetails);
+        var userDetails = (CustomUserDetails) authentication.getPrincipal();
 
         return userRepository.findUserByEmail(userDetails.getUsername())
                 .map(User::updateLastLoginAt)
                 .map(userRepository::save)
-                .map(user -> Tuple.of(user, token))
-                .map(t -> buildAuthenticationResponse(t._1, t._2))
+                .map(this::buildAuthenticationResponse)
                 .orElseThrow();
     }
 
-    private AuthenticationResponse buildAuthenticationResponse(User user, String token) {
+    private AuthenticationResponse buildAuthenticationResponse(User user) {
+        var token = tokenProvider.generateToken(user);
+
         return AuthenticationResponse.builder()
                 .token(token)
                 .email(user.getEmail())

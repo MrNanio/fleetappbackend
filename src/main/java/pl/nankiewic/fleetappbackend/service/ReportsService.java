@@ -77,8 +77,7 @@ public class ReportsService {
         String headerValue = "attachment; filename=vehicle_" + currentDateTime + ".pdf";
         response.setHeader(headerKey, headerValue);
         Long id = Long.valueOf(resourceId);
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (!checkExistAndPermissionComponent.accessToVehicle(userDetails.getUsername(), id)) {
+        if (!checkExistAndPermissionComponent.accessToVehicle(id)) {
             throw new PermissionDeniedException("Odmowa dostępu");
         }
         LocalDate begin = LocalDate.parse(beginDate);

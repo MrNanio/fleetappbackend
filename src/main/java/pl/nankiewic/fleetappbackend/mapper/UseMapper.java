@@ -1,7 +1,7 @@
 package pl.nankiewic.fleetappbackend.mapper;
 
 import org.mapstruct.*;
-import pl.nankiewic.fleetappbackend.dto.UseDTO;
+import pl.nankiewic.fleetappbackend.dto.use.UseDTO;
 import pl.nankiewic.fleetappbackend.entity.User;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
 import pl.nankiewic.fleetappbackend.entity.VehicleUse;

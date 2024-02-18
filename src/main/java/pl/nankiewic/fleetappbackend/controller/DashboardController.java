@@ -1,11 +1,11 @@
 package pl.nankiewic.fleetappbackend.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import pl.nankiewic.fleetappbackend.dto.ChartDataRespondDTO;
 import pl.nankiewic.fleetappbackend.service.DashboardService;
+
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -13,115 +13,87 @@ import pl.nankiewic.fleetappbackend.service.DashboardService;
 @RequestMapping("/dashboard")
 public class DashboardController {
 
-        private final DashboardService dashboardService;
+    private final DashboardService dashboardService;
 
-        @GetMapping("/cost_by_category")
-        public Iterable<ChartDataRespondDTO> getCostByCategories(@RequestParam(name = "b") String beginS,
-                                                                 @RequestParam(name = "e") String endS,
-                                                                 Authentication authentication) {
+    @GetMapping("/cost_by_category")
+    public List<ChartDataRespondDTO> getCostByCategories(@RequestParam(name = "b") String beginS,
+                                                         @RequestParam(name = "e") String endS) {
+        return dashboardService.getFleetCostByCategory(beginS, endS);
+    }
 
-                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                return dashboardService.getFleetCostByCategory(userDetails.getUsername(), beginS, endS);
-        }
+    @GetMapping("/fuel_cost_by_vehicle")
+    public List<ChartDataRespondDTO> getFuelCostByVehicle(@RequestParam(name = "b") String beginS,
+                                                          @RequestParam(name = "e") String endS) {
+        return dashboardService.getSummaryRefuelingByVehicle(beginS, endS);
+    }
 
-        @GetMapping("/fuel_cost_by_vehicle")
-        public Iterable<ChartDataRespondDTO> getFuelCostByVehicle(@RequestParam(name = "b") String beginS,
-                                                                  @RequestParam(name = "e") String endS,
-                                                                  Authentication authentication) {
+    @GetMapping("/use_cost_by_vehicle")
+    public List<ChartDataRespondDTO> getUseCostByVehicle(@RequestParam(name = "b") String beginS,
+                                                         @RequestParam(name = "e") String endS) {
+        return dashboardService.getSummaryUseByVehicle(beginS, endS);
+    }
 
-                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                return dashboardService.getSummaryRefuelingByVehicle(userDetails.getUsername(), beginS, endS);
-        }
+    @GetMapping("/use_number_by_vehicle")
+    public List<ChartDataRespondDTO> getUseByVehicle(@RequestParam(name = "b") String beginS,
+                                                     @RequestParam(name = "e") String endS) {
+        return dashboardService.getNumberOfUsesByVehicle(beginS, endS);
+    }
 
-        @GetMapping("/use_cost_by_vehicle")
-        public Iterable<ChartDataRespondDTO> getUseCostByVehicle(@RequestParam(name = "b") String beginS,
-                                                                 @RequestParam(name = "e") String endS,
-                                                                 Authentication authentication) {
+    @GetMapping("/cost_fuel_by_vehicle")
+    public List<ChartDataRespondDTO> fuelCostByVehicle(@RequestParam(name = "v") String vehicle,
+                                                       @RequestParam(name = "b") String beginS,
+                                                       @RequestParam(name = "e") String endS) {
+        return dashboardService.getFuelCostByVehicleAndData(vehicle, beginS, endS);
+    }
 
-                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                return dashboardService.getSummaryUseByVehicle(userDetails.getUsername(), beginS, endS);
-        }
+    @GetMapping("/trip_by_vehicle")
+    public List<ChartDataRespondDTO> getDistanceByVehicle(@RequestParam(name = "v") String vehicle,
+                                                          @RequestParam(name = "b") String beginS,
+                                                          @RequestParam(name = "e") String endS) {
+        return dashboardService.getDistanceByVehicleAndData(beginS, endS, vehicle);
+    }
 
-        @GetMapping("/use_number_by_vehicle")
-        public Iterable<ChartDataRespondDTO> getUseByVehicle(@RequestParam(name = "b") String beginS,
-                                                             @RequestParam(name = "e") String endS,
-                                                             Authentication authentication) {
+    @GetMapping("/vehicle_cost_by_category")
+    public List<ChartDataRespondDTO> getVehicleCostByCategory(@RequestParam(name = "v") String vehicle,
+                                                              @RequestParam(name = "b") String beginS,
+                                                              @RequestParam(name = "e") String endS) {
 
-                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                return dashboardService.getNumberOfUsesByVehicle(userDetails.getUsername(), beginS, endS);
-        }
+        return dashboardService.getVehicleCostByCategory(vehicle, beginS, endS);
+    }
 
-        @GetMapping("/cost_fuel_by_vehicle")
-        public Iterable<ChartDataRespondDTO> fuelCostByVehicle(@RequestParam(name = "v") String vehicle,
-                                                               @RequestParam(name = "b") String beginS,
-                                                               @RequestParam(name = "e") String endS,
-                                                               Authentication authentication) {
+    @GetMapping("/vehicle_trip_by_trip_type")
+    public List<ChartDataRespondDTO> getVehicleTripByTripType(@RequestParam(name = "v") String vehicle,
+                                                              @RequestParam(name = "b") String beginS,
+                                                              @RequestParam(name = "e") String endS) {
+        return dashboardService.getDistanceByVehicleAndDataAndUseType(vehicle, beginS, endS);
+    }
 
-                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                return dashboardService.getFuelCostByVehicleAndData(vehicle, beginS, endS, userDetails.getUsername());
-        }
+    @GetMapping("trip_by_user")
+    public List<ChartDataRespondDTO> getVehicleTripByUser(@RequestParam(name = "u") String user,
+                                                          @RequestParam(name = "b") String beginS,
+                                                          @RequestParam(name = "e") String endS) {
 
-        @GetMapping("/trip_by_vehicle")
-        public Iterable<ChartDataRespondDTO> getDistanceByVehicle(@RequestParam(name = "v") String vehicle,
-                                                                  @RequestParam(name = "b") String beginS,
-                                                                  @RequestParam(name = "e") String endS,
-                                                                  Authentication authentication) {
+        return dashboardService.getDistanceByVehicleAndDataAndUser(user, beginS, endS);
+    }
 
-                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                return dashboardService.getDistanceByVehicleAndData(beginS, endS, vehicle, userDetails.getUsername());
-        }
+    @GetMapping("fuel_cost_by_user")//new
+    public List<ChartDataRespondDTO> getFuelCostByUser(@RequestParam(name = "u") String user,
+                                                       @RequestParam(name = "b") String beginS,
+                                                       @RequestParam(name = "e") String endS) {
 
-        @GetMapping("/vehicle_cost_by_category")
-        public Iterable<ChartDataRespondDTO> getVehicleCostByCategory(@RequestParam(name = "v") String vehicle,
-                                                                      @RequestParam(name = "b") String beginS,
-                                                                      @RequestParam(name = "e") String endS,
-                                                                      Authentication authentication) {
+        return dashboardService.getFuelCostByVehicleAndDataAndUser(user, beginS, endS);
+    }
 
-                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                return dashboardService.getVehicleCostByCategory(vehicle, beginS, endS, userDetails.getUsername());
-        }
-
-        @GetMapping("/vehicle_trip_by_trip_type")
-        public Iterable<ChartDataRespondDTO> getVehicleTripByTripType(@RequestParam(name = "v") String vehicle,
-                                                                      @RequestParam(name = "b") String beginS,
-                                                                      @RequestParam(name = "e") String endS,
-                                                                      Authentication authentication) {
-
-                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                return dashboardService.getDistanceByVehicleAndDataAndUseType(vehicle, beginS, endS, userDetails.getUsername());
-        }
-
-        @GetMapping("trip_by_user")
-        public Iterable<ChartDataRespondDTO> getVehicleTripByUser(@RequestParam(name = "u") String user,
-                                                                  @RequestParam(name = "b") String beginS,
-                                                                  @RequestParam(name = "e") String endS) {
-
-                return dashboardService.getDistanceByVehicleAndDataAndUser(user, beginS, endS);
-        }
-
-        @GetMapping("fuel_cost_by_user")//new
-        public Iterable<ChartDataRespondDTO> getFuelCostByUser(@RequestParam(name = "u") String user,
-                                                               @RequestParam(name = "b") String beginS,
+    @GetMapping("trip_by_login_user")
+    public List<ChartDataRespondDTO> getVehicleTripBySuperUser(@RequestParam(name = "b") String beginS,
                                                                @RequestParam(name = "e") String endS) {
+        return dashboardService.getDistanceByVehicleAndDataByLoginUser(beginS, endS);
+    }
 
-                return dashboardService.getFuelCostByVehicleAndDataAndUser(user, beginS, endS);
-        }
+    @GetMapping("fuel_cost_by_login_user")
+    public List<ChartDataRespondDTO> getFuelCostBySuperUser(@RequestParam(name = "b") String beginS,
+                                                            @RequestParam(name = "e") String endS) {
+        return dashboardService.getFuelCostByVehicleAndDataByLoginUser(beginS, endS);
+    }
 
-        @GetMapping("trip_by_login_user")
-        public Iterable<ChartDataRespondDTO> getVehicleTripBySuperUser(@RequestParam(name = "b") String beginS,
-                                                                       @RequestParam(name = "e") String endS,
-                                                                       Authentication authentication) {
-
-                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                return dashboardService.getDistanceByVehicleAndDataByLoginUser(userDetails.getUsername(), beginS, endS);
-        }
-
-        @GetMapping("fuel_cost_by_login_user")
-        public Iterable<ChartDataRespondDTO> getFuelCostBySuperUser(@RequestParam(name = "b") String beginS,
-                                                                    @RequestParam(name = "e") String endS,
-                                                                    Authentication authentication) {
-
-                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                return dashboardService.getFuelCostByVehicleAndDataByLoginUser(userDetails.getUsername(), beginS, endS);
-        }
 }

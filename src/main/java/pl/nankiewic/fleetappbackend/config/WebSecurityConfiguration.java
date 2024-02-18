@@ -1,6 +1,5 @@
 package pl.nankiewic.fleetappbackend.config;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pl.nankiewic.fleetappbackend.config.jwt.JwtAuthorizationFilter;
 import pl.nankiewic.fleetappbackend.config.jwt.JWTAuthenticationEntryPoint;
 import pl.nankiewic.fleetappbackend.config.security.CustomUserDetailsService;
@@ -20,12 +20,22 @@ import pl.nankiewic.fleetappbackend.config.security.CustomUserDetailsService;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@RequiredArgsConstructor
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final CustomUserDetailsService userService;
     private final JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAuthorizationFilter jwtAuthorizationFilter;
     private final PasswordEncoder passwordEncoder;
+
+    public WebSecurityConfiguration(final CustomUserDetailsService userService,
+                                    final JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+                                    final JwtAuthorizationFilter jwtAuthorizationFilter,
+                                    final PasswordEncoder passwordEncoder) {
+        this.userService = userService;
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        this.jwtAuthorizationFilter = jwtAuthorizationFilter;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Bean
     @Override
@@ -58,7 +68,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new JwtAuthorizationFilter(authenticationManager()))
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
     }
+
 }

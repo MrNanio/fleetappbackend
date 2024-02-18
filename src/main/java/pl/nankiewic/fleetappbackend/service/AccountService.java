@@ -52,6 +52,10 @@ public class AccountService {
                 .ifPresent(u -> changeStatusAndSave(u, UserAccountStatus.INACTIVE, true));
     }
 
+    /**
+     * first account activation, password recovery, password change,
+     */
+
     public void accountActivationByToken(String activationToken) {
         verificationTokenRepository.findByToken(activationToken)
                 .map(VerificationToken::getUser)
@@ -91,36 +95,9 @@ public class AccountService {
         //mailService.sendPasswordInfo(user.getEmail());
     }
 
-    public void deleteUserData(String email) {
-        userRepository.findUserByEmail(email)
-                .map(User::getUserData)
-                .ifPresent(userDataRepository::delete);
-    }
-    public IdDTO getUserInvite(String userToken) {
-        var token = verificationTokenRepository.findByToken(userToken)
-                .orElseThrow(() -> new TokenException("token nie istnieje"));
-        checkIfTokenDateIsValid(token);
-        var user = userRepository.findUserByEmail(token.getUser().getEmail()).orElseThrow();
-        return new IdDTO(user.getEmail(), null, user.getId(), userToken);
-    }
-
-    public void newPasswordForNewUser(IdDTO idDTO) {
-        var requestUser = userRepository.findUserByEmail(idDTO.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException(""));
-        var tokenUser = verificationTokenRepository.findByToken(idDTO.getToken())
-                .map(VerificationToken::getUser)
-                .orElseThrow(() -> new TokenException("token nie istnieje"));
-        checkIfEmailsMatches(tokenUser.getEmail(), requestUser.getEmail());
-        setAndSaveUser(requestUser, idDTO);
-    }
-
-    public List<UserView> getUserByManager(String email) {
-        return userRepository.getUserViewsByParentUserEmail(email);
-    }
-
-    public List<UserView> getAllUser() {
-        return userRepository.findUserViewsWithoutRole(Role.ADMIN);
-    }
+    /**
+     *  create, update, get, delete user data
+     */
 
     public void createUserData(UserDataDTO userDataDTO, String email) {
         User user = userRepository.findUserByEmail(email).orElseThrow();
@@ -156,12 +133,17 @@ public class AccountService {
         } else throw new EntityNotFoundException("Nie znaleziono użytkownika");
     }
 
-    public UserView getUserById(Long id) {
-        return userRepository.findUserViewByUserId(id)
-                .orElseThrow();
+    public void deleteUserData(String email) {
+        userRepository.findUserByEmail(email)
+                .map(User::getUserData)
+                .ifPresent(userDataRepository::delete);
     }
 
-    public void addNewUser(PasswordRecoveryDTO passwordRecoveryDTO, String email) {
+    /**
+     * invite user - USER, activate, only for account with role USER
+     */
+
+    public void inviteUser(PasswordRecoveryDTO passwordRecoveryDTO, String email) {
         if (userRepository.existsByEmail(passwordRecoveryDTO.getEmail())) {
             User user = userRepository.findUserByEmail(passwordRecoveryDTO.getEmail()).orElseThrow();
             if (!user.isEnabled() && user.getVerificationToken().getExpiryDate().isAfter(LocalDateTime.now())) {
@@ -184,11 +166,46 @@ public class AccountService {
             verificationTokenRepository.save(verificationToken);
             //mailService.sendInviteMail(emailDTO.getEmail(), verificationToken.getToken());
         }
+    }
 
+    public IdDTO inviteUser(String userToken) {
+        var token = verificationTokenRepository.findByToken(userToken)
+                .orElseThrow(() -> new TokenException("token nie istnieje"));
+        checkIfTokenDateIsValid(token);
+        var user = userRepository.findUserByEmail(token.getUser().getEmail()).orElseThrow();
+        return new IdDTO(user.getEmail(), null, user.getId(), userToken);
+    }
+
+    public void newPasswordForNewUser(IdDTO idDTO) {
+        var requestUser = userRepository.findUserByEmail(idDTO.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException(""));
+        var tokenUser = verificationTokenRepository.findByToken(idDTO.getToken())
+                .map(VerificationToken::getUser)
+                .orElseThrow(() -> new TokenException("token nie istnieje"));
+        checkIfEmailsMatches(tokenUser.getEmail(), requestUser.getEmail());
+        setAndSaveUser(requestUser, idDTO);
+    }
+
+    /**
+     * SUPERUSER (manger) - features
+     */
+
+    public List<UserView> getUserByManager(String email) {
+        return userRepository.getUserViewsByParentUserEmail(email);
+    }
+
+    public List<UserView> getAllUser() {
+        return userRepository.findUserViewsWithoutRole(Role.ADMIN);
+    }
+
+    public UserView getUserById(Long id) {
+        return userRepository.findUserViewByUserId(id)
+                .orElseThrow();
     }
 
     public PasswordRecoveryDTO getUserEmail(Long id) {
-        return userRepository.findUserEmailByUserId(id);
+        return PasswordRecoveryDTO.builder().email("bbbbb").build();
+        //return userRepository.findUserEmailByUserId(id);
     }
 
     private void userRegister(User user) {

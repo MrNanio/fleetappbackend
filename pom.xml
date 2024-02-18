@@ -19,7 +19,7 @@
         <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
         <mysql.version>8.3.0</mysql.version>
         <liquibase.version>4.25.1</liquibase.version>
-        <jjwt.version>3.18.2</jjwt.version>
+        <jjwt.version>0.12.5</jjwt.version>
         <h2.version>2.2.224</h2.version>
         <pdfbox.version>3.0.1</pdfbox.version>
         <vavr.version>0.9.0</vavr.version>
@@ -78,9 +78,21 @@
             <version>${vavr.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
             <version>${jjwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jjwt.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jjwt.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.github.librepdf</groupId>

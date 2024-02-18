@@ -3,13 +3,18 @@ package pl.nankiewic.fleetappbackend.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import pl.nankiewic.fleetappbackend.dto.UseDTO;
-import pl.nankiewic.fleetappbackend.entity.User;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import pl.nankiewic.fleetappbackend.config.security.CustomUserDetails;
+import pl.nankiewic.fleetappbackend.dto.use.UseDTO;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
 import pl.nankiewic.fleetappbackend.entity.VehicleUse;
 import pl.nankiewic.fleetappbackend.mapper.UseMapper;
-import pl.nankiewic.fleetappbackend.repository.*;
+import pl.nankiewic.fleetappbackend.repository.VehicleRepository;
+import pl.nankiewic.fleetappbackend.repository.VehicleUseRepository;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -23,15 +28,12 @@ class UseServiceTest {
     @Mock
     VehicleRepository vehicleRepository;
     @Mock
-    UserRepository userRepository;
-    @Mock
     UseMapper useMapper;
     @Mock
     CheckExistAndPermissionComponent checkExistAndPermissionComponent;
 
     UseService useService;
 
-    private static final String EXAMPLE_EMAIL_ADDRESS = "example@example.com";
     private static final Long EXAMPLE_ID = 1L;
 
     @BeforeEach
@@ -41,8 +43,14 @@ class UseServiceTest {
                 checkExistAndPermissionComponent,
                 vehicleUseRepository,
                 vehicleRepository,
-                userRepository,
                 useMapper);
+
+        Authentication authentication = Mockito.mock(Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        CustomUserDetails principal = CustomUserDetails.builder().id(1L).build();
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        Mockito.when(authentication.getPrincipal()).thenReturn(principal);
+        SecurityContextHolder.setContext(securityContext);
     }
 
     @Test
@@ -57,19 +65,18 @@ class UseServiceTest {
                 .description("Example")
                 .tripType("MIEJSKI")
                 .build();
-        var email = "mail@mail.com";
         var vehicle = Vehicle.builder()
                 .mileage("123")
                 .build();
         var vehicleUse = VehicleUse.builder()
                 .build();
 
-        when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
+        when(checkExistAndPermissionComponent.accessToVehicle(any())).thenReturn(true);
         when(vehicleUseRepository.save(any())).thenReturn(vehicleUse);
         when(useMapper.vehicleUseDtoToEntity(any())).thenReturn(vehicleUse);
         when(vehicleRepository.findById(any())).thenReturn(Optional.of(vehicle));
         //when
-        useService.createVehicleUse(useDTO, email);
+        useService.createVehicleUse(useDTO);
         //then
         verify(vehicleUseRepository, times(1)).save(any());
     }
@@ -88,11 +95,11 @@ class UseServiceTest {
                 .build();
         Vehicle vehicle = Vehicle.builder()
                 .mileage("123").build();
-        when(checkExistAndPermissionComponent.accessToUse(any(), any())).thenReturn(true);
+        when(checkExistAndPermissionComponent.accessToUse(any())).thenReturn(true);
         when(vehicleUseRepository.findById(any())).thenReturn(Optional.of(VehicleUse.builder().trip(Short.parseShort("12")).build()));
         when(vehicleRepository.findById(any())).thenReturn(Optional.of(vehicle));
         //when
-        useService.updateVehicleUse(useDTO, EXAMPLE_EMAIL_ADDRESS);
+        useService.updateVehicleUse(useDTO);
         //then
         verify(vehicleUseRepository, times(1)).save(any());
         verify(useMapper, times(1)).updateVehicleUseFromDto(any(), any());
@@ -102,10 +109,10 @@ class UseServiceTest {
     @Test
     void should_get_use_by_vehicle() {
         //given
-        when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
+        when(checkExistAndPermissionComponent.accessToVehicle(any())).thenReturn(true);
         when(vehicleRepository.existsById(any())).thenReturn(true);
         //when
-        useService.getUseByVehicle(EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
+        useService.getUseByVehicle(EXAMPLE_ID);
         //then
         verify(vehicleUseRepository, times(1)).findAllByVehicleId(any());
 
@@ -114,19 +121,17 @@ class UseServiceTest {
     @Test
     void should_get_use_by_id() {
         //given
-        when(checkExistAndPermissionComponent.accessToUse(any(), any())).thenReturn(true);
+        when(checkExistAndPermissionComponent.accessToUse(any())).thenReturn(true);
         //when
-        useService.getUseByUseId(EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
+        useService.getUseByUseId(EXAMPLE_ID);
         //then
         verify(vehicleUseRepository, times(1)).findByUseId(any());
     }
 
     @Test
     void should_get_use_by_user() {
-        //given
-        when(userRepository.findUserByEmail(any())).thenReturn(Optional.ofNullable(User.builder().id(1L).build()));
         //when
-        useService.getUseByUser("mail@mail.com");
+        useService.getUseByUser();
         //then
         verify(vehicleUseRepository, times(1)).findAllByUserId(any());
     }
@@ -134,9 +139,9 @@ class UseServiceTest {
     @Test
     void should_get_use_by_user_and_vehicle() {
         //given
-        when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
+        when(checkExistAndPermissionComponent.accessToVehicle(any())).thenReturn(true);
         //when
-        useService.getUseByUserAndVehicle(EXAMPLE_ID, EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
+        useService.getUseByUserAndVehicle(EXAMPLE_ID, EXAMPLE_ID);
         //then
         verify(vehicleUseRepository, times(1)).findAllByVehicleAndUser(any(), any());
     }
@@ -147,12 +152,12 @@ class UseServiceTest {
         //given
         VehicleUse use = VehicleUse.builder().trip(Short.parseShort("12")).vehicle(Vehicle.builder().mileage("123").build()).build();
         when(vehicleUseRepository.findById(any())).thenReturn(Optional.of(use));
-        when(checkExistAndPermissionComponent.accessToUse(any(), any())).thenReturn(true);
+        when(checkExistAndPermissionComponent.accessToUse(any())).thenReturn(true);
         //when
-        useService.deleteUseById(EXAMPLE_ID, EXAMPLE_EMAIL_ADDRESS);
+        useService.deleteUseById(EXAMPLE_ID);
         //then
         verify(vehicleRepository, times(1)).save(any());
         verify(vehicleUseRepository, times(1)).deleteById(any());
-
     }
+
 }

@@ -1,4 +1,4 @@
-package pl.nankiewic.fleetappbackend.dto;
+package pl.nankiewic.fleetappbackend.dto.inspection;
 
 import lombok.*;
 
@@ -10,12 +10,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RepairDTO {
+public class InspectionDTO {
 
     private Long id;
     private Long vehicleId;
-    private String title;
-    private LocalDate repairDate;
+    private LocalDate inspectionDate;
+    private LocalDate expirationDate;
     private BigDecimal cost;
     private String description;
 

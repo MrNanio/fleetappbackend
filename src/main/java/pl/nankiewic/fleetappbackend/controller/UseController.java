@@ -2,10 +2,9 @@ package pl.nankiewic.fleetappbackend.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import pl.nankiewic.fleetappbackend.dto.UseDTO;
+import pl.nankiewic.fleetappbackend.dto.use.UseDTO;
+import pl.nankiewic.fleetappbackend.dto.use.UseView;
 import pl.nankiewic.fleetappbackend.service.UseService;
 
 import javax.validation.Valid;
@@ -21,51 +20,40 @@ public class UseController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('SUPERUSER')")
-    public void createVehicleUse(Authentication authentication,
-                                 @RequestBody UseDTO useDTO) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        useService.createVehicleUse(useDTO, userDetails.getUsername());
+    public void createVehicleUse(@RequestBody UseDTO useDTO) {
+        useService.createVehicleUse(useDTO);
     }
 
     @PutMapping
     @PreAuthorize("hasAnyRole('SUPERUSER')")
-    public void updateVehicleUse(Authentication authentication,
-                                 @RequestBody @Valid UseDTO useDTO) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        useService.updateVehicleUse(useDTO, userDetails.getUsername());
+    public void updateVehicleUse(@RequestBody @Valid UseDTO useDTO) {
+        useService.updateVehicleUse(useDTO);
     }
 
     @GetMapping("/v/{id}")
-    public List<UseDTO> getUseByVehicleId(@PathVariable Long id,
-                                          Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return useService.getUseByVehicle(id, userDetails.getUsername());
+    public List<UseView> getUseByVehicleId(@PathVariable Long id) {
+        return useService.getUseByVehicle(id);
     }
 
     @GetMapping("/{id}")
-    public UseDTO getUseByUseId(@PathVariable Long id,
-                                Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return useService.getUseByUseId(id, userDetails.getUsername());
+    public UseView getUseByUseId(@PathVariable Long id) {
+        return useService.getUseByUseId(id);
     }
 
     @GetMapping
-    public Iterable<UseDTO> getUseByUser(Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return useService.getUseByUser(userDetails.getUsername());
+    public List<UseView> getUseByUser() {
+        return useService.getUseByUser();
     }
 
     @GetMapping("/list")
-    public List<UseDTO> getUseByUserIdAndVehicleId(@RequestParam(name = "u") Long userId,
-                                                       @RequestParam(name = "v") Long vehicleId,
-                                                       Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return useService.getUseByUserAndVehicle(userId, vehicleId, userDetails.getUsername());
+    public List<UseView> getUseByUserIdAndVehicleId(@RequestParam(name = "u") Long userId,
+                                                    @RequestParam(name = "v") Long vehicleId) {
+        return useService.getUseByUserAndVehicle(userId, vehicleId);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUse(Authentication authentication, @PathVariable Long id) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        useService.deleteUseById(id, userDetails.getUsername());
+    public void deleteUse(@PathVariable Long id) {
+        useService.deleteUseById(id);
     }
+
 }

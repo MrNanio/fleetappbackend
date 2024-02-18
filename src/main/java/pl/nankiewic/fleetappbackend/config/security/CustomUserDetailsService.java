@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,18 +26,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
-        log.info("user exist in database: {}", email);
         var user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(NOT_FOUND));
         var authorities = getAuthorities(user.getRole());
-        var locked = !user.isEnabled();
 
-        return User.builder()
+        return CustomUserDetails.builder()
                 .username(user.getEmail())
                 .password(user.getPassword())
                 .authorities(authorities)
-                .accountLocked(locked)
+                .isEnabled(user.isEnabled())
                 .build();
     }
 

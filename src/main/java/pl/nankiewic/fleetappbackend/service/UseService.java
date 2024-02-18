@@ -2,12 +2,13 @@ package pl.nankiewic.fleetappbackend.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.nankiewic.fleetappbackend.dto.UseDTO;
+import pl.nankiewic.fleetappbackend.config.jwt.JWTokenHelper;
+import pl.nankiewic.fleetappbackend.dto.use.UseDTO;
+import pl.nankiewic.fleetappbackend.dto.use.UseView;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
 import pl.nankiewic.fleetappbackend.entity.VehicleUse;
 import pl.nankiewic.fleetappbackend.exceptions.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.mapper.UseMapper;
-import pl.nankiewic.fleetappbackend.repository.UserRepository;
 import pl.nankiewic.fleetappbackend.repository.VehicleRepository;
 import pl.nankiewic.fleetappbackend.repository.VehicleUseRepository;
 
@@ -21,19 +22,18 @@ public class UseService {
     private final CheckExistAndPermissionComponent checkExistAndPermissionComponent;
     private final VehicleUseRepository vehicleUseRepository;
     private final VehicleRepository vehicleRepository;
-    private final UserRepository userRepository;
     private final UseMapper useMapper;
 
-    public void createVehicleUse(UseDTO use, String email) {
-        if (checkExistAndPermissionComponent.accessToVehicle(email, use.getVehicleId())) {
+    public void createVehicleUse(UseDTO use) {
+        if (checkExistAndPermissionComponent.accessToVehicle(use.getVehicleId())) {
             VehicleUse vehicleUse = useMapper.vehicleUseDtoToEntity(use);
             addMileageToVehicle(use.getVehicleId(), use.getTrip());
             vehicleUseRepository.save(vehicleUse);
         } else throw new PermissionDeniedException();
     }
 
-    public void updateVehicleUse(UseDTO useDTO, String email) {
-        if (checkExistAndPermissionComponent.accessToUse(email, useDTO.getId())) {
+    public void updateVehicleUse(UseDTO useDTO) {
+        if (checkExistAndPermissionComponent.accessToUse(useDTO.getId())) {
             VehicleUse vehicleUse = vehicleUseRepository.findById(useDTO.getId()).orElseThrow(
                     () -> new EntityNotFoundException("Use not found"));
             Short currentTripMileageFromDatabase = vehicleUse.getTrip();
@@ -44,30 +44,32 @@ public class UseService {
         } else throw new PermissionDeniedException();
     }
 
-    public List<UseDTO> getUseByVehicle(Long id, String email) {
-        if (checkExistAndPermissionComponent.accessToVehicle(email, id)) {
+    public List<UseView> getUseByVehicle(Long id) {
+        if (checkExistAndPermissionComponent.accessToVehicle(id)) {
             return vehicleUseRepository.findAllByVehicleId(id);
         } else throw new PermissionDeniedException();
     }
 
-    public UseDTO getUseByUseId(Long id, String email) {
-        if (checkExistAndPermissionComponent.accessToUse(email, id)) {
+    public UseView getUseByUseId(Long id) {
+        if (checkExistAndPermissionComponent.accessToUse(id)) {
             return vehicleUseRepository.findByUseId(id);
         } else throw new PermissionDeniedException();
     }
 
-    public List<UseDTO> getUseByUser(String email) {
-        return vehicleUseRepository.findAllByUserId(userRepository.findUserByEmail(email).orElseThrow().getId());
+    public List<UseView> getUseByUser() {
+        var userId = JWTokenHelper.getJWTUserId();
+
+        return vehicleUseRepository.findAllByUserId(userId);
     }
 
-    public List<UseDTO> getUseByUserAndVehicle(Long userId, Long vehicleId, String email) {
-        if (checkExistAndPermissionComponent.accessToVehicle(email, vehicleId)) {
+    public List<UseView> getUseByUserAndVehicle(Long userId, Long vehicleId) {
+        if (checkExistAndPermissionComponent.accessToVehicle(vehicleId)) {
             return vehicleUseRepository.findAllByVehicleAndUser(vehicleId, userId);
         } else throw new PermissionDeniedException();
     }
 
-    public void deleteUseById(Long id, String email) {
-        if (checkExistAndPermissionComponent.accessToUse(email, id)) {
+    public void deleteUseById(Long id) {
+        if (checkExistAndPermissionComponent.accessToUse(id)) {
             VehicleUse use = vehicleUseRepository.findById(id).orElseThrow(
                     () -> new EntityNotFoundException("Bład przetwarzania"));
             Vehicle vehicle = use.getVehicle();

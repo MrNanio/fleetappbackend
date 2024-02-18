@@ -5,17 +5,19 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import pl.nankiewic.fleetappbackend.config.jwt.JWTokenHelper;
+import pl.nankiewic.fleetappbackend.config.security.CustomUserDetails;
 import pl.nankiewic.fleetappbackend.dto.vehicle.VehicleDTO;
 import pl.nankiewic.fleetappbackend.entity.User;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
 import pl.nankiewic.fleetappbackend.mapper.VehicleMapper;
-import pl.nankiewic.fleetappbackend.repository.*;
+import pl.nankiewic.fleetappbackend.repository.VehicleRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
@@ -23,8 +25,6 @@ class VehicleServiceTest {
 
     @Mock
     VehicleRepository vehicleRepository;
-    @Mock
-    UserRepository userRepository;
     @Mock
     VehicleMapper vehicleMapper;
     @Mock
@@ -39,14 +39,15 @@ class VehicleServiceTest {
         MockitoAnnotations.openMocks(this);
         vehicleService = new VehicleService(
                 vehicleRepository,
-                userRepository,
                 vehicleMapper,
                 checkExistAndPermissionComponent
         );
 
         Authentication authentication = Mockito.mock(Authentication.class);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        CustomUserDetails principal = CustomUserDetails.builder().id(1L).build();
         Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        Mockito.when(authentication.getPrincipal()).thenReturn(principal);
         SecurityContextHolder.setContext(securityContext);
     }
 
@@ -55,10 +56,8 @@ class VehicleServiceTest {
         //given
         var vehicle = Vehicle.builder().build();
         var vehicleDTO = VehicleDTO.builder().build();
-        var user = User.builder().id(EXAMPLE_ID).build();
 
         when(vehicleMapper.vehicleDTOtoVehicle(any())).thenReturn(vehicle);
-        when(userRepository.findUserByEmail(any())).thenReturn(Optional.of(user));
         when(vehicleRepository.save(any())).thenReturn(vehicle);
         when(vehicleMapper.entityToDto(any())).thenReturn(vehicleDTO);
 
@@ -66,7 +65,6 @@ class VehicleServiceTest {
         vehicleService.createVehicle(vehicleDTO);
 
         //then
-        verify(userRepository, times(1)).findUserByEmail(any());
         verify(vehicleMapper, times(1)).vehicleDTOtoVehicle(any());
         verify(vehicleMapper, times(1)).entityToDto(any());
         verify(vehicleRepository, times(1)).save(any());
@@ -75,11 +73,12 @@ class VehicleServiceTest {
     @Test
     void should_update_vehicle() {
         //given
-        when(vehicleRepository.findById(any())).thenReturn(Optional.of(Vehicle.builder().id(1L).build()));
-        when(vehicleMapper.updateVehicleFromRequest(any(), any())).thenReturn(Vehicle.builder().id(1L).build());
-        when(vehicleRepository.save(any())).thenReturn(Vehicle.builder().id(1L).build());
+        var user = User.builder().id(1L).build();
+        when(vehicleRepository.findById(any())).thenReturn(Optional.of(Vehicle.builder().id(1L).user(user).build()));
+        when(vehicleMapper.updateVehicleFromRequest(any(), any())).thenReturn(Vehicle.builder().id(1L).user(user).build());
+        when(vehicleRepository.save(any())).thenReturn(Vehicle.builder().id(1L).user(user).build());
         when(vehicleMapper.entityToDto(any())).thenReturn(VehicleDTO.builder().id(1L).build());
-        when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
+        when(checkExistAndPermissionComponent.accessToVehicle(any())).thenReturn(true);
         //when
         vehicleService.updateVehicle(VehicleDTO.builder().id(1L).build());
         //then
@@ -89,7 +88,6 @@ class VehicleServiceTest {
     @Test
     void should_get_vehicles_by_user() {
         //given
-        when(userRepository.existsByEmail(any())).thenReturn(true);
         when(vehicleRepository.existsByUser(any())).thenReturn(true);
         when(vehicleRepository.findVehicleViewsByUser(any())).thenReturn(new ArrayList<>());
         //when
@@ -101,7 +99,7 @@ class VehicleServiceTest {
     @Test
     void should_get_vehicle_by_id() {
         //given
-        when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
+        when(checkExistAndPermissionComponent.accessToVehicle(any())).thenReturn(true);
         //when
         vehicleService.getVehicleDataById(EXAMPLE_ID);
         //then
@@ -111,7 +109,7 @@ class VehicleServiceTest {
     @Test
     void should_delete_vehicle_by_id() {
         //given
-        when(checkExistAndPermissionComponent.accessToVehicle(any(), any())).thenReturn(true);
+        when(checkExistAndPermissionComponent.accessToVehicle(any())).thenReturn(true);
         //when
         vehicleService.deleteVehicleById(EXAMPLE_ID);
         //then

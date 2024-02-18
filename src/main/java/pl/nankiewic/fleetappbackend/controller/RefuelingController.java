@@ -1,10 +1,8 @@
 package pl.nankiewic.fleetappbackend.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import pl.nankiewic.fleetappbackend.dto.RefuelingDTO;
+import pl.nankiewic.fleetappbackend.dto.refueling.RefuelingDTO;
 import pl.nankiewic.fleetappbackend.service.RefuelingService;
 
 import javax.validation.Valid;
@@ -19,56 +17,44 @@ public class RefuelingController {
     private final RefuelingService refuelingService;
 
     @PostMapping
-    public void addRefueling(@RequestBody @Valid RefuelingDTO refuelingDTO,
-                             Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        refuelingService.createVehicleRefueling(refuelingDTO, userDetails.getUsername());
+    public void addRefueling(@RequestBody @Valid RefuelingDTO refuelingDTO) {
+        refuelingService.createVehicleRefueling(refuelingDTO);
     }
 
     @PutMapping
-    public void updateRefueling(@RequestBody @Valid RefuelingDTO refuelingDTO,
-                                Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        refuelingService.updateVehicleRefueling(refuelingDTO, userDetails.getUsername());
+    public void updateRefueling(@RequestBody @Valid RefuelingDTO refuelingDTO) {
+        refuelingService.updateVehicleRefueling(refuelingDTO);
     }
 
     @GetMapping("/{id}")
-    public RefuelingDTO getRefuelingById(@PathVariable Long id, Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return refuelingService.getRefuelingById(id, userDetails.getUsername());
+    public RefuelingDTO getRefuelingById(@PathVariable Long id) {
+        return refuelingService.getRefuelingById(id);
     }
 
     @GetMapping("/v/{id}")
-    public Iterable<RefuelingDTO> getRefuelingByVehicle(@PathVariable Long id,
-                                                        Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return refuelingService.getRefuelingByVehicle(id, userDetails.getUsername());
+    public Iterable<RefuelingDTO> getRefuelingByVehicle(@PathVariable Long id) {
+        return refuelingService.getRefuelingByVehicle(id);
     }
 
     @GetMapping
-    public Iterable<RefuelingDTO> getRefuelingByUser(Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return refuelingService.getRefuelingByUser(userDetails.getUsername());
+    public Iterable<RefuelingDTO> getRefuelingByUser() {
+        return refuelingService.getRefuelingByUser();
     }
 
     @GetMapping("/my")
-    public List<RefuelingDTO> getRefuelingByAuthor(Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return refuelingService.getRefuelingByAuthor(userDetails.getUsername());
+    public List<RefuelingDTO> getRefuelingByAuthor() {
+        return refuelingService.getRefuelingByAuthor();
     }
 
     @GetMapping("/list")
     public List<RefuelingDTO> getRefuelingByUserIdAndVehicleId(@RequestParam(name = "u") Long userId,
-                                                                   @RequestParam(name = "v") Long vehicleId,
-                                                                   Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return refuelingService.getRefuelingByUserAndVehicle(userId, vehicleId, userDetails.getUsername());
+                                                               @RequestParam(name = "v") Long vehicleId) {
+        return refuelingService.getRefuelingByUserAndVehicle(userId, vehicleId);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteRefueling(Authentication authentication, @PathVariable Long id) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        refuelingService.deleteRefuelingById(id, userDetails.getUsername());
+    public void deleteRefueling(@PathVariable Long id) {
+        refuelingService.deleteRefuelingById(id);
     }
 
 }

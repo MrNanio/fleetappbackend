@@ -1,5 +1,6 @@
 package pl.nankiewic.fleetappbackend.config.security;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,7 @@ public class CustomUserDetails implements UserDetails {
     @Getter
     private final Long id;
     private final String username;
+    @JsonIgnore
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
     private final boolean isEnabled;
