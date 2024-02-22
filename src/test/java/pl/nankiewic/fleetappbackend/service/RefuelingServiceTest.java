@@ -94,7 +94,7 @@ class RefuelingServiceTest {
         //when
         refuelingService.getRefuelingById(EXAMPLE_ID);
         //then
-        verify(vehicleRefuelingRepository, times(1)).findVehicleRefuelingById(any());
+        verify(vehicleRefuelingRepository, times(1)).findRefuelingViewById(any());
     }
 
     @Test
@@ -104,7 +104,7 @@ class RefuelingServiceTest {
         //when
         refuelingService.getRefuelingByVehicle(EXAMPLE_ID);
         //then
-        verify(vehicleRefuelingRepository, times(1)).findRefuelingListByVehicle(any());
+        verify(vehicleRefuelingRepository, times(1)).findRefuelingViewsByVehicleId(any());
     }
 
     @Test
@@ -112,7 +112,7 @@ class RefuelingServiceTest {
         //when
         refuelingService.getRefuelingByUser();
         //then
-        verify(vehicleRefuelingRepository, times(1)).findRefuelingListByUsersVehicle(any());
+        verify(vehicleRefuelingRepository, times(1)).findRefuelingViewsByVehicleOwnerId(any());
     }
 
     @Test
@@ -120,7 +120,7 @@ class RefuelingServiceTest {
         //when
         refuelingService.getRefuelingByAuthor();
         //then
-        verify(vehicleRefuelingRepository, times(1)).findRefuelingListByUser(any());
+        verify(vehicleRefuelingRepository, times(1)).findRefuelingViewsByRefuelingUserId(any());
     }
 
     @Test
@@ -130,7 +130,7 @@ class RefuelingServiceTest {
         //when
         refuelingService.getRefuelingByUserAndVehicle(EXAMPLE_ID, EXAMPLE_ID);
         //then
-        verify(vehicleRefuelingRepository, times(1)).findAllByVehicleAndUser(any(), any());
+        verify(vehicleRefuelingRepository, times(1)).findRefuelingViewsByVehicleIdAndRefuelingUserId(any(), any());
     }
 
     @Test

@@ -1,17 +1,12 @@
 package pl.nankiewic.fleetappbackend.mapper;
 
 import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import pl.nankiewic.fleetappbackend.dto.repair.RepairDTO;
+import pl.nankiewic.fleetappbackend.entity.Vehicle;
 import pl.nankiewic.fleetappbackend.entity.VehicleRepair;
-import pl.nankiewic.fleetappbackend.repository.VehicleRepository;
-
-import javax.persistence.EntityNotFoundException;
 
 @Mapper(componentModel = "spring")
 public abstract class RepairMapper {
-    @Autowired
-    private VehicleRepository vehicleRepository;
 
     @BeanMapping(qualifiedByName = "dtoToEntity")
     @Mapping(target = "vehicle", ignore = true)
@@ -20,8 +15,10 @@ public abstract class RepairMapper {
     @Named(value = "dtoToEntity")
     @AfterMapping
     public void vehicleRepairAddAttribute(RepairDTO repairDTO, @MappingTarget VehicleRepair vehicleRepair) {
-        vehicleRepair.setVehicle(vehicleRepository.findById(repairDTO.getVehicleId()).orElseThrow(
-                () -> new EntityNotFoundException("Vehicle not found")));
+        var vehicle = Vehicle.builder()
+                .id(repairDTO.getVehicleId())
+                .build();
+        vehicleRepair.setVehicle(vehicle);
     }
 
     @BeanMapping(qualifiedByName = "dtoToEntity")

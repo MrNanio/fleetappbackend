@@ -22,4 +22,16 @@ public interface CurrentVehicleUserRepository extends JpaRepository<CurrentVehic
     CurrentVehicleUser findByVehicle(Long vehicleId);
 
     boolean existsByVehicle_Id(Long id);
+
+    @Query("SELECT " +
+            "CASE WHEN COUNT(v) > 0 " +
+            "THEN TRUE " +
+            "ELSE FALSE " +
+            "END " +
+            "FROM CurrentVehicleUser cv " +
+            "JOIN cv.user u " +
+            "JOIN cv.vehicle v " +
+            "where u.id = :userId and v.id = :vehicleId")
+    boolean existsByUserIdAndVehicleId(Long userId, Long vehicleId);
+
 }

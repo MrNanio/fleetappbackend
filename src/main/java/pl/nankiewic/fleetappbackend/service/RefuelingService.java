@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.config.jwt.JWTokenHelper;
 import pl.nankiewic.fleetappbackend.dto.refueling.RefuelingDTO;
+import pl.nankiewic.fleetappbackend.dto.refueling.RefuelingView;
 import pl.nankiewic.fleetappbackend.entity.User;
 import pl.nankiewic.fleetappbackend.entity.VehicleRefueling;
 import pl.nankiewic.fleetappbackend.exceptions.PermissionDeniedException;
@@ -43,33 +44,33 @@ public class RefuelingService {
         } else throw new PermissionDeniedException();
     }
 
-    public RefuelingDTO getRefuelingById(Long id) {
+    public RefuelingView getRefuelingById(Long id) {
         if (checkExistAndPermissionComponent.accessToRefueling(id)) {
-            return refuelingRepository.findVehicleRefuelingById(id);
+            return refuelingRepository.findRefuelingViewById(id);
         } else throw new PermissionDeniedException();
     }
 
-    public List<RefuelingDTO> getRefuelingByVehicle(Long id) {
+    public List<RefuelingView> getRefuelingByVehicle(Long id) {
         if (checkExistAndPermissionComponent.accessToVehicle(id)) {
-            return refuelingRepository.findRefuelingListByVehicle(id);
+            return refuelingRepository.findRefuelingViewsByVehicleId(id);
         } else throw new PermissionDeniedException();
     }
 
-    public List<RefuelingDTO> getRefuelingByUser() {
+    public List<RefuelingView> getRefuelingByUser() {
         var userId = JWTokenHelper.getJWTUserId();
 
-        return refuelingRepository.findRefuelingListByUsersVehicle(userId);
+        return refuelingRepository.findRefuelingViewsByVehicleOwnerId(userId);
     }
 
-    public List<RefuelingDTO> getRefuelingByAuthor() {
+    public List<RefuelingView> getRefuelingByAuthor() {
         var userId = JWTokenHelper.getJWTUserId();
 
-        return refuelingRepository.findRefuelingListByUser(userId);
+        return refuelingRepository.findRefuelingViewsByRefuelingUserId(userId);
     }
 
-    public List<RefuelingDTO> getRefuelingByUserAndVehicle(Long userId, Long vehicleId) {
+    public List<RefuelingView> getRefuelingByUserAndVehicle(Long userId, Long vehicleId) {
         if (checkExistAndPermissionComponent.accessToVehicle(vehicleId)) {
-            return refuelingRepository.findAllByVehicleAndUser(vehicleId, userId);
+            return refuelingRepository.findRefuelingViewsByVehicleIdAndRefuelingUserId(vehicleId, userId);
         } else throw new PermissionDeniedException();
     }
 

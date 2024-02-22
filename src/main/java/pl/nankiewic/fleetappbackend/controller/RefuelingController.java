@@ -3,6 +3,7 @@ package pl.nankiewic.fleetappbackend.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import pl.nankiewic.fleetappbackend.dto.refueling.RefuelingDTO;
+import pl.nankiewic.fleetappbackend.dto.refueling.RefuelingView;
 import pl.nankiewic.fleetappbackend.service.RefuelingService;
 
 import javax.validation.Valid;
@@ -27,28 +28,28 @@ public class RefuelingController {
     }
 
     @GetMapping("/{id}")
-    public RefuelingDTO getRefuelingById(@PathVariable Long id) {
+    public RefuelingView getRefuelingById(@PathVariable Long id) {
         return refuelingService.getRefuelingById(id);
     }
 
     @GetMapping("/v/{id}")
-    public Iterable<RefuelingDTO> getRefuelingByVehicle(@PathVariable Long id) {
+    public List<RefuelingView> getRefuelingByVehicle(@PathVariable Long id) {
         return refuelingService.getRefuelingByVehicle(id);
     }
 
     @GetMapping
-    public Iterable<RefuelingDTO> getRefuelingByUser() {
+    public List<RefuelingView> getRefuelingByUser() {
         return refuelingService.getRefuelingByUser();
     }
 
     @GetMapping("/my")
-    public List<RefuelingDTO> getRefuelingByAuthor() {
+    public List<RefuelingView> getRefuelingByAuthor() {
         return refuelingService.getRefuelingByAuthor();
     }
 
     @GetMapping("/list")
-    public List<RefuelingDTO> getRefuelingByUserIdAndVehicleId(@RequestParam(name = "u") Long userId,
-                                                               @RequestParam(name = "v") Long vehicleId) {
+    public List<RefuelingView> getRefuelingByUserIdAndVehicleId(@RequestParam(name = "u") Long userId,
+                                                                @RequestParam(name = "v") Long vehicleId) {
         return refuelingService.getRefuelingByUserAndVehicle(userId, vehicleId);
     }
 

@@ -19,7 +19,7 @@ public interface InsuranceView {
 
     String getPolicyNumber();
 
-    InsuranceType getIinsuranceType();
+    InsuranceType getInsuranceType();
 
     String getDescription();
 }

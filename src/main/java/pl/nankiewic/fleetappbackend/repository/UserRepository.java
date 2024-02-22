@@ -4,7 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import pl.nankiewic.fleetappbackend.dto.PasswordRecoveryDTO;
 import pl.nankiewic.fleetappbackend.dto.user.UserView;
 import pl.nankiewic.fleetappbackend.entity.User;
 import pl.nankiewic.fleetappbackend.entity.enums.Role;

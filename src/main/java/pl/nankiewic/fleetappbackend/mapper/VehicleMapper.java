@@ -6,7 +6,6 @@ import pl.nankiewic.fleetappbackend.dto.vehicle.VehicleBaseDTO;
 import pl.nankiewic.fleetappbackend.dto.vehicle.VehicleDTO;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
 
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public abstract class VehicleMapper {
@@ -24,8 +23,6 @@ public abstract class VehicleMapper {
 
     @BeanMapping(qualifiedByName = "dtoToResponseDto")
     public abstract VehicleDTO vehicleDTOtoVehicleResponseDTO(VehicleBaseDTO vehicleBaseDTO);
-
-    public abstract List<VehicleDTO> vehiclesDTOtoVehiclesResponseDTO(List<VehicleBaseDTO> vehiclesDTO);
 
     @BeanMapping(qualifiedByName = "dtoToEntity")
     @Mapping(target = "vehicleStatus", ignore = true)

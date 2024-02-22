@@ -2,15 +2,16 @@ package pl.nankiewic.fleetappbackend.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import pl.nankiewic.fleetappbackend.dto.inspection.InspectionDTO;
+import pl.nankiewic.fleetappbackend.controller.validator.InspectionAccessValidator;
+import pl.nankiewic.fleetappbackend.controller.validator.ObjectModificationValidation;
+import pl.nankiewic.fleetappbackend.dto.inspection.InspectionModifyDTO;
 import pl.nankiewic.fleetappbackend.dto.inspection.InspectionView;
 import pl.nankiewic.fleetappbackend.service.InspectionService;
 
-import javax.validation.Valid;
 import java.util.List;
 
-@AllArgsConstructor
 @RestController
 @PreAuthorize("hasRole('SUPERUSER')")
 @RequestMapping("/inspection")
@@ -18,25 +19,36 @@ import java.util.List;
 public class InspectionController {
 
     private final InspectionService inspectionService;
+    private final InspectionAccessValidator validator;
+
+    public InspectionController(final InspectionService inspectionService,
+                                final InspectionAccessValidator validator) {
+        this.inspectionService = inspectionService;
+        this.validator = validator;
+    }
 
     @PostMapping
-    public void addInspection(@RequestBody @Valid InspectionDTO inspectionDTO) {
-        inspectionService.createInspection(inspectionDTO);
+    public void addInspection(@Validated @RequestBody InspectionModifyDTO inspectionModifyDTO) {
+        validator.checkAccessToVehicleByOwner(inspectionModifyDTO.getVehicleId());
+        inspectionService.createInspection(inspectionModifyDTO);
     }
 
     @PutMapping
-    public void updateInspection(@RequestBody @Valid InspectionDTO inspectionDTO) {
-        inspectionService.updateInspection(inspectionDTO);
+    public void updateInspection(@Validated(ObjectModificationValidation.class) @RequestBody InspectionModifyDTO inspectionModifyDTO) {
+        validator.checkAccessToVehicleByOwner(inspectionModifyDTO.getVehicleId());
+        inspectionService.updateInspection(inspectionModifyDTO);
     }
 
-    @GetMapping("/v/{id}")
-    public List<InspectionView> getInspectionsByVehicle(@PathVariable Long id) {
-        return inspectionService.getInspectionByVehicle(id);
+    @GetMapping("/v/{vehicleId}")
+    public List<InspectionView> getInspectionsByVehicle(@PathVariable Long vehicleId) {
+        validator.checkAccessToVehicleByOwner(vehicleId);
+        return inspectionService.getInspectionByVehicle(vehicleId);
     }
 
-    @GetMapping("/{id}")
-    public InspectionView getInspectionById(@PathVariable Long id) {
-        return inspectionService.getInspectionById(id);
+    @GetMapping("/{inspectionId}")
+    public InspectionView getInspectionById(@PathVariable Long inspectionId) {
+        validator.checkAccessToResource(inspectionId);
+        return inspectionService.getInspectionById(inspectionId);
     }
 
     @GetMapping
@@ -44,9 +56,10 @@ public class InspectionController {
         return inspectionService.getInspectionsByUser();
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteInspection(@PathVariable Long id) {
-        inspectionService.deleteInspectionById(id);
+    @DeleteMapping("/{inspectionId}")
+    public void deleteInspection(@PathVariable Long inspectionId) {
+        validator.checkAccessToResource(inspectionId);
+        inspectionService.deleteInspectionById(inspectionId);
     }
 
 }

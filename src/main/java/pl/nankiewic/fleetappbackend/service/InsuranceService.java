@@ -3,54 +3,51 @@ package pl.nankiewic.fleetappbackend.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.config.jwt.JWTokenHelper;
-import pl.nankiewic.fleetappbackend.dto.insurance.InsuranceRequestDTO;
+import pl.nankiewic.fleetappbackend.dto.insurance.InsuranceModifyDTO;
 import pl.nankiewic.fleetappbackend.dto.insurance.InsuranceView;
-import pl.nankiewic.fleetappbackend.entity.VehicleInsurance;
 import pl.nankiewic.fleetappbackend.entity.enums.InsuranceType;
-import pl.nankiewic.fleetappbackend.exceptions.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.mapper.InsuranceMapper;
 import pl.nankiewic.fleetappbackend.repository.VehicleInsuranceRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static pl.nankiewic.fleetappbackend.exceptions.ExceptionConstant.ENTITY_NOT_FOUND_ERROR;
 
 @AllArgsConstructor
 @Service
 public class InsuranceService {
 
-    private final CheckExistAndPermissionComponent checkExistAndPermissionComponent;
     private final VehicleInsuranceRepository vehicleInsuranceRepository;
     private final InsuranceMapper insuranceMapper;
 
-    public void createVehicleInsurance(InsuranceRequestDTO insuranceRequestDTO) {
-        if (checkExistAndPermissionComponent.accessToVehicle(insuranceRequestDTO.getVehicleId())) {
-            VehicleInsurance vehicleInsurance = insuranceMapper.insuranceDtoToVehicleInsuranceEntity(insuranceRequestDTO);
-            vehicleInsuranceRepository.save(vehicleInsurance);
-        } else throw new PermissionDeniedException();
+    public InsuranceModifyDTO createVehicleInsurance(InsuranceModifyDTO insuranceModifyDTO) {
+        return Optional.of(insuranceModifyDTO)
+                .map(insuranceMapper::insuranceDtoToVehicleInsuranceEntity)
+                .map(vehicleInsuranceRepository::save)
+                .map(insuranceMapper::insuranceToInsuranceModifyDTO)
+                .orElseThrow();
     }
 
-    public void updateVehicleInsurance(InsuranceRequestDTO insuranceRequestDTO) {
-        if (checkExistAndPermissionComponent.accessToVehicle(insuranceRequestDTO.getVehicleId())) {
-            VehicleInsurance vehicleInsurance = vehicleInsuranceRepository.findById(insuranceRequestDTO.getId()).orElseThrow(
-                    () -> new EntityNotFoundException("Insurance not found"));
-            insuranceMapper.updateVehicleInsuranceFromDto(vehicleInsurance, insuranceRequestDTO);
-            vehicleInsuranceRepository.save(vehicleInsurance);
-        } else throw new PermissionDeniedException();
+    public InsuranceModifyDTO updateVehicleInsurance(InsuranceModifyDTO insuranceModifyDTO) {
+        return vehicleInsuranceRepository.findById(insuranceModifyDTO.getId())
+                .map(insurance -> insuranceMapper.updateVehicleInsuranceFromDto(insurance, insuranceModifyDTO))
+                .map(vehicleInsuranceRepository::save)
+                .map(insuranceMapper::insuranceToInsuranceModifyDTO)
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND_ERROR));
     }
 
-    public InsuranceView getInsuranceById(Long id) {
-        if (checkExistAndPermissionComponent.accessToInsurance(id)) {
-            return vehicleInsuranceRepository.findInsuranceById(id);
-        } else throw new PermissionDeniedException();
+    public InsuranceView getInsuranceViewByInsuranceId(Long insuranceId) {
+        return vehicleInsuranceRepository.findInsuranceViewById(insuranceId)
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND_ERROR));
     }
 
     public List<InsuranceView> getInsurancesByVehicle(Long id) {
-        if (checkExistAndPermissionComponent.accessToVehicle(id)) {
             return vehicleInsuranceRepository.findAllInsuranceByVehicle(id);
-        } else throw new PermissionDeniedException();
     }
 
     public List<InsuranceView> getInsurancesByUser() {
@@ -65,9 +62,7 @@ public class InsuranceService {
     }
 
     public void deleteInsuranceById(Long id) {
-        if (checkExistAndPermissionComponent.accessToInsurance(id)) {
-            vehicleInsuranceRepository.deleteById(id);
-        } else throw new PermissionDeniedException();
+        vehicleInsuranceRepository.deleteById(id);
     }
 
 }

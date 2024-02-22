@@ -1,19 +1,12 @@
 package pl.nankiewic.fleetappbackend.mapper;
 
 import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import pl.nankiewic.fleetappbackend.entity.CurrentVehicleUser;
-import pl.nankiewic.fleetappbackend.repository.UserRepository;
-import pl.nankiewic.fleetappbackend.repository.VehicleRepository;
-
-import javax.persistence.EntityNotFoundException;
+import pl.nankiewic.fleetappbackend.entity.User;
+import pl.nankiewic.fleetappbackend.entity.Vehicle;
 
 @Mapper(componentModel = "spring")
 public abstract class ShareVehicleMapper {
-    @Autowired
-    private VehicleRepository vehicleRepository;
-    @Autowired
-    private UserRepository userRepository;
 
     @BeanMapping(qualifiedByName = "dtoToEntity")
     @Mapping(target = "vehicle", ignore = true)
@@ -25,9 +18,15 @@ public abstract class ShareVehicleMapper {
     public void vehicleShareAddAttribute(Long vehicleId,
                                          Long userId,
                                          @MappingTarget CurrentVehicleUser currentVehicleUser) {
-        currentVehicleUser.setVehicle(vehicleRepository.findById(vehicleId).orElseThrow(
-                () -> new EntityNotFoundException("Vehicle not found")));
-        currentVehicleUser.setUser(userRepository.findById(userId).orElseThrow(
-                () -> new EntityNotFoundException("User not found")));
+        var vehicle = Vehicle.builder()
+                .id(vehicleId)
+                .build();
+        var user = User.builder()
+                .id(userId)
+                .build();
+
+        currentVehicleUser.setUser(user);
+        currentVehicleUser.setVehicle(vehicle);
     }
+
 }

@@ -50,7 +50,7 @@ public class AuthenticationService {
                 .map(userRepository::save)
                 .map(VerificationToken::new)
                 .ifPresent(verificationTokenRepository::save);
-        //todo mailService.sendActivationEmail(user.getEmail(),verificationTokenRepository.findByUser(user).getToken());
+        //FIXME send verification token to user
     }
 
 

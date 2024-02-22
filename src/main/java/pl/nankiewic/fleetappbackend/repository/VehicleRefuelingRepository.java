@@ -2,24 +2,22 @@ package pl.nankiewic.fleetappbackend.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
 import org.springframework.stereotype.Repository;
-import pl.nankiewic.fleetappbackend.dto.DataDTO;
-import pl.nankiewic.fleetappbackend.dto.DataFuelCostUserDTO;
-import pl.nankiewic.fleetappbackend.dto.DataRefuelingDTO;
-
-import pl.nankiewic.fleetappbackend.dto.refueling.RefuelingDTO;
-import pl.nankiewic.fleetappbackend.entity.User;
-import pl.nankiewic.fleetappbackend.entity.Vehicle;
+import pl.nankiewic.fleetappbackend.dto.chart.RefuelingChartWithDateView;
+import pl.nankiewic.fleetappbackend.dto.chart.RefuelingChartWithVehicleDataView;
+import pl.nankiewic.fleetappbackend.dto.refueling.RefuelingView;
 import pl.nankiewic.fleetappbackend.entity.VehicleRefueling;
+import pl.nankiewic.fleetappbackend.report.ReportViewFilterParam;
+import pl.nankiewic.fleetappbackend.report.view.vehicle.VehicleRefuelingReportView;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
 @Repository
 public interface VehicleRefuelingRepository extends JpaRepository<VehicleRefueling, Long> {
 
-    @Query(value = "SELECT r.id as id, " +
+    @Query("SELECT r.id as id, " +
             "v.id as vehicleId, " +
             "u.id as userId, " +
             "r.refuelingDate as refuelingDate, " +
@@ -30,9 +28,9 @@ public interface VehicleRefuelingRepository extends JpaRepository<VehicleRefueli
             "JOIN r.vehicle v " +
             "JOIN r.user u " +
             "WHERE r.id = :id")
-    RefuelingDTO findVehicleRefuelingById(Long id);
+    RefuelingView findRefuelingViewById(Long id);
 
-    @Query(value = "SELECT r.id as id, " +
+    @Query("SELECT r.id as id, " +
             "v.id as vehicleId, " +
             "u.id as userId, " +
             "r.refuelingDate as refuelingDate, " +
@@ -43,9 +41,9 @@ public interface VehicleRefuelingRepository extends JpaRepository<VehicleRefueli
             "JOIN r.vehicle v " +
             "JOIN r.user u " +
             "WHERE v.id = :vehicleId")
-    List<RefuelingDTO> findRefuelingListByVehicle(Long vehicleId);
+    List<RefuelingView> findRefuelingViewsByVehicleId(Long vehicleId);
 
-    @Query(value = "SELECT r.id as id, " +
+    @Query("SELECT r.id as id, " +
             "v.id as vehicleId, " +
             "u.id as userId, " +
             "r.refuelingDate as refuelingDate, " +
@@ -56,9 +54,9 @@ public interface VehicleRefuelingRepository extends JpaRepository<VehicleRefueli
             "JOIN r.vehicle v " +
             "JOIN v.user u " +
             "WHERE u.id = :userId")
-    List<RefuelingDTO> findRefuelingListByUsersVehicle(Long userId);
+    List<RefuelingView> findRefuelingViewsByVehicleOwnerId(Long userId);
 
-    @Query(value = "SELECT r.id as id, " +
+    @Query("SELECT r.id as id, " +
             "v.id as vehicleId, " +
             "u.id as userId, " +
             "r.refuelingDate as refuelingDate, " +
@@ -69,9 +67,9 @@ public interface VehicleRefuelingRepository extends JpaRepository<VehicleRefueli
             "JOIN r.vehicle v " +
             "JOIN r.user u " +
             "WHERE u.id = :userId")
-    List<RefuelingDTO> findRefuelingListByUser(Long userId);
+    List<RefuelingView> findRefuelingViewsByRefuelingUserId(Long userId);
 
-    @Query(value = "SELECT r.id as id, " +
+    @Query("SELECT r.id as id, " +
             "v.id as vehicleId, " +
             "u.id as userId, " +
             "r.refuelingDate as refuelingDate, " +
@@ -82,41 +80,60 @@ public interface VehicleRefuelingRepository extends JpaRepository<VehicleRefueli
             "JOIN r.vehicle v " +
             "JOIN r.user u " +
             "WHERE v.id = :vehicleId AND u.id = :userId")
-    List<RefuelingDTO> findAllByVehicleAndUser(Long vehicleId, Long userId);
+    List<RefuelingView> findRefuelingViewsByVehicleIdAndRefuelingUserId(Long vehicleId, Long userId);
 
-    List<VehicleRefueling> findAllByVehicleIsAndRefuelingDateIsBetween(Vehicle vehicle, LocalDate begin, LocalDate end);
-
-    List<VehicleRefueling> findAllByUserIsAndRefuelingDateIsBetween(User user, LocalDate begin, LocalDate end);
+    @Query("SELECT r.id as id, " +
+            "v.id as vehicleId, " +
+            "r.litre as litre, " +
+            "r.cost as cost, " +
+            "r.refuelingDate as refuelingDate, " +
+            "r.description as description, " +
+            "u.email as createdBy " +
+            "FROM VehicleRefueling r " +
+            "JOIN r.user u " +
+            "JOIN r.vehicle v " +
+            "WHERE r.refuelingDate BETWEEN :#{#param.startDate} AND :#{#param.startDate} " +
+            "AND (:#{#param.userId} IS NULL OR :#{#param.userId} = u.id) " +
+            "AND (:#{#param.vehicleId} IS NULL OR :#{#param.vehicleId} = v.id)")
+    List<VehicleRefuelingReportView> findVehicleRefuelingReportViewByParam(ReportViewFilterParam param);
 
     @Query("SELECT SUM(r.cost) " +
             "FROM VehicleRefueling r " +
             "JOIN r.vehicle v " +
             "JOIN v.user u " +
-            "WHERE u.id = :userId and (r.refuelingDate between :begin and :end) ")
-    Float sumOfRefueling(Long userId, LocalDate begin, LocalDate end);
+            "WHERE u.id = :userId AND (r.refuelingDate between :begin AND :end) ")
+    BigDecimal findSummaryCostByVehicleOwner(Long userId, LocalDate begin, LocalDate end);
 
-    @Query("SELECT new pl.nankiewic.fleetappbackend.dto.DataDTO(r.vehicle, SUM(r.cost)) " +
+    @Query("SELECT SUM(r.cost) " +
+            "FROM VehicleRefueling r " +
+            "JOIN r.vehicle v " +
+            "WHERE v.id = :vehicleId AND (r.refuelingDate between :begin AND :end)")
+    BigDecimal findSummaryCostByVehicleId(Long vehicleId, LocalDate begin, LocalDate end);
+
+    @Query("SELECT SUM(r.cost) as cost, " +
+            "v.vehicleRegistrationNumber as vehicleData " +
+            "FROM VehicleRefueling r " +
+            "JOIN r.user u " +
+            "JOIN r.vehicle v " +
+            "WHERE u.id = :userId and (r.refuelingDate between :begin and :end) " +
+            "GROUP BY v.id")
+    List<RefuelingChartWithVehicleDataView> fuelCostByVehicleAndUser(Long userId, LocalDate begin, LocalDate end);
+
+    @Query("SELECT SUM(r.cost) as cost, " +
+            "v.vehicleRegistrationNumber as vehicleData " +
             "FROM VehicleRefueling r " +
             "JOIN r.vehicle v " +
             "JOIN v.user u " +
             "WHERE u.id = :userId and (r.refuelingDate between :begin and :end) " +
-            "GROUP BY r.vehicle")
-    List<DataDTO> sumOfRefuelingByVehicle(Long userId, LocalDate begin, LocalDate end);
+            "GROUP BY v.id")
+    List<RefuelingChartWithVehicleDataView> sumOfRefuelingByVehicle(Long userId, LocalDate begin, LocalDate end);
 
-    @Query("SELECT  new pl.nankiewic.fleetappbackend.dto.DataRefuelingDTO(r.cost, r.refuelingDate) " +
+    @Query("SELECT r.cost as value, " +
+            "r.refuelingDate as date " +
             "FROM VehicleRefueling r " +
-            "WHERE r.vehicle=?1 and (r.refuelingDate between ?2 and ?3) " +
+            "JOIN r.vehicle v " +
+            "WHERE v.id = :vehicleId AND (r.refuelingDate between :begin AND :end) " +
             "ORDER BY r.refuelingDate ASC")
-    List<DataRefuelingDTO> refuelingByVehicle(Vehicle vehicle, LocalDate begin, LocalDate end);
+    List<RefuelingChartWithDateView> refuelingByVehicle(Long vehicleId, LocalDate begin, LocalDate end);
 
-    @Query("SELECT SUM(r.cost) " +
-            "FROM VehicleRefueling r " +
-            "WHERE r.vehicle=?1 and (r.refuelingDate between ?2 and ?3)")
-    Float vehicleSumCostOfRefueling(Vehicle vehicle, LocalDate begin, LocalDate end);
-
-    @Query("SELECT new pl.nankiewic.fleetappbackend.dto.DataFuelCostUserDTO(SUM(r.cost), r.vehicle) " +
-            "FROM VehicleRefueling r " +
-            "WHERE r.user.id=?1 and (r.refuelingDate between ?2 and ?3) " +
-            "GROUP BY r.vehicle")
-    List<DataFuelCostUserDTO> fuelCostByVehicleAndUser(Long userId, LocalDate begin, LocalDate end);
 }

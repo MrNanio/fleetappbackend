@@ -9,7 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pl.nankiewic.fleetappbackend.config.security.CustomUserDetails;
-import pl.nankiewic.fleetappbackend.dto.insurance.InsuranceRequestDTO;
+import pl.nankiewic.fleetappbackend.dto.insurance.InsuranceModifyDTO;
+import pl.nankiewic.fleetappbackend.dto.insurance.InsuranceView;
 import pl.nankiewic.fleetappbackend.entity.VehicleInsurance;
 import pl.nankiewic.fleetappbackend.mapper.InsuranceMapper;
 import pl.nankiewic.fleetappbackend.repository.VehicleInsuranceRepository;
@@ -20,8 +21,6 @@ import static org.mockito.Mockito.*;
 
 class InsuranceServiceTest {
 
-    @Mock
-    CheckExistAndPermissionComponent checkExistAndPermissionComponent;
     @Mock
     VehicleInsuranceRepository vehicleInsuranceRepository;
     @Mock
@@ -35,7 +34,6 @@ class InsuranceServiceTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         insuranceService = new InsuranceService(
-                checkExistAndPermissionComponent,
                 vehicleInsuranceRepository,
                 insuranceMapper);
 
@@ -50,10 +48,16 @@ class InsuranceServiceTest {
     @Test
     void should_create_vehicle_insurance() {
         //given
+        var vehicleInsurance = VehicleInsurance.builder().build();
+        var insuranceModifyDTO = InsuranceModifyDTO.builder().build();
+
+        when(vehicleInsuranceRepository.findById(any())).thenReturn(Optional.of(vehicleInsurance));
         when(insuranceMapper.insuranceDtoToVehicleInsuranceEntity(any())).thenReturn(VehicleInsurance.builder().build());
-        when(checkExistAndPermissionComponent.accessToVehicle(any())).thenReturn(true);
+        when(vehicleInsuranceRepository.save(any())).thenReturn(vehicleInsurance);
+        when(insuranceMapper.insuranceToInsuranceModifyDTO(any())).thenReturn(insuranceModifyDTO);
+
         //when
-        insuranceService.createVehicleInsurance(InsuranceRequestDTO.builder().build());
+        insuranceService.createVehicleInsurance(insuranceModifyDTO);
         //then
         verify(vehicleInsuranceRepository, times(1)).save(any());
     }
@@ -61,11 +65,15 @@ class InsuranceServiceTest {
     @Test
     void should_update_vehicle_insurance() {
         //given
-        VehicleInsurance vehicleInsurance = VehicleInsurance.builder().build();
-        when(checkExistAndPermissionComponent.accessToVehicle(any())).thenReturn(true);
+        var vehicleInsurance = VehicleInsurance.builder().build();
+        var insuranceModifyDTO = InsuranceModifyDTO.builder().build();
+
         when(vehicleInsuranceRepository.findById(any())).thenReturn(Optional.of(vehicleInsurance));
+        when(insuranceMapper.updateVehicleInsuranceFromDto(any(), any())).thenReturn(vehicleInsurance);
+        when(vehicleInsuranceRepository.save(any())).thenReturn(vehicleInsurance);
+        when(insuranceMapper.insuranceToInsuranceModifyDTO(any())).thenReturn(insuranceModifyDTO);
         //when
-        insuranceService.updateVehicleInsurance(InsuranceRequestDTO.builder().build());
+        insuranceService.updateVehicleInsurance(insuranceModifyDTO);
         //then
         verify(vehicleInsuranceRepository, times(1)).save(any());
     }
@@ -73,11 +81,11 @@ class InsuranceServiceTest {
     @Test
     void should_get_insurance_by_id() {
         //given
-        when(checkExistAndPermissionComponent.accessToInsurance(any())).thenReturn(true);
+        when(vehicleInsuranceRepository.findInsuranceViewById(any())).thenReturn(Optional.of(Mockito.mock(InsuranceView.class)));
         //when
-        insuranceService.getInsuranceById(EXAMPLE_ID);
+        insuranceService.getInsuranceViewByInsuranceId(EXAMPLE_ID);
         //then
-        verify(vehicleInsuranceRepository, times(1)).findInsuranceById(any());
+        verify(vehicleInsuranceRepository, times(1)).findInsuranceViewById(any());
     }
 
     @Test
@@ -88,8 +96,6 @@ class InsuranceServiceTest {
 
     @Test
     void should_get_insurance_by_vehicle() {
-        //given
-        when(checkExistAndPermissionComponent.accessToVehicle(any())).thenReturn(true);
         //when
         insuranceService.getInsurancesByVehicle(EXAMPLE_ID);
         //then
@@ -104,8 +110,6 @@ class InsuranceServiceTest {
 
     @Test
     void should_delete_insurance_by_id() {
-        //given
-        when(checkExistAndPermissionComponent.accessToInsurance(any())).thenReturn(true);
         //when
         insuranceService.deleteInsuranceById(EXAMPLE_ID);
         //then

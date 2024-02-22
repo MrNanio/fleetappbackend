@@ -22,4 +22,5 @@ public interface UserDataMapper {
 
     @Mapping(target = "user", ignore = true)
     UserData userDataDTOtoUserData(final UserDataDTO userDataDTO);
+
 }

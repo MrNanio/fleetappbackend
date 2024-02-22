@@ -4,11 +4,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import pl.nankiewic.fleetappbackend.dto.insurance.InsuranceView;
-import pl.nankiewic.fleetappbackend.entity.Vehicle;
 import pl.nankiewic.fleetappbackend.entity.VehicleInsurance;
+import pl.nankiewic.fleetappbackend.report.ReportViewFilterParam;
+import pl.nankiewic.fleetappbackend.report.view.vehicle.VehicleInsuranceReportView;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface VehicleInsuranceRepository extends JpaRepository<VehicleInsurance, Long> {
@@ -24,7 +27,7 @@ public interface VehicleInsuranceRepository extends JpaRepository<VehicleInsuran
             "FROM VehicleInsurance i " +
             "JOIN i.vehicle v " +
             "WHERE i.id = :id")
-    InsuranceView findInsuranceById(Long id);
+    Optional<InsuranceView> findInsuranceViewById(Long id);
 
     @Query(value = "SELECT i.id as id, " +
             "v.id as vehicleId, " +
@@ -53,15 +56,44 @@ public interface VehicleInsuranceRepository extends JpaRepository<VehicleInsuran
             "WHERE v.id = :vehicleId")
     List<InsuranceView> findAllInsuranceByVehicle(Long vehicleId);
 
-    List<VehicleInsurance> findAllByVehicleAndEffectiveDateBetween(Vehicle vehicle, LocalDate begin, LocalDate end);
+    @Query(value = "SELECT i.id as id, " +
+            "v.id as vehicleId, " +
+            "i.expirationDate as expirationDate, " +
+            "i.effectiveDate as effectiveDate, " +
+            "i.cost as cost, " +
+            "i.description as description, " +
+            "i.insuranceType as insuranceType, " +
+            "u.email as createdBy " +
+            "FROM VehicleInsurance i " +
+            "JOIN i.vehicle v " +
+            "JOIN v.user u " +
+            "WHERE i.effectiveDate BETWEEN :#{#param.startDate} AND :#{#param.endDate} " +
+            "AND (:#{#param.userId} IS NULL OR :#{#param.userId} = u.id) " +
+            "AND (:#{#param.vehicleId} IS NULL OR :#{#param.vehicleId} = v.id)")
+    List<VehicleInsuranceReportView> findVehicleInsuranceReportViewByParam(ReportViewFilterParam param);
 
     @Query("SELECT SUM(i.cost) " +
             "FROM VehicleInsurance i " +
-            "WHERE (i.vehicle.user.id=?1 )and (i.effectiveDate between ?2 and ?3)")
-    Float sumOfInsurance(Long userId, LocalDate begin, LocalDate end);
+            "JOIN i.vehicle v " +
+            "JOIN v.user u " +
+            "WHERE (u.id = :userId) and (i.effectiveDate between :begin and :end)")
+    BigDecimal findSummaryCostByVehicleOwner(Long userId, LocalDate begin, LocalDate end);
 
     @Query("SELECT SUM(i.cost) " +
             "FROM VehicleInsurance i " +
-            "WHERE (i.vehicle=?1 )and (i.effectiveDate between ?2 and ?3)")
-    Float vehicleSumCostOfInsurance(Vehicle vehicle, LocalDate begin, LocalDate end);
+            "JOIN i.vehicle v " +
+            "WHERE (v.id = :vehicleId) and (i.effectiveDate between :begin and :end)")
+    BigDecimal findSummaryCostByVehicleId(Long vehicleId, LocalDate begin, LocalDate end);
+
+    @Query("SELECT " +
+            "CASE WHEN COUNT(i) > 0 " +
+            "THEN TRUE " +
+            "ELSE FALSE " +
+            "END " +
+            "FROM VehicleInsurance i " +
+            "JOIN i.vehicle v " +
+            "JOIN v.user u " +
+            "where u.id = :userId and i.id = :insuranceId")
+    boolean existsByVehicleOwnerIdAndInsuranceId(Long userId, Long insuranceId);
+
 }

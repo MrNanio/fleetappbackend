@@ -2,6 +2,7 @@ package pl.nankiewic.fleetappbackend.entity;
 
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import pl.nankiewic.fleetappbackend.entity.enums.TripType;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -31,7 +32,8 @@ public class VehicleUse {
     private String description;
 
     @Column(name = "trip_type", length = 7)
-    private String tripType;
+    @Enumerated(EnumType.STRING)
+    private TripType tripType;
 
     @ManyToOne
     @JoinColumn(name = "vehicle_id", nullable = false)
