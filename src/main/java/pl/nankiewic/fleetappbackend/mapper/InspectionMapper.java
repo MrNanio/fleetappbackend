@@ -24,7 +24,11 @@ public abstract class InspectionMapper {
 
     @BeanMapping(qualifiedByName = "dtoToEntity")
     @Mapping(target = "vehicle", ignore = true)
-    public abstract void updateVehicleInspectionFromDto(@MappingTarget VehicleInspection vehicleInspection,
+    public abstract VehicleInspection updateVehicleInspectionFromDto(@MappingTarget VehicleInspection vehicleInspection,
                                                         InspectionModifyDTO inspectionModifyDTO);
+
+    @BeanMapping(qualifiedByName = "entityToDto")
+    @Mapping(target = "vehicleId", source = "vehicle.id")
+    public abstract InspectionModifyDTO vehicleInspectionToDto(VehicleInspection vehicleInspection);
 
 }

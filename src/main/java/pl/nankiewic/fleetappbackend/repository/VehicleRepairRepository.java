@@ -11,6 +11,7 @@ import pl.nankiewic.fleetappbackend.report.view.vehicle.VehicleRepairReportView;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface VehicleRepairRepository extends JpaRepository<VehicleRepair, Long> {
@@ -35,7 +36,7 @@ public interface VehicleRepairRepository extends JpaRepository<VehicleRepair, Lo
             "FROM VehicleRepair r " +
             "JOIN r.vehicle v " +
             "WHERE r.id = :repairId")
-    RepairView findRepairById(Long repairId);
+    Optional<RepairView> findRepairById(Long repairId);
 
     @Query("SELECT r.id as id, " +
             "v.id as vehicleId, " +

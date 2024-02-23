@@ -1,7 +1,7 @@
 package pl.nankiewic.fleetappbackend.mapper;
 
 import org.mapstruct.*;
-import pl.nankiewic.fleetappbackend.dto.repair.RepairDTO;
+import pl.nankiewic.fleetappbackend.dto.repair.RepairModifyDTO;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
 import pl.nankiewic.fleetappbackend.entity.VehicleRepair;
 
@@ -10,19 +10,23 @@ public abstract class RepairMapper {
 
     @BeanMapping(qualifiedByName = "dtoToEntity")
     @Mapping(target = "vehicle", ignore = true)
-    public abstract VehicleRepair repairDtoToVehicleRepairEntity(RepairDTO repairDTO);
+    public abstract VehicleRepair repairDtoToVehicleRepairEntity(RepairModifyDTO repairModifyDTO);
 
     @Named(value = "dtoToEntity")
     @AfterMapping
-    public void vehicleRepairAddAttribute(RepairDTO repairDTO, @MappingTarget VehicleRepair vehicleRepair) {
+    public void vehicleRepairAddAttribute(RepairModifyDTO repairModifyDTO, @MappingTarget VehicleRepair vehicleRepair) {
         var vehicle = Vehicle.builder()
-                .id(repairDTO.getVehicleId())
+                .id(repairModifyDTO.getVehicleId())
                 .build();
         vehicleRepair.setVehicle(vehicle);
     }
 
     @BeanMapping(qualifiedByName = "dtoToEntity")
     @Mapping(target = "vehicle", ignore = true)
-    public abstract void updateVehicleRepairFromDto(@MappingTarget VehicleRepair vehicleRepair, RepairDTO repairDTO);
+    public abstract VehicleRepair updateVehicleRepairFromDto(@MappingTarget VehicleRepair vehicleRepair, RepairModifyDTO repairModifyDTO);
+
+    @BeanMapping(qualifiedByName = "entityToDto")
+    @Mapping(target = "vehicleId", source = "vehicle.id")
+    public abstract RepairModifyDTO vehicleRepairToRepairModifyDTO(VehicleRepair vehicleRepair);
 
 }

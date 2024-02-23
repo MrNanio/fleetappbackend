@@ -12,6 +12,7 @@ import pl.nankiewic.fleetappbackend.config.security.CustomUserDetails;
 import pl.nankiewic.fleetappbackend.dto.use.UseDTO;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
 import pl.nankiewic.fleetappbackend.entity.VehicleUse;
+import pl.nankiewic.fleetappbackend.entity.enums.TripType;
 import pl.nankiewic.fleetappbackend.mapper.UseMapper;
 import pl.nankiewic.fleetappbackend.repository.VehicleRepository;
 import pl.nankiewic.fleetappbackend.repository.VehicleUseRepository;
@@ -63,7 +64,7 @@ class UseServiceTest {
                 .tripDate(LocalDate.of(2021, 12, 12))
                 .trip(Short.parseShort("12"))
                 .description("Example")
-                .tripType("MIEJSKI")
+                .tripType(TripType.CITY)
                 .build();
         var vehicle = Vehicle.builder()
                 .mileage("123")
@@ -84,16 +85,16 @@ class UseServiceTest {
     @Test
     void should_update_vehicle_use() {
         //given
-        UseDTO useDTO = UseDTO.builder()
+        var useDTO = UseDTO.builder()
                 .id(1L)
                 .vehicleId(1L)
                 .userId(1L)
                 .tripDate(LocalDate.of(2021, 12, 12))
                 .trip(Short.parseShort("12"))
                 .description("Example")
-                .tripType("MIEJSKI")
+                .tripType(TripType.CITY)
                 .build();
-        Vehicle vehicle = Vehicle.builder()
+        var vehicle = Vehicle.builder()
                 .mileage("123").build();
         when(checkExistAndPermissionComponent.accessToUse(any())).thenReturn(true);
         when(vehicleUseRepository.findById(any())).thenReturn(Optional.of(VehicleUse.builder().trip(Short.parseShort("12")).build()));
@@ -103,7 +104,6 @@ class UseServiceTest {
         //then
         verify(vehicleUseRepository, times(1)).save(any());
         verify(useMapper, times(1)).updateVehicleUseFromDto(any(), any());
-
     }
 
     @Test
@@ -115,7 +115,6 @@ class UseServiceTest {
         useService.getUseByVehicle(EXAMPLE_ID);
         //then
         verify(vehicleUseRepository, times(1)).findAllByVehicleId(any());
-
     }
 
     @Test
@@ -148,9 +147,15 @@ class UseServiceTest {
 
     @Test
     void should_delete_use_by_id() {
-
         //given
-        VehicleUse use = VehicleUse.builder().trip(Short.parseShort("12")).vehicle(Vehicle.builder().mileage("123").build()).build();
+        var vehicle = Vehicle.builder()
+                .mileage("123")
+                .build();
+        var use = VehicleUse.builder()
+                .trip(Short.parseShort("12"))
+                .vehicle(vehicle)
+                .build();
+
         when(vehicleUseRepository.findById(any())).thenReturn(Optional.of(use));
         when(checkExistAndPermissionComponent.accessToUse(any())).thenReturn(true);
         //when

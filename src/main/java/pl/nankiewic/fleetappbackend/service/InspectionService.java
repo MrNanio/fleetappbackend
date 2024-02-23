@@ -1,53 +1,54 @@
 package pl.nankiewic.fleetappbackend.service;
 
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.config.jwt.JWTokenHelper;
 import pl.nankiewic.fleetappbackend.dto.inspection.InspectionModifyDTO;
 import pl.nankiewic.fleetappbackend.dto.inspection.InspectionView;
-import pl.nankiewic.fleetappbackend.entity.VehicleInspection;
-import pl.nankiewic.fleetappbackend.exceptions.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.mapper.InspectionMapper;
 import pl.nankiewic.fleetappbackend.repository.VehicleInspectionRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
-@AllArgsConstructor
+import static pl.nankiewic.fleetappbackend.exceptions.ExceptionConstant.ENTITY_NOT_FOUND_ERROR;
+
 @Service
 public class InspectionService {
-    private final CheckExistAndPermissionComponent checkExistAndPermissionComponent;
+
     private final VehicleInspectionRepository vehicleInspectionRepository;
     private final InspectionMapper inspectionMapper;
 
-    public void createInspection(InspectionModifyDTO inspectionModifyDTO) {
+    public InspectionService(final VehicleInspectionRepository vehicleInspectionRepository,
+                             final InspectionMapper inspectionMapper) {
+        this.vehicleInspectionRepository = vehicleInspectionRepository;
+        this.inspectionMapper = inspectionMapper;
+    }
 
-
-            VehicleInspection vehicleInspection = inspectionMapper.vehicleInspectionDtoToEntity(inspectionModifyDTO);
-            vehicleInspectionRepository.save(vehicleInspection);
+    public InspectionModifyDTO createInspection(InspectionModifyDTO inspectionModifyDTO) {
+        return Optional.of(inspectionModifyDTO)
+                .map(inspectionMapper::vehicleInspectionDtoToEntity)
+                .map(vehicleInspectionRepository::save)
+                .map(inspectionMapper::vehicleInspectionToDto)
+                .orElseThrow();
 
     }
 
-    public void updateInspection(InspectionModifyDTO inspectionModifyDTO) {
-        if (checkExistAndPermissionComponent.accessToVehicle(inspectionModifyDTO.getVehicleId())) {
-            VehicleInspection vehicleInspection = vehicleInspectionRepository.findById(inspectionModifyDTO.getId()).orElseThrow(
-                    () -> new EntityNotFoundException("Inspection not found"));
-            inspectionMapper.updateVehicleInspectionFromDto(vehicleInspection, inspectionModifyDTO);
-            vehicleInspectionRepository.save(vehicleInspection);
-        } else throw new PermissionDeniedException();
+    public InspectionModifyDTO updateInspection(InspectionModifyDTO inspectionModifyDTO) {
+        return vehicleInspectionRepository.findById(inspectionModifyDTO.getId())
+                .map(inspection -> inspectionMapper.updateVehicleInspectionFromDto(inspection, inspectionModifyDTO))
+                .map(vehicleInspectionRepository::save)
+                .map(inspectionMapper::vehicleInspectionToDto)
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND_ERROR));
     }
 
     public List<InspectionView> getInspectionByVehicle(Long id) {
-        if (checkExistAndPermissionComponent.accessToVehicle(id)) {
-            return vehicleInspectionRepository.findAllByVehicle(id);
-        } else throw new PermissionDeniedException();
+        return vehicleInspectionRepository.findAllByVehicle(id);
     }
 
     public InspectionView getInspectionById(Long id) {
-        if (checkExistAndPermissionComponent.accessToInspection(id)) {
-            return vehicleInspectionRepository.findInspectionById(id)
-                    .orElseThrow();
-        } else throw new PermissionDeniedException();
+        return vehicleInspectionRepository.findInspectionById(id)
+                .orElseThrow();
     }
 
     public List<InspectionView> getInspectionsByUser() {
@@ -57,9 +58,7 @@ public class InspectionService {
     }
 
     public void deleteInspectionById(Long id) {
-        if (checkExistAndPermissionComponent.accessToInspection(id)) {
-            vehicleInspectionRepository.deleteById(id);
-        } else throw new PermissionDeniedException();
+        vehicleInspectionRepository.deleteById(id);
     }
-}
 
+}

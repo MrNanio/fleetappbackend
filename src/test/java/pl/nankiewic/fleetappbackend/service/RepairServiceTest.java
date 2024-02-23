@@ -9,7 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pl.nankiewic.fleetappbackend.config.security.CustomUserDetails;
-import pl.nankiewic.fleetappbackend.dto.repair.RepairDTO;
+import pl.nankiewic.fleetappbackend.dto.repair.RepairModifyDTO;
+import pl.nankiewic.fleetappbackend.dto.repair.RepairView;
 import pl.nankiewic.fleetappbackend.entity.VehicleRepair;
 import pl.nankiewic.fleetappbackend.mapper.RepairMapper;
 import pl.nankiewic.fleetappbackend.repository.VehicleRepairRepository;
@@ -23,8 +24,6 @@ import static org.mockito.Mockito.*;
 class RepairServiceTest {
 
     @Mock
-    CheckExistAndPermissionComponent checkExistAndPermissionComponent;
-    @Mock
     VehicleRepairRepository vehicleRepairRepository;
     @Mock
     RepairMapper repairMapper;
@@ -37,7 +36,6 @@ class RepairServiceTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         repairService = new RepairService(
-                checkExistAndPermissionComponent,
                 vehicleRepairRepository,
                 repairMapper);
 
@@ -52,7 +50,7 @@ class RepairServiceTest {
     @Test
     void should_create_vehicle_repair() {
         //given
-        RepairDTO repairDTO = RepairDTO.builder()
+        RepairModifyDTO repairModifyDTO = RepairModifyDTO.builder()
                 .id(1L)
                 .repairDate(LocalDate.now())
                 .vehicleId(1L)
@@ -60,9 +58,13 @@ class RepairServiceTest {
                 .description("bhjvhvh")
                 .title("fgfgfg")
                 .build();
-        when(checkExistAndPermissionComponent.accessToVehicle(any())).thenReturn(true);
+        var vehicleRepair = VehicleRepair.builder().build();
+
+        when(repairMapper.repairDtoToVehicleRepairEntity(any())).thenReturn(vehicleRepair);
+        when(vehicleRepairRepository.save(any())).thenReturn(vehicleRepair);
+        when(repairMapper.vehicleRepairToRepairModifyDTO(any())).thenReturn(repairModifyDTO);
         //when
-        repairService.createVehicleRepair(repairDTO);
+        repairService.createVehicleRepair(repairModifyDTO);
         //then
         verify(vehicleRepairRepository, times(1)).save(any());
     }
@@ -70,7 +72,7 @@ class RepairServiceTest {
     @Test
     void should_update_vehicle_repair() {
         //given
-        RepairDTO repairDTO = RepairDTO.builder()
+        RepairModifyDTO repairModifyDTO = RepairModifyDTO.builder()
                 .id(1L)
                 .repairDate(LocalDate.now())
                 .vehicleId(1L)
@@ -78,11 +80,15 @@ class RepairServiceTest {
                 .description("bhjvhvh")
                 .title("fgfgfg")
                 .build();
-        VehicleRepair repair = VehicleRepair.builder().build();
-        when(checkExistAndPermissionComponent.accessToRepair(any())).thenReturn(true);
-        when(vehicleRepairRepository.findById(any())).thenReturn(Optional.of(repair));
+        VehicleRepair vehicleRepair = VehicleRepair.builder().build();
+
+
+        when(vehicleRepairRepository.findById(any())).thenReturn(Optional.of(vehicleRepair));
+        when(repairMapper.updateVehicleRepairFromDto(any(), any())).thenReturn(vehicleRepair);
+        when(vehicleRepairRepository.save(any())).thenReturn(vehicleRepair);
+        when(repairMapper.vehicleRepairToRepairModifyDTO(any())).thenReturn(repairModifyDTO);
         //when
-        repairService.updateVehicleRepair(repairDTO);
+        repairService.updateVehicleRepair(repairModifyDTO);
         //then
         verify(vehicleRepairRepository, times(1)).save(any());
     }
@@ -90,19 +96,17 @@ class RepairServiceTest {
     @Test
     void should_get_repair_by_id() {
         //given
-        when(checkExistAndPermissionComponent.accessToRepair(any())).thenReturn(true);
+        when(vehicleRepairRepository.findRepairById(any())).thenReturn(Optional.of(Mockito.mock(RepairView.class)));
         //when
-        repairService.getRepairById(EXAMPLE_ID);
+        repairService.getRepairViewById(EXAMPLE_ID);
         //then
         verify(vehicleRepairRepository, times(1)).findRepairById(any());
     }
 
     @Test
     void should_get_repairs_by_vehicle() {
-        //given
-        when(checkExistAndPermissionComponent.accessToVehicle(any())).thenReturn(true);
         //when
-        repairService.getRepairsByVehicle(EXAMPLE_ID);
+        repairService.getRepairViewsByVehicleId(EXAMPLE_ID);
         //then
         verify(vehicleRepairRepository, times(1)).findAllRepairsByVehicleId(any());
 
@@ -118,8 +122,6 @@ class RepairServiceTest {
 
     @Test
     void should_delete_vehicle_repair_by_id() {
-        //given
-        when(checkExistAndPermissionComponent.accessToRepair(any())).thenReturn(true);
         //when
         repairService.deleteRepairById(EXAMPLE_ID);
         //then

@@ -1,6 +1,5 @@
 package pl.nankiewic.fleetappbackend.controller;
 
-import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,15 +27,15 @@ public class InspectionController {
     }
 
     @PostMapping
-    public void addInspection(@Validated @RequestBody InspectionModifyDTO inspectionModifyDTO) {
+    public InspectionModifyDTO addInspection(@Validated @RequestBody InspectionModifyDTO inspectionModifyDTO) {
         validator.checkAccessToVehicleByOwner(inspectionModifyDTO.getVehicleId());
-        inspectionService.createInspection(inspectionModifyDTO);
+        return inspectionService.createInspection(inspectionModifyDTO);
     }
 
     @PutMapping
-    public void updateInspection(@Validated(ObjectModificationValidation.class) @RequestBody InspectionModifyDTO inspectionModifyDTO) {
+    public InspectionModifyDTO updateInspection(@Validated(ObjectModificationValidation.class) @RequestBody InspectionModifyDTO inspectionModifyDTO) {
         validator.checkAccessToVehicleByOwner(inspectionModifyDTO.getVehicleId());
-        inspectionService.updateInspection(inspectionModifyDTO);
+        return inspectionService.updateInspection(inspectionModifyDTO);
     }
 
     @GetMapping("/v/{vehicleId}")

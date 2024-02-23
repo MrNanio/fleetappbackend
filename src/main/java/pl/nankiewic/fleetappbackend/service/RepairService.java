@@ -1,53 +1,53 @@
 package pl.nankiewic.fleetappbackend.service;
 
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.config.jwt.JWTokenHelper;
-import pl.nankiewic.fleetappbackend.dto.repair.RepairDTO;
+import pl.nankiewic.fleetappbackend.dto.repair.RepairModifyDTO;
 import pl.nankiewic.fleetappbackend.dto.repair.RepairView;
-import pl.nankiewic.fleetappbackend.entity.VehicleRepair;
-import pl.nankiewic.fleetappbackend.exceptions.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.mapper.RepairMapper;
 import pl.nankiewic.fleetappbackend.repository.VehicleRepairRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
-@AllArgsConstructor
+import static pl.nankiewic.fleetappbackend.exceptions.ExceptionConstant.ENTITY_NOT_FOUND_ERROR;
+
 @Service
 public class RepairService {
 
-    private final CheckExistAndPermissionComponent checkExistAndPermissionComponent;
     private final VehicleRepairRepository vehicleRepairRepository;
     private final RepairMapper repairMapper;
 
-    public void createVehicleRepair(RepairDTO repairDTO) {
-        if (checkExistAndPermissionComponent.accessToVehicle(repairDTO.getVehicleId())) {
-            VehicleRepair vehicleRepair = repairMapper.repairDtoToVehicleRepairEntity(repairDTO);
-            vehicleRepairRepository.save(vehicleRepair);
-        } else throw new PermissionDeniedException();
+    public RepairService(final VehicleRepairRepository vehicleRepairRepository,
+                         final RepairMapper repairMapper) {
+        this.vehicleRepairRepository = vehicleRepairRepository;
+        this.repairMapper = repairMapper;
     }
 
-    public void updateVehicleRepair(RepairDTO repairDTO) {
-        if (checkExistAndPermissionComponent.accessToRepair(repairDTO.getId())) {
-            VehicleRepair vehicleRepair = vehicleRepairRepository.findById(repairDTO.getId()).orElseThrow(
-                    () -> new EntityNotFoundException("Repair not found"));
-
-            repairMapper.updateVehicleRepairFromDto(vehicleRepair, repairDTO);
-            vehicleRepairRepository.save(vehicleRepair);
-        } else throw new PermissionDeniedException();
+    public RepairModifyDTO createVehicleRepair(RepairModifyDTO repairModifyDTO) {
+        return Optional.of(repairModifyDTO)
+                .map(repairMapper::repairDtoToVehicleRepairEntity)
+                .map(vehicleRepairRepository::save)
+                .map(repairMapper::vehicleRepairToRepairModifyDTO)
+                .orElseThrow();
     }
 
-    public RepairView getRepairById(Long id) {
-        if (checkExistAndPermissionComponent.accessToRepair(id)) {
-            return vehicleRepairRepository.findRepairById(id);
-        } else throw new PermissionDeniedException();
+    public RepairModifyDTO updateVehicleRepair(RepairModifyDTO repairModifyDTO) {
+        return vehicleRepairRepository.findById(repairModifyDTO.getId())
+                .map(repair -> repairMapper.updateVehicleRepairFromDto(repair, repairModifyDTO))
+                .map(vehicleRepairRepository::save)
+                .map(repairMapper::vehicleRepairToRepairModifyDTO)
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND_ERROR));
     }
 
-    public List<RepairView> getRepairsByVehicle(Long id) {
-        if (checkExistAndPermissionComponent.accessToVehicle(id)) {
-            return vehicleRepairRepository.findAllRepairsByVehicleId(id);
-        } else throw new PermissionDeniedException();
+    public RepairView getRepairViewById(Long id) {
+        return vehicleRepairRepository.findRepairById(id)
+                .orElseThrow();
+    }
+
+    public List<RepairView> getRepairViewsByVehicleId(Long vehicleId) {
+        return vehicleRepairRepository.findAllRepairsByVehicleId(vehicleId);
     }
 
     public List<RepairView> getRepairsByUser() {
@@ -57,9 +57,7 @@ public class RepairService {
     }
 
     public void deleteRepairById(Long id) {
-        if (checkExistAndPermissionComponent.accessToRepair(id)) {
-            vehicleRepairRepository.deleteById(id);
-        } else throw new PermissionDeniedException();
+        vehicleRepairRepository.deleteById(id);
     }
 
 }
