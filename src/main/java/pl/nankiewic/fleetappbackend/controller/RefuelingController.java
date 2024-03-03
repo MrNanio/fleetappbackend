@@ -1,12 +1,12 @@
 package pl.nankiewic.fleetappbackend.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import pl.nankiewic.fleetappbackend.dto.refueling.RefuelingDTO;
+import pl.nankiewic.fleetappbackend.dto.refueling.RefuelingModifyDTO;
 import pl.nankiewic.fleetappbackend.dto.refueling.RefuelingView;
 import pl.nankiewic.fleetappbackend.service.RefuelingService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @AllArgsConstructor
@@ -18,13 +18,13 @@ public class RefuelingController {
     private final RefuelingService refuelingService;
 
     @PostMapping
-    public void addRefueling(@RequestBody @Valid RefuelingDTO refuelingDTO) {
-        refuelingService.createVehicleRefueling(refuelingDTO);
+    public RefuelingModifyDTO addRefueling(@Validated @RequestBody RefuelingModifyDTO refuelingModifyDTO) {
+        return refuelingService.createVehicleRefueling(refuelingModifyDTO);
     }
 
     @PutMapping
-    public void updateRefueling(@RequestBody @Valid RefuelingDTO refuelingDTO) {
-        refuelingService.updateVehicleRefueling(refuelingDTO);
+    public RefuelingModifyDTO updateRefueling(@Validated @RequestBody RefuelingModifyDTO refuelingModifyDTO) {
+        return refuelingService.updateVehicleRefueling(refuelingModifyDTO);
     }
 
     @GetMapping("/{id}")

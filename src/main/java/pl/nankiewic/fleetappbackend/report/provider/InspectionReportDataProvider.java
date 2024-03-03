@@ -21,7 +21,7 @@ public class InspectionReportDataProvider extends AbstractVehicleReportDataProvi
 
     @Override
     public List<VehicleInspectionReportView> getReportData(ReportViewFilterParam param) {
-        return vehicleInspectionRepository.findVehicleInspectionReportViewByParam(param);
+        return vehicleInspectionRepository.findVehicleInspectionReportViewsByParam(param);
     }
 
 }

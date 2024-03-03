@@ -1,18 +1,18 @@
 package pl.nankiewic.fleetappbackend.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import pl.nankiewic.fleetappbackend.dto.*;
+import pl.nankiewic.fleetappbackend.dto.IdDTO;
+import pl.nankiewic.fleetappbackend.dto.account.PasswordDTO;
+import pl.nankiewic.fleetappbackend.dto.account.PasswordRecoveryDTO;
 import pl.nankiewic.fleetappbackend.dto.user.UserDataDTO;
 import pl.nankiewic.fleetappbackend.dto.user.UserView;
 import pl.nankiewic.fleetappbackend.service.AccountService;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -71,32 +71,29 @@ public class AccountController {
      */
 
     @PostMapping("/userdata")
-    public ResponseEntity<MessageResponse> createUserData(@RequestBody @Valid UserDataDTO userDataDTO,
+    public void createUserData(@RequestBody @Valid UserDataDTO userDataDTO,
                                                        Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         accountService.createUserData(userDataDTO, userDetails.getUsername());
-        return ResponseEntity.ok().body(new MessageResponse("ok", LocalDateTime.now()));
     }
 
     @PutMapping("/userdata")
-    public ResponseEntity<MessageResponse> updateUserData(@RequestBody @Valid UserDataDTO userDataDTO,
+    public void updateUserData(@RequestBody @Valid UserDataDTO userDataDTO,
                                                           Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         accountService.updateUserData(userDataDTO, userDetails.getUsername());
-        return ResponseEntity.ok().body(new MessageResponse("ok", LocalDateTime.now()));
     }
 
     @GetMapping("/userdata/{id}")
-    public ResponseEntity<UserDataDTO> getUserData(@PathVariable Long id, Authentication authentication) {
+    public UserDataDTO getUserData(@PathVariable Long id, Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return ResponseEntity.ok().body(accountService.getUserData(userDetails.getUsername(), id));
+        return accountService.getUserData(userDetails.getUsername(), id);
     }
 
     @DeleteMapping("/userdata")
-    public ResponseEntity<MessageResponse> deleteUserData(Authentication authentication) {
+    public void deleteUserData(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         accountService.deleteUserData(userDetails.getUsername());
-        return ResponseEntity.ok().body(new MessageResponse("ok", LocalDateTime.now()));
     }
 
     /**

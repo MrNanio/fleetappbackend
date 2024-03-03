@@ -47,13 +47,13 @@ public class InsuranceService {
     }
 
     public List<InsuranceView> getInsurancesByVehicle(Long id) {
-            return vehicleInsuranceRepository.findAllInsuranceByVehicle(id);
+            return vehicleInsuranceRepository.findInsuranceViewsByVehicleId(id);
     }
 
     public List<InsuranceView> getInsurancesByUser() {
         var userId = JWTokenHelper.getJWTUserId();
 
-        return vehicleInsuranceRepository.findAllInsuranceByUsersVehicle(userId);
+        return vehicleInsuranceRepository.findInsuranceViewsByUserId(userId);
     }
 
     public Set<InsuranceType> getInsuranceTypes() {

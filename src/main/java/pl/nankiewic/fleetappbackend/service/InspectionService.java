@@ -43,7 +43,7 @@ public class InspectionService {
     }
 
     public List<InspectionView> getInspectionByVehicle(Long id) {
-        return vehicleInspectionRepository.findAllByVehicle(id);
+        return vehicleInspectionRepository.findInspectionViewsByVehicleId(id);
     }
 
     public InspectionView getInspectionById(Long id) {
@@ -54,7 +54,7 @@ public class InspectionService {
     public List<InspectionView> getInspectionsByUser() {
         var userId = JWTokenHelper.getJWTUserId();
 
-        return vehicleInspectionRepository.findAllByVehicleIn(userId);
+        return vehicleInspectionRepository.findInspectionViewsByUserId(userId);
     }
 
     public void deleteInspectionById(Long id) {

@@ -1,5 +1,6 @@
 package pl.nankiewic.fleetappbackend.service;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -12,6 +13,7 @@ import pl.nankiewic.fleetappbackend.config.security.CustomUserDetails;
 import pl.nankiewic.fleetappbackend.dto.insurance.InsuranceModifyDTO;
 import pl.nankiewic.fleetappbackend.dto.insurance.InsuranceView;
 import pl.nankiewic.fleetappbackend.entity.VehicleInsurance;
+import pl.nankiewic.fleetappbackend.entity.enums.InsuranceType;
 import pl.nankiewic.fleetappbackend.mapper.InsuranceMapper;
 import pl.nankiewic.fleetappbackend.repository.VehicleInsuranceRepository;
 
@@ -51,8 +53,7 @@ class InsuranceServiceTest {
         var vehicleInsurance = VehicleInsurance.builder().build();
         var insuranceModifyDTO = InsuranceModifyDTO.builder().build();
 
-        when(vehicleInsuranceRepository.findById(any())).thenReturn(Optional.of(vehicleInsurance));
-        when(insuranceMapper.insuranceDtoToVehicleInsuranceEntity(any())).thenReturn(VehicleInsurance.builder().build());
+        when(insuranceMapper.insuranceDtoToVehicleInsuranceEntity(any())).thenReturn(vehicleInsurance);
         when(vehicleInsuranceRepository.save(any())).thenReturn(vehicleInsurance);
         when(insuranceMapper.insuranceToInsuranceModifyDTO(any())).thenReturn(insuranceModifyDTO);
 
@@ -91,7 +92,7 @@ class InsuranceServiceTest {
     @Test
     void should_get_insurance_by_user() {
         insuranceService.getInsurancesByUser();
-        verify(vehicleInsuranceRepository, times(1)).findAllInsuranceByUsersVehicle(any());
+        verify(vehicleInsuranceRepository, times(1)).findInsuranceViewsByUserId(any());
     }
 
     @Test
@@ -99,14 +100,8 @@ class InsuranceServiceTest {
         //when
         insuranceService.getInsurancesByVehicle(EXAMPLE_ID);
         //then
-        verify(vehicleInsuranceRepository, times(1)).findAllInsuranceByVehicle(any());
+        verify(vehicleInsuranceRepository, times(1)).findInsuranceViewsByVehicleId(any());
     }
-
-//    @Test
-//    void should_get_insurance_type() {
-//        insuranceService.getInsuranceTypes();
-//        verify(insuranceTypeRepository, times(1)).findInsurancesTypes();
-//    }
 
     @Test
     void should_delete_insurance_by_id() {
@@ -114,6 +109,14 @@ class InsuranceServiceTest {
         insuranceService.deleteInsuranceById(EXAMPLE_ID);
         //then
         verify(vehicleInsuranceRepository, times(1)).deleteById(any());
+    }
+
+    @Test
+    void should_get_insurance_types() {
+        //when
+        var result = insuranceService.getInsuranceTypes();
+        //then
+        Assertions.assertEquals(result.size(), InsuranceType.values().length);
     }
 
 }

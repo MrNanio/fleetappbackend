@@ -1,5 +1,7 @@
 package pl.nankiewic.fleetappbackend.controller.validator;
 
-public interface ObjectModificationValidation {
+import javax.validation.groups.Default;
+
+public interface ObjectModificationValidation extends Default {
 
 }

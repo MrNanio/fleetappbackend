@@ -41,7 +41,7 @@ public interface VehicleInsuranceRepository extends JpaRepository<VehicleInsuran
             "JOIN i.vehicle v " +
             "JOIN v.user u " +
             "WHERE u.id = :userId")
-    List<InsuranceView> findAllInsuranceByUsersVehicle(Long userId);
+    List<InsuranceView> findInsuranceViewsByUserId(Long userId);
 
     @Query(value = "SELECT i.id as id, " +
             "v.id as vehicleId, " +
@@ -54,7 +54,7 @@ public interface VehicleInsuranceRepository extends JpaRepository<VehicleInsuran
             "FROM VehicleInsurance i " +
             "JOIN i.vehicle v " +
             "WHERE v.id = :vehicleId")
-    List<InsuranceView> findAllInsuranceByVehicle(Long vehicleId);
+    List<InsuranceView> findInsuranceViewsByVehicleId(Long vehicleId);
 
     @Query(value = "SELECT i.id as id, " +
             "v.id as vehicleId, " +
@@ -70,7 +70,7 @@ public interface VehicleInsuranceRepository extends JpaRepository<VehicleInsuran
             "WHERE i.effectiveDate BETWEEN :#{#param.startDate} AND :#{#param.endDate} " +
             "AND (:#{#param.userId} IS NULL OR :#{#param.userId} = u.id) " +
             "AND (:#{#param.vehicleId} IS NULL OR :#{#param.vehicleId} = v.id)")
-    List<VehicleInsuranceReportView> findVehicleInsuranceReportViewByParam(ReportViewFilterParam param);
+    List<VehicleInsuranceReportView> findVehicleInsuranceReportViewsByParam(ReportViewFilterParam param);
 
     @Query("SELECT SUM(i.cost) " +
             "FROM VehicleInsurance i " +

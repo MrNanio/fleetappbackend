@@ -25,7 +25,7 @@ public interface VehicleRepairRepository extends JpaRepository<VehicleRepair, Lo
             "FROM VehicleRepair r " +
             "JOIN r.vehicle v " +
             "WHERE v.id = :vehicleId")
-    List<RepairView> findAllRepairsByVehicleId(Long vehicleId);
+    List<RepairView> findRepairViewsByVehicleId(Long vehicleId);
 
     @Query("SELECT r.id as id, " +
             "v.id as vehicleId, " +
@@ -36,7 +36,7 @@ public interface VehicleRepairRepository extends JpaRepository<VehicleRepair, Lo
             "FROM VehicleRepair r " +
             "JOIN r.vehicle v " +
             "WHERE r.id = :repairId")
-    Optional<RepairView> findRepairById(Long repairId);
+    Optional<RepairView> findRepairViewById(Long repairId);
 
     @Query("SELECT r.id as id, " +
             "v.id as vehicleId, " +
@@ -47,8 +47,8 @@ public interface VehicleRepairRepository extends JpaRepository<VehicleRepair, Lo
             "FROM VehicleRepair r " +
             "JOIN r.vehicle v " +
             "JOIN v.user u " +
-            "WHERE u.email=?1")
-    List<RepairView> findAllRepairByFromUserVehicle(Long userId);
+            "WHERE u.email = :userId")
+    List<RepairView> findRepairViewsByUserId(Long userId);
 
     @Query("SELECT r.id as id, " +
             "v.id as vehicleId, " +
@@ -63,7 +63,7 @@ public interface VehicleRepairRepository extends JpaRepository<VehicleRepair, Lo
             "WHERE r.repairDate BETWEEN :#{#param.startDate} AND :#{#param.startDate} " +
             "AND (:#{#param.userId} IS NULL OR :#{#param.userId} = u.id) " +
             "AND (:#{#param.vehicleId} IS NULL OR :#{#param.vehicleId} = v.id)")
-    List<VehicleRepairReportView> findVehicleRepairReportViewByParam(ReportViewFilterParam param);
+    List<VehicleRepairReportView> findVehicleRepairReportViewsByParam(ReportViewFilterParam param);
 
     @Query("SELECT SUM(r.cost) " +
             "FROM VehicleRepair r " +

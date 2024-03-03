@@ -1,59 +1,53 @@
 package pl.nankiewic.fleetappbackend.service;
 
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.config.jwt.JWTokenHelper;
-import pl.nankiewic.fleetappbackend.dto.refueling.RefuelingDTO;
+import pl.nankiewic.fleetappbackend.dto.refueling.RefuelingModifyDTO;
 import pl.nankiewic.fleetappbackend.dto.refueling.RefuelingView;
-import pl.nankiewic.fleetappbackend.entity.User;
-import pl.nankiewic.fleetappbackend.entity.VehicleRefueling;
-import pl.nankiewic.fleetappbackend.exceptions.PermissionDeniedException;
 import pl.nankiewic.fleetappbackend.mapper.RefuelingMapper;
 import pl.nankiewic.fleetappbackend.repository.VehicleRefuelingRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
-@AllArgsConstructor
+import static pl.nankiewic.fleetappbackend.exceptions.ExceptionConstant.ENTITY_NOT_FOUND_ERROR;
+
 @Service
 public class RefuelingService {
 
-    private final CheckExistAndPermissionComponent checkExistAndPermissionComponent;
     private final VehicleRefuelingRepository refuelingRepository;
     private final RefuelingMapper refuelingMapper;
 
-    public void createVehicleRefueling(RefuelingDTO refuelingDTO) {
-        if (checkExistAndPermissionComponent.accessToVehicle(refuelingDTO.getVehicleId())){
-            var userId = JWTokenHelper.getJWTUserId();
-            var user = User.builder()
-                    .id(userId)
-                    .build();
-
-            VehicleRefueling vehicleRefueling = refuelingMapper.refuelingDtoToVehicleRefuelingEntity(refuelingDTO);
-            vehicleRefueling.setUser(user);
-            refuelingRepository.save(vehicleRefueling);
-        }  else throw new PermissionDeniedException();
+    public RefuelingService(final VehicleRefuelingRepository refuelingRepository,
+                            final RefuelingMapper refuelingMapper) {
+        this.refuelingRepository = refuelingRepository;
+        this.refuelingMapper = refuelingMapper;
     }
 
-    public void updateVehicleRefueling(RefuelingDTO refuelingDTO) {
-        if (checkExistAndPermissionComponent.accessToRefueling(refuelingDTO.getVehicleId())) {
-            VehicleRefueling vehicleRefueling = refuelingRepository.findById(refuelingDTO.getId()).orElseThrow(
-                    () -> new EntityNotFoundException("Refueling not found"));
-            refuelingMapper.updateVehicleRepairFromDto(vehicleRefueling, refuelingDTO);
-            refuelingRepository.save(vehicleRefueling);
-        } else throw new PermissionDeniedException();
+    public RefuelingModifyDTO createVehicleRefueling(RefuelingModifyDTO refuelingModifyDTO) {
+        return Optional.of(refuelingModifyDTO)
+                .map(this::prepareObject)
+                .map(refuelingMapper::refuelingDtoToVehicleRefuelingEntity)
+                .map(refuelingRepository::save)
+                .map(refuelingMapper::refuelingToRefuelingModify)
+                .orElseThrow();
+    }
+
+    public RefuelingModifyDTO updateVehicleRefueling(RefuelingModifyDTO refuelingModifyDTO) {
+        return refuelingRepository.findById(refuelingModifyDTO.getId())
+                .map(refueling -> refuelingMapper.updateVehicleRepairFromDto(refueling, refuelingModifyDTO))
+                .map(refuelingRepository::save)
+                .map(refuelingMapper::refuelingToRefuelingModify)
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND_ERROR));
     }
 
     public RefuelingView getRefuelingById(Long id) {
-        if (checkExistAndPermissionComponent.accessToRefueling(id)) {
-            return refuelingRepository.findRefuelingViewById(id);
-        } else throw new PermissionDeniedException();
+        return refuelingRepository.findRefuelingViewById(id);
     }
 
     public List<RefuelingView> getRefuelingByVehicle(Long id) {
-        if (checkExistAndPermissionComponent.accessToVehicle(id)) {
-            return refuelingRepository.findRefuelingViewsByVehicleId(id);
-        } else throw new PermissionDeniedException();
+        return refuelingRepository.findRefuelingViewsByVehicleId(id);
     }
 
     public List<RefuelingView> getRefuelingByUser() {
@@ -69,15 +63,19 @@ public class RefuelingService {
     }
 
     public List<RefuelingView> getRefuelingByUserAndVehicle(Long userId, Long vehicleId) {
-        if (checkExistAndPermissionComponent.accessToVehicle(vehicleId)) {
-            return refuelingRepository.findRefuelingViewsByVehicleIdAndRefuelingUserId(vehicleId, userId);
-        } else throw new PermissionDeniedException();
+        return refuelingRepository.findRefuelingViewsByVehicleIdAndRefuelingUserId(vehicleId, userId);
     }
 
     public void deleteRefuelingById(Long id) {
-        if (checkExistAndPermissionComponent.accessToRefueling(id)) {
-            refuelingRepository.deleteById(id);
-        } else throw new PermissionDeniedException();
+        refuelingRepository.deleteById(id);
+    }
+
+    private RefuelingModifyDTO prepareObject(RefuelingModifyDTO refuelingModifyDTO) {
+        var userId = JWTokenHelper.getJWTUserId();
+
+        return refuelingModifyDTO.toBuilder()
+                .userId(userId)
+                .build();
     }
 
 }

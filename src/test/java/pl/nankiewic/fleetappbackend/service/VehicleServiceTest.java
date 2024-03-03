@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import pl.nankiewic.fleetappbackend.config.jwt.JWTokenHelper;
 import pl.nankiewic.fleetappbackend.config.security.CustomUserDetails;
 import pl.nankiewic.fleetappbackend.dto.vehicle.VehicleDTO;
+import pl.nankiewic.fleetappbackend.dto.vehicle.VehicleView;
 import pl.nankiewic.fleetappbackend.entity.User;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
 import pl.nankiewic.fleetappbackend.mapper.VehicleMapper;
@@ -99,7 +100,9 @@ class VehicleServiceTest {
     @Test
     void should_get_vehicle_by_id() {
         //given
+        VehicleView view = Mockito.mock(VehicleView.class);
         when(checkExistAndPermissionComponent.accessToVehicle(any())).thenReturn(true);
+        when(vehicleRepository.findVehicleViewById(any())).thenReturn(Optional.of(view));
         //when
         vehicleService.getVehicleDataById(EXAMPLE_ID);
         //then

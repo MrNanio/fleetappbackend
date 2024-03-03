@@ -15,8 +15,6 @@ import pl.nankiewic.fleetappbackend.entity.VehicleRepair;
 import pl.nankiewic.fleetappbackend.mapper.RepairMapper;
 import pl.nankiewic.fleetappbackend.repository.VehicleRepairRepository;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -50,14 +48,7 @@ class RepairServiceTest {
     @Test
     void should_create_vehicle_repair() {
         //given
-        RepairModifyDTO repairModifyDTO = RepairModifyDTO.builder()
-                .id(1L)
-                .repairDate(LocalDate.now())
-                .vehicleId(1L)
-                .cost(BigDecimal.valueOf(12.4))
-                .description("bhjvhvh")
-                .title("fgfgfg")
-                .build();
+        var repairModifyDTO = RepairModifyDTO.builder().build();
         var vehicleRepair = VehicleRepair.builder().build();
 
         when(repairMapper.repairDtoToVehicleRepairEntity(any())).thenReturn(vehicleRepair);
@@ -72,16 +63,8 @@ class RepairServiceTest {
     @Test
     void should_update_vehicle_repair() {
         //given
-        RepairModifyDTO repairModifyDTO = RepairModifyDTO.builder()
-                .id(1L)
-                .repairDate(LocalDate.now())
-                .vehicleId(1L)
-                .cost(BigDecimal.valueOf(12.4))
-                .description("bhjvhvh")
-                .title("fgfgfg")
-                .build();
-        VehicleRepair vehicleRepair = VehicleRepair.builder().build();
-
+        var repairModifyDTO = RepairModifyDTO.builder().build();
+        var vehicleRepair = VehicleRepair.builder().build();
 
         when(vehicleRepairRepository.findById(any())).thenReturn(Optional.of(vehicleRepair));
         when(repairMapper.updateVehicleRepairFromDto(any(), any())).thenReturn(vehicleRepair);
@@ -96,11 +79,11 @@ class RepairServiceTest {
     @Test
     void should_get_repair_by_id() {
         //given
-        when(vehicleRepairRepository.findRepairById(any())).thenReturn(Optional.of(Mockito.mock(RepairView.class)));
+        when(vehicleRepairRepository.findRepairViewById(any())).thenReturn(Optional.of(Mockito.mock(RepairView.class)));
         //when
         repairService.getRepairViewById(EXAMPLE_ID);
         //then
-        verify(vehicleRepairRepository, times(1)).findRepairById(any());
+        verify(vehicleRepairRepository, times(1)).findRepairViewById(any());
     }
 
     @Test
@@ -108,8 +91,7 @@ class RepairServiceTest {
         //when
         repairService.getRepairViewsByVehicleId(EXAMPLE_ID);
         //then
-        verify(vehicleRepairRepository, times(1)).findAllRepairsByVehicleId(any());
-
+        verify(vehicleRepairRepository, times(1)).findRepairViewsByVehicleId(any());
     }
 
     @Test
@@ -117,7 +99,7 @@ class RepairServiceTest {
         //when
         repairService.getRepairsByUser();
         //then
-        verify(vehicleRepairRepository, times(1)).findAllRepairByFromUserVehicle(any());
+        verify(vehicleRepairRepository, times(1)).findRepairViewsByUserId(any());
     }
 
     @Test

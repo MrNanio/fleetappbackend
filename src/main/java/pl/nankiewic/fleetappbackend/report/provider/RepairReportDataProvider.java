@@ -21,7 +21,7 @@ public class RepairReportDataProvider extends AbstractVehicleReportDataProvider<
 
     @Override
     public List<VehicleRepairReportView> getReportData(ReportViewFilterParam param) {
-        return vehicleRepairRepository.findVehicleRepairReportViewByParam(param);
+        return vehicleRepairRepository.findVehicleRepairReportViewsByParam(param);
     }
 
 }

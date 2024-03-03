@@ -26,7 +26,7 @@ public interface VehicleInspectionRepository extends JpaRepository<VehicleInspec
             "JOIN i.vehicle v " +
             "JOIN v.user u " +
             "WHERE u.id = :userId")
-    List<InspectionView> findAllByVehicleIn(Long userId);
+    List<InspectionView> findInspectionViewsByUserId(Long userId);
 
     @Query(value = "SELECT i.id as id, " +
             "v.id as vehicleId, " +
@@ -47,8 +47,8 @@ public interface VehicleInspectionRepository extends JpaRepository<VehicleInspec
             "i.description as description " +
             "FROM VehicleInspection i " +
             "JOIN i.vehicle v " +
-            "WHERE i.vehicle.id=?1")
-    List<InspectionView> findAllByVehicle(Long vehicleId);
+            "WHERE v.id = :vehicleId")
+    List<InspectionView> findInspectionViewsByVehicleId(Long vehicleId);
 
     @Query(value = "SELECT i.id as id, " +
             "v.id as vehicleId, " +
@@ -63,7 +63,7 @@ public interface VehicleInspectionRepository extends JpaRepository<VehicleInspec
             "WHERE i.inspectionDate BETWEEN :#{#param.startDate} AND :#{#param.endDate} " +
             "AND (:#{#param.userId} IS NULL OR :#{#param.userId} = u.id) " +
             "AND (:#{#param.vehicleId} IS NULL OR :#{#param.vehicleId} = v.id)")
-    List<VehicleInspectionReportView> findVehicleInspectionReportViewByParam(ReportViewFilterParam param);
+    List<VehicleInspectionReportView> findVehicleInspectionReportViewsByParam(ReportViewFilterParam param);
 
     @Query("SELECT SUM(i.cost) " +
             "FROM VehicleInspection i " +
@@ -79,8 +79,7 @@ public interface VehicleInspectionRepository extends JpaRepository<VehicleInspec
     BigDecimal findSummaryCostByVehicleId(Long vehicleId, LocalDate begin, LocalDate end);
 
     @Query("SELECT " +
-            "CASE WHEN COUNT(i) > 0 " +
-            "THEN TRUE " +
+            "CASE WHEN COUNT(i) > 0 THEN TRUE " +
             "ELSE FALSE " +
             "END " +
             "FROM VehicleInspection i " +

@@ -21,7 +21,7 @@ public class RefuelingReportDataProvider extends AbstractVehicleReportDataProvid
 
     @Override
     public List<VehicleRefuelingReportView> getReportData(ReportViewFilterParam param) {
-        return vehicleRefuelingRepository.findVehicleRefuelingReportViewByParam(param);
+        return vehicleRefuelingRepository.findVehicleRefuelingReportViewsByParam(param);
     }
 
 }

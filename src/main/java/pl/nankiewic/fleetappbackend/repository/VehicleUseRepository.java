@@ -3,9 +3,9 @@ package pl.nankiewic.fleetappbackend.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import pl.nankiewic.fleetappbackend.dto.DataTripDTO;
-import pl.nankiewic.fleetappbackend.dto.DataTripUserDTO;
-import pl.nankiewic.fleetappbackend.dto.DataUseDTO;
+import pl.nankiewic.fleetappbackend.dto.use.DataTripDTO;
+import pl.nankiewic.fleetappbackend.dto.use.DataTripUserDTO;
+import pl.nankiewic.fleetappbackend.dto.use.DataUseDTO;
 import pl.nankiewic.fleetappbackend.dto.chart.ChartDataRespondDTO;
 import pl.nankiewic.fleetappbackend.dto.use.UseView;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
@@ -86,34 +86,34 @@ public interface VehicleUseRepository extends JpaRepository<VehicleUse, Long> {
             "AND (:#{#param.vehicleId} IS NULL OR :#{#param.vehicleId} = v.id)")
     List<VehicleUseReportView> findVehicleUseReportViewsByParam(ReportViewFilterParam param);
 
-    @Query("SELECT new pl.nankiewic.fleetappbackend.dto.DataUseDTO(u.vehicle, SUM(u.trip)) " +
-            "FROM VehicleUse u " +
-            "WHERE u.vehicle.user=?1 and (u.tripDate between ?2 and ?3) " +
-            "group by u.vehicle")
-    List<DataUseDTO> sumOfTripByUser(Long userId, LocalDate begin, LocalDate end);
-
-    @Query("SELECT new pl.nankiewic.fleetappbackend.dto.DataTripDTO(u.trip, u.tripDate) " +
-            "FROM VehicleUse u " +
-            "WHERE u.vehicle=?1 and (u.tripDate between ?2 and ?3) " +
-            "ORDER BY u.tripDate ASC")
-    List<DataTripDTO> tripByVehicleAndData(Vehicle vehicle, LocalDate begin, LocalDate end);
-
-    @Query("SELECT u.tripType, SUM(u.trip) " +
-            "FROM VehicleUse u " +
-            "JOIN u.vehicle v " +
-            "WHERE v.id = :vehicleId and (u.tripDate between :begin and :end) " +
-            "group by u.tripType")
-    List<ChartDataRespondDTO> tripByVehicleAndDataAndTripType(Long vehicleId, LocalDate begin, LocalDate end);
-
-    @Query("SELECT new pl.nankiewic.fleetappbackend.dto.DataTripUserDTO(u.vehicle, SUM(u.trip)) " +
-            "FROM VehicleUse u " +
-            "WHERE u.user.id=?1 and (u.tripDate between ?2 and ?3) " +
-            "group by u.vehicle")
-    List<DataTripUserDTO> tripByVehicleAndDataAndUser(Long userId, LocalDate begin, LocalDate end);
-
-    @Query("SELECT new pl.nankiewic.fleetappbackend.dto.DataTripUserDTO(u.vehicle, COUNT(u.id)) " +
-            "FROM VehicleUse u " +
-            "WHERE u.vehicle.user.id=?1 and (u.tripDate between ?2 and ?3) " +
-            "group by u.vehicle")
-    List<DataTripUserDTO> numberOfUsesByVehicleAndDataAndUser(Long userId, LocalDate begin, LocalDate end);
+//    @Query("SELECT new pl.nankiewic.fleetappbackend.dto.DataUseDTO(u.vehicle, SUM(u.trip)) " +
+//            "FROM VehicleUse u " +
+//            "WHERE u.vehicle.user=?1 and (u.tripDate between ?2 and ?3) " +
+//            "group by u.vehicle")
+//    List<DataUseDTO> sumOfTripByUser(Long userId, LocalDate begin, LocalDate end);
+//
+//    @Query("SELECT new pl.nankiewic.fleetappbackend.dto.DataTripDTO(u.trip, u.tripDate) " +
+//            "FROM VehicleUse u " +
+//            "WHERE u.vehicle=?1 and (u.tripDate between ?2 and ?3) " +
+//            "ORDER BY u.tripDate ASC")
+//    List<DataTripDTO> tripByVehicleAndData(Vehicle vehicle, LocalDate begin, LocalDate end);
+//
+//    @Query("SELECT u.tripType, SUM(u.trip) " +
+//            "FROM VehicleUse u " +
+//            "JOIN u.vehicle v " +
+//            "WHERE v.id = :vehicleId and (u.tripDate between :begin and :end) " +
+//            "group by u.tripType")
+//    List<ChartDataRespondDTO> tripByVehicleAndDataAndTripType(Long vehicleId, LocalDate begin, LocalDate end);
+//
+//    @Query("SELECT new pl.nankiewic.fleetappbackend.dto.DataTripUserDTO(u.vehicle, SUM(u.trip)) " +
+//            "FROM VehicleUse u " +
+//            "WHERE u.user.id=?1 and (u.tripDate between ?2 and ?3) " +
+//            "group by u.vehicle")
+//    List<DataTripUserDTO> tripByVehicleAndDataAndUser(Long userId, LocalDate begin, LocalDate end);
+//
+//    @Query("SELECT new pl.nankiewic.fleetappbackend.dto.DataTripUserDTO(u.vehicle, COUNT(u.id)) " +
+//            "FROM VehicleUse u " +
+//            "WHERE u.vehicle.user.id=?1 and (u.tripDate between ?2 and ?3) " +
+//            "group by u.vehicle")
+//    List<DataTripUserDTO> numberOfUsesByVehicleAndDataAndUser(Long userId, LocalDate begin, LocalDate end);
 }

@@ -5,6 +5,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.nankiewic.fleetappbackend.dto.*;
+import pl.nankiewic.fleetappbackend.dto.account.PasswordDTO;
+import pl.nankiewic.fleetappbackend.dto.account.PasswordRecoveryDTO;
 import pl.nankiewic.fleetappbackend.dto.user.UserDataDTO;
 import pl.nankiewic.fleetappbackend.dto.user.UserView;
 import pl.nankiewic.fleetappbackend.entity.enums.Role;

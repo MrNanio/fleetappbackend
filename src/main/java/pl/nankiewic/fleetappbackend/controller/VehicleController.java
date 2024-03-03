@@ -12,7 +12,6 @@ import pl.nankiewic.fleetappbackend.service.VehicleService;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -48,7 +47,7 @@ public class VehicleController {
     }
 
     @GetMapping("/{id}")
-    public Optional<VehicleView> getVehicleById(@PathVariable Long id) {
+    public VehicleView getVehicleById(@PathVariable Long id) {
         return vehicleService.getVehicleDataById(id);
     }
 

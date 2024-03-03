@@ -42,18 +42,18 @@ public class RepairService {
     }
 
     public RepairView getRepairViewById(Long id) {
-        return vehicleRepairRepository.findRepairById(id)
+        return vehicleRepairRepository.findRepairViewById(id)
                 .orElseThrow();
     }
 
     public List<RepairView> getRepairViewsByVehicleId(Long vehicleId) {
-        return vehicleRepairRepository.findAllRepairsByVehicleId(vehicleId);
+        return vehicleRepairRepository.findRepairViewsByVehicleId(vehicleId);
     }
 
     public List<RepairView> getRepairsByUser() {
         var userId = JWTokenHelper.getJWTUserId();
 
-        return vehicleRepairRepository.findAllRepairByFromUserVehicle(userId);
+        return vehicleRepairRepository.findRepairViewsByUserId(userId);
     }
 
     public void deleteRepairById(Long id) {

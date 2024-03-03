@@ -1,4 +1,4 @@
-package pl.nankiewic.fleetappbackend.dto;
+package pl.nankiewic.fleetappbackend.dto.use;
 
 import lombok.*;
 

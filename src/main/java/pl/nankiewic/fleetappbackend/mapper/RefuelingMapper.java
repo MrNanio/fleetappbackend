@@ -1,7 +1,7 @@
 package pl.nankiewic.fleetappbackend.mapper;
 
 import org.mapstruct.*;
-import pl.nankiewic.fleetappbackend.dto.refueling.RefuelingDTO;
+import pl.nankiewic.fleetappbackend.dto.refueling.RefuelingModifyDTO;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
 import pl.nankiewic.fleetappbackend.entity.VehicleRefueling;
 
@@ -11,14 +11,19 @@ public abstract class RefuelingMapper {
     @BeanMapping(qualifiedByName = "dtoToEntity")
     @Mapping(target = "vehicle", ignore = true)
     @Mapping(target = "user", ignore = true)
-    public abstract VehicleRefueling refuelingDtoToVehicleRefuelingEntity(RefuelingDTO refuelingDTO);
+    public abstract VehicleRefueling refuelingDtoToVehicleRefuelingEntity(RefuelingModifyDTO refuelingModifyDTO);
+
+    @BeanMapping(qualifiedByName = "entityToDto")
+    @Mapping(target = "vehicleId", source = "vehicle.id" )
+    @Mapping(target = "userId", source = "user.id")
+    public abstract RefuelingModifyDTO refuelingToRefuelingModify(VehicleRefueling vehicleRefueling);
 
     @Named(value = "dtoToEntity")
     @AfterMapping
-    public void vehicleRefuelingAddAttribute(RefuelingDTO refuelingDTO,
+    public void vehicleRefuelingAddAttribute(RefuelingModifyDTO refuelingModifyDTO,
                                              @MappingTarget VehicleRefueling vehicleRefueling) {
         var vehicle = Vehicle.builder()
-                .id(refuelingDTO.getVehicleId())
+                .id(refuelingModifyDTO.getVehicleId())
                 .build();
         vehicleRefueling.setVehicle(vehicle);
     }
@@ -26,7 +31,7 @@ public abstract class RefuelingMapper {
     @BeanMapping(qualifiedByName = "dtoToEntity")
     @Mapping(target = "vehicle", ignore = true)
     @Mapping(target = "user", ignore = true)
-    public abstract void updateVehicleRepairFromDto(@MappingTarget VehicleRefueling vehicleRefueling,
-                                                    RefuelingDTO refuelingDTO);
+    public abstract VehicleRefueling updateVehicleRepairFromDto(@MappingTarget VehicleRefueling vehicleRefueling,
+                                                    RefuelingModifyDTO refuelingModifyDTO);
 
 }

@@ -21,7 +21,7 @@ public class InsuranceReportDataProvider extends AbstractVehicleReportDataProvid
 
     @Override
     public List<VehicleInsuranceReportView> getReportData(ReportViewFilterParam param) {
-        return vehicleInsuranceRepository.findVehicleInsuranceReportViewByParam(param);
+        return vehicleInsuranceRepository.findVehicleInsuranceReportViewsByParam(param);
     }
 
 }

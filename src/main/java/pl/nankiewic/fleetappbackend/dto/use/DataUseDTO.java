@@ -1,4 +1,4 @@
-package pl.nankiewic.fleetappbackend.dto;
+package pl.nankiewic.fleetappbackend.dto.use;
 
 import lombok.*;
 import pl.nankiewic.fleetappbackend.entity.Vehicle;
@@ -8,8 +8,8 @@ import pl.nankiewic.fleetappbackend.entity.Vehicle;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DataTripUserDTO {
+public class DataUseDTO {
     private Vehicle vehicle;
-    private Long trip;
+    private Long cost;
 
 }

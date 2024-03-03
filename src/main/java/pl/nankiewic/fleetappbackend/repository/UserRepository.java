@@ -49,7 +49,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "WHERE u.role <> :role")
     List<UserView> findUserViewsWithoutRole(Role role);
 
-//    @Query(value = "SELECT new pl.nankiewic.fleetappbackend.dto.PasswordRecoveryDTO(u.email) " +
+//    @Query(value = "SELECT new pl.nankiewic.fleetappbackend.dto.account.PasswordRecoveryDTO(u.email) " +
 //            "FROM User u " +
 //            "WHERE u.id=?1")
 //    PasswordRecoveryDTO findUserEmailByUserId(Long id);

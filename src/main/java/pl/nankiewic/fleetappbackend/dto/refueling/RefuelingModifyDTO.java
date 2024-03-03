@@ -11,8 +11,8 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class RefuelingDTO {
+@Builder(toBuilder = true)
+public class RefuelingModifyDTO {
 
     @NotNull(groups = ObjectModificationValidation.class)
     private Long id;

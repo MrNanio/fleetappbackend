@@ -4,25 +4,22 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pl.nankiewic.fleetappbackend.config.security.CustomUserDetails;
-import pl.nankiewic.fleetappbackend.dto.refueling.RefuelingDTO;
+import pl.nankiewic.fleetappbackend.dto.refueling.RefuelingModifyDTO;
 import pl.nankiewic.fleetappbackend.entity.VehicleRefueling;
 import pl.nankiewic.fleetappbackend.mapper.RefuelingMapper;
 import pl.nankiewic.fleetappbackend.repository.VehicleRefuelingRepository;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 class RefuelingServiceTest {
-    @Mock
-    CheckExistAndPermissionComponent checkExistAndPermissionComponent;
+
     @Mock
     VehicleRefuelingRepository vehicleRefuelingRepository;
     @Mock
@@ -35,9 +32,8 @@ class RefuelingServiceTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
+        openMocks(this);
         refuelingService = new RefuelingService(
-                checkExistAndPermissionComponent,
                 vehicleRefuelingRepository,
                 refuelingMapper);
 
@@ -52,18 +48,14 @@ class RefuelingServiceTest {
     @Test
     void should_create_vehicle_refueling() {
         //given
-        RefuelingDTO refuelingDTO = RefuelingDTO.builder()
-                .id(1L)
-                .vehicleId(1L)
-                .userId(1L)
-                .cost(BigDecimal.valueOf(12.4))
-                .description("bvjgfgjf")
-                .refuelingDate(LocalDate.now())
-                .litre("23").build();
-        when(checkExistAndPermissionComponent.accessToVehicle(any())).thenReturn(true);
-        when(refuelingMapper.refuelingDtoToVehicleRefuelingEntity(any())).thenReturn(VehicleRefueling.builder().build());
+        var refuelingModifyDTO = RefuelingModifyDTO.builder().build();
+        var vehicleRefueling = Mockito.mock(VehicleRefueling.class);
+
+        when(refuelingMapper.refuelingDtoToVehicleRefuelingEntity(any())).thenReturn(vehicleRefueling);
+        when(vehicleRefuelingRepository.save(any())).thenReturn(vehicleRefueling);
+        when(refuelingMapper.refuelingToRefuelingModify(any())).thenReturn(refuelingModifyDTO);
         //when
-        refuelingService.createVehicleRefueling(refuelingDTO);
+        refuelingService.createVehicleRefueling(refuelingModifyDTO);
         //then
         verify(vehicleRefuelingRepository, times(1)).save(any());
     }
@@ -71,26 +63,22 @@ class RefuelingServiceTest {
     @Test
     void should_update_vehicle_refueling() {
         //given
-        RefuelingDTO refuelingDTO = RefuelingDTO.builder()
-                .id(1L)
-                .vehicleId(1L)
-                .userId(1L)
-                .cost(BigDecimal.valueOf(12.4))
-                .description("bvjgfgjf")
-                .refuelingDate(LocalDate.now())
-                .litre("23").build();
-        when(checkExistAndPermissionComponent.accessToRefueling(any())).thenReturn(true);
-        when(vehicleRefuelingRepository.findById(any())).thenReturn(Optional.of(VehicleRefueling.builder().build()));
+        var refuelingModifyDTO = RefuelingModifyDTO.builder().build();
+        var vehicleRefueling = Mockito.mock(VehicleRefueling.class);
+
+        when(vehicleRefuelingRepository.findById(any())).thenReturn(Optional.of(vehicleRefueling));
+        when(refuelingMapper.updateVehicleRepairFromDto(any(), any())).thenReturn(vehicleRefueling);
+        when(refuelingMapper.refuelingToRefuelingModify(any())).thenReturn(refuelingModifyDTO);
+        when(vehicleRefuelingRepository.save(any())).thenReturn(vehicleRefueling);
+        when(refuelingMapper.refuelingToRefuelingModify(any())).thenReturn(refuelingModifyDTO);
         //when
-        refuelingService.updateVehicleRefueling(refuelingDTO);
+        refuelingService.updateVehicleRefueling(refuelingModifyDTO);
         //then
         verify(vehicleRefuelingRepository, times(1)).save(any());
     }
 
     @Test
     void should_get_refueling_by_id() {
-        //given
-        when(checkExistAndPermissionComponent.accessToRefueling(any())).thenReturn(true);
         //when
         refuelingService.getRefuelingById(EXAMPLE_ID);
         //then
@@ -99,8 +87,6 @@ class RefuelingServiceTest {
 
     @Test
     void should_get_refueling_by_vehicle() {
-        //given
-        when(checkExistAndPermissionComponent.accessToVehicle(any())).thenReturn(true);
         //when
         refuelingService.getRefuelingByVehicle(EXAMPLE_ID);
         //then
@@ -125,8 +111,6 @@ class RefuelingServiceTest {
 
     @Test
     void should_get_refueling_by_user_and_vehicle() {
-        //given
-        when(checkExistAndPermissionComponent.accessToVehicle(any())).thenReturn(true);
         //when
         refuelingService.getRefuelingByUserAndVehicle(EXAMPLE_ID, EXAMPLE_ID);
         //then
@@ -135,8 +119,6 @@ class RefuelingServiceTest {
 
     @Test
     void should_delete_by_id() {
-        //given
-        when(checkExistAndPermissionComponent.accessToRefueling(any())).thenReturn(true);
         //when
         refuelingService.deleteRefuelingById(EXAMPLE_ID);
         //then

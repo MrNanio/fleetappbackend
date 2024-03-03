@@ -95,7 +95,7 @@ public interface VehicleRefuelingRepository extends JpaRepository<VehicleRefueli
             "WHERE r.refuelingDate BETWEEN :#{#param.startDate} AND :#{#param.startDate} " +
             "AND (:#{#param.userId} IS NULL OR :#{#param.userId} = u.id) " +
             "AND (:#{#param.vehicleId} IS NULL OR :#{#param.vehicleId} = v.id)")
-    List<VehicleRefuelingReportView> findVehicleRefuelingReportViewByParam(ReportViewFilterParam param);
+    List<VehicleRefuelingReportView> findVehicleRefuelingReportViewsByParam(ReportViewFilterParam param);
 
     @Query("SELECT SUM(r.cost) " +
             "FROM VehicleRefueling r " +

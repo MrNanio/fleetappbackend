@@ -54,9 +54,10 @@ public class VehicleService {
         return vehicleRepository.findVehicleViewsByUser(userId);
     }
 
-    public Optional<VehicleView> getVehicleDataById(Long id) {
+    public VehicleView getVehicleDataById(Long id) {
         validPermissionToObject(id);
-        return vehicleRepository.findVehicleViewById(id);
+        return vehicleRepository.findVehicleViewById(id)
+                .orElseThrow();
     }
 
     public void deleteVehicleById(Long id) {
